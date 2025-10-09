@@ -8,7 +8,7 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/css/site.dist.css" asp-append-version="true"/>
     @* <link rel="stylesheet" href="~/FastGooey.styles.css" asp-append-version="true"/> *@
-    <link rel="stylesheet" href="~/semantic/dist/semantic.min.css" />
+    @* <link rel="stylesheet" href="~/semantic/dist/semantic.min.css" /> *@
     <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.core.js"
             crossorigin async
             data-callback="initMapKit"
@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<div class="absolute layout-grid">
+<div class="absolute layout-grid text-sm">
   <nav class="sidebar">
     <div class="sidebar-content">
       <h2>FastGooey</h2>
@@ -98,10 +98,11 @@
   </main>
 </div>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
 <script src="~/lib/htmx/htmx_207.min.js"></script>
 <script src="~/lib/alpine/alpine_3_15_0.min.js"></script>
-<script src="~/semantic/dist/semantic.min.js"></script>
+<script src="~/js/cupertino-mapkit.js"></script>
+@* <script src="~/semantic/dist/semantic.min.js"></script> *@
 
 @await RenderSectionAsync("Scripts", required: false)
 </body>

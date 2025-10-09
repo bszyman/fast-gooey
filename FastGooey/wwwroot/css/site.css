@@ -79,3 +79,15 @@ body {
     /*padding: 2rem;*/
     background-color: #f5f5f5;
 }
+
+.formGroup {
+    @apply bg-white rounded shadow-md;
+}
+
+.formGroup label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+}
+
+.formGroup input {
+    @apply border border-zinc-300 rounded p-1 w-full;
+}
