@@ -98,10 +98,14 @@
   </main>
 </div>
 
-@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+@await Html.PartialAsync("~/Views/Partials/EditorPanel.cshtml")
+
 <script src="~/lib/htmx/htmx_207.min.js"></script>
-<script src="~/lib/alpine/alpine_3_15_0.min.js"></script>
 <script src="~/js/cupertino-mapkit.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+@* <script src="~/lib/alpine/alpine_3_15_0.min.js"></script> *@
+@* <script src="~/lib/vue/vue_3_5_22.js"></script> *@
 @* <script src="~/semantic/dist/semantic.min.js"></script> *@
 
 @await RenderSectionAsync("Scripts", required: false)

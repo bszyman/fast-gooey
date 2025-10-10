@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastGooey", "FastGooey\FastGooey.csproj", "{59498930-BC84-42CA-8D25-A0AA24BBBFD4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapKit.Models", "MapKit.Models\MapKit.Models.csproj", "{7FC70C69-5B59-431B-BFFC-C72ED64965E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherKit.Models", "WeatherKit.Models\WeatherKit.Models.csproj", "{53B4B8DA-2600-4D63-A8CF-8B156B8BDF3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{59498930-BC84-42CA-8D25-A0AA24BBBFD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59498930-BC84-42CA-8D25-A0AA24BBBFD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59498930-BC84-42CA-8D25-A0AA24BBBFD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FC70C69-5B59-431B-BFFC-C72ED64965E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FC70C69-5B59-431B-BFFC-C72ED64965E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FC70C69-5B59-431B-BFFC-C72ED64965E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FC70C69-5B59-431B-BFFC-C72ED64965E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53B4B8DA-2600-4D63-A8CF-8B156B8BDF3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53B4B8DA-2600-4D63-A8CF-8B156B8BDF3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53B4B8DA-2600-4D63-A8CF-8B156B8BDF3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53B4B8DA-2600-4D63-A8CF-8B156B8BDF3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

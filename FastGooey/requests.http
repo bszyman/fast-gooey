@@ -1,0 +1,5 @@
+### GET request to example server
+GET https://maps-api.apple.com/v1/token
+Authorization: Bearer eyJhbGciOiJFUzI1NiIsImtpZCI6IkpURFNYUEJDTVEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiIyNzU1OThHOThTIiwib3JpZ2luIjoibG9jYWxob3N0IiwibmJmIjoxNzYwMDc1ODI2LCJleHAiOjE3NjAwOTc0MjYsImlhdCI6MTc2MDA3NTgyNiwiaXNzIjoiMjc1NTk4Rzk4UyIsImF1ZCI6ImxvY2FsaG9zdCJ9.6kx9CWsOev-rUYCYctarn0oHGP4TLMkWn_uEih-L6KeW1rnYj1Kx4Pg2sAIiPUQ4iiIUdOv_T7lvgjUWe5x0NA
+
+###

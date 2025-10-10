@@ -6,7 +6,7 @@ public class AppleMapKitJwtRefreshService : BackgroundService
 {
     private readonly ILogger<AppleMapKitJwtRefreshService> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly TimeSpan _refreshInterval = TimeSpan.FromMinutes(50);
+    private readonly TimeSpan _refreshInterval = TimeSpan.FromMinutes(20);
 
     public AppleMapKitJwtRefreshService(
         ILogger<AppleMapKitJwtRefreshService> logger,

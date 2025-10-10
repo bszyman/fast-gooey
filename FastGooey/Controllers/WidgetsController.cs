@@ -1,5 +1,7 @@
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
+using Flurl.Http;
+using MapKit.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers;
@@ -25,6 +27,23 @@ public class WidgetsController(
     {
         var viewModel = new WeatherWorkspaceModel();
         return View("~/Views/Widgets/Workspaces/Weather.cshtml", viewModel);
+    }
+
+    public async Task<IActionResult> WeatherSearchPanel([FromQuery] string city)
+    {
+        var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
+        
+        var results = await $"https://maps-api.apple.com/v1/search?q={city}"
+            .WithHeader("Authorization", $"Bearer {mapKitServerToken}")
+            .GetJsonAsync<MapKitSearchResponseModel>();
+
+        var viewModel = new WeatherSearchPanelViewModel
+        {
+            SearchText = city,
+            Results = results
+        };
+        
+        return View("~/Views/Widgets/Partials/WeatherSearchPanel.cshtml", viewModel);
     }
     
     public IActionResult Map()

@@ -3,6 +3,8 @@ let rightMostPoint = 0.0;
 let topMostPoint = 0.0;
 let bottomMostPoint = 0.0;
 
+let mapInstance = null;
+
 const calloutDelegate = {
     calloutRightAccessoryForAnnotation: function(annotation) {
         let accessoryViewRight = document.createElement("a");
@@ -30,6 +32,8 @@ async function initMapKit() {
     const mapkit = await getMapKitAsync();
 
     const map = new mapkit.Map("mapKit");
+    mapInstance = map;
+    
     const locationData = JSON.parse(document.getElementById("map-data-points").innerText);
 
     locationData.forEach((item, index) => {
@@ -86,4 +90,36 @@ async function initMapKit() {
     );
 
     map.setRegionAnimated(mapViewRegion, true);
+}
+
+async function updateMapWithLocation(latitude, longitude, title) {
+    if (!mapInstance) {
+        console.error("Map instance not initialized");
+        return;
+    }
+
+    const mapkit = await getMapKitAsync();
+
+    // Remove all existing annotations
+    mapInstance.removeAnnotations(mapInstance.annotations);
+
+    // Add new annotation
+    const coordinate = new mapkit.Coordinate(latitude, longitude);
+    const annotation = new mapkit.MarkerAnnotation(
+        coordinate,
+        {
+            title: title,
+            subtitle: `${latitude.toFixed(5)}° N, ${longitude.toFixed(5)}° W`
+        }
+    );
+
+    mapInstance.addAnnotation(annotation);
+
+    // Center the map on the new location with appropriate zoom
+    const region = new mapkit.CoordinateRegion(
+        coordinate,
+        new mapkit.CoordinateSpan(0.5, 0.5) // Adjust zoom level as needed
+    );
+
+    mapInstance.setRegionAnimated(region, true);
 }

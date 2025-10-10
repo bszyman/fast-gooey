@@ -1,6 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using FastGooey.Models.Configuration;
+using FastGooey.Models.Response;
+using Flurl.Http;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FastGooey.Services;
@@ -23,6 +25,7 @@ public class AppleMapKitJwtService(
         try
         {
             await GenerateAndSaveToken(cancellationToken);
+            await FetchAndSaveMapKitServerToken();
         }
         finally
         {
@@ -30,7 +33,7 @@ public class AppleMapKitJwtService(
         }
     }
 
-    public async Task<string> GetCurrentToken()
+    private async Task<string> GetCurrentToken()
     {
         var token = await keyValueService.GetValueForKey(Constants.MapKitJwt);
         return token ?? throw new InvalidOperationException("MapKit JWT token has not been initialized yet.");
@@ -139,5 +142,18 @@ public class AppleMapKitJwtService(
         }
         
         return File.ReadAllBytes(keyLocation);
+    }
+
+    private async Task FetchAndSaveMapKitServerToken()
+    {
+        var jwt = await GetCurrentToken();
+        var response = await "https://maps-api.apple.com/v1/token"
+            .WithHeader("Authorization", $"Bearer {jwt}")
+            .GetJsonAsync<MapKitServerTokenResponse>();
+
+        await keyValueService.SetValueForKey(
+            key: Constants.MapKitServerKey, 
+            value: response.AccessToken
+        );
     }
 }

@@ -7,7 +7,7 @@
 
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
     <div class="flex-1 flex items-center">
-        <input type="text" value="Pensacola Weather" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
+        <input type="text" name="title" aria-label="title" placeholder="title" value="Pensacola Weather" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
     </div>
     <button class="text-center flex flex-col items-center gap-2 align-middle justify-center cursor border-l border-l-zinc-300 w-26 cursor-pointer bg-blueMid text-white font-semibold">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -33,14 +33,31 @@
             <p class="font-semibold">Configuration</p>
         </div>
         <div class="py-2 px-4">
+            <input type="hidden" id="latitude" name="latitude" value="30.40728"/>
+            <input type="hidden" id="longitude" name="longitude" value="-87.21936"/>
+            <input type="hidden" id="coordinates" name="coordinates" value="30.40728° N, 87.21936° W" />
+            <input type="hidden" id="id" name="id" value="" />
             <div>
                 <label for="city">City</label>
                 <div class="flex gap-2">
-                    <input type="text" id="city" name="city" value="Pensacola, Florida, United States" />
-                    <button type="button" class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">Search...</button>
+                    <input 
+                        type="text" 
+                        id="city" 
+                        name="city" 
+                        value="Pensacola, Florida, United States"
+                        onkeyup="if(event.key === 'Enter') document.getElementById('searchBtn').click()"
+                        />
+                    <button
+                        id="searchBtn"
+                        type="button"
+                        onclick="toggleEditor()"
+                        hx-get="/Widgets/WeatherSearchPanel"
+                        hx-include="#city"
+                        hx-target="#editorPanel"
+                        class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">Search...</button>
                 </div>
                 <div class="my-2">
-                    <p class="text-xs font-semibold uppercase text-grayMid">30.40728° N, 87.21936° W</p>
+                    <p id="descriptiveCoords" class="text-xs font-semibold uppercase text-grayMid">30.40728° N, 87.21936° W</p>
                 </div>
             </div>
         </div>
@@ -51,7 +68,7 @@
             <p class="font-semibold">Preview</p>
         </div>
         <div class="p-4">
-            <div id="preview" class="w-36 h-36 rounded-xl border border-blueMid flex flex-col justify-center items-center bg-gradient-to-t from-blueLight to-blueMid">
+            <div id="preview" class="w-36 h-36 rounded-2xl border border-blueMid flex flex-col justify-center items-center bg-gradient-to-t from-blueLight to-blueMid">
                 <p class="font-bold text-5xl flex-1 flex items-center">79℉</p>
                 <p class="h-8">Pensacola, FL</p>
             </div>
@@ -64,6 +81,6 @@
         <p class="text-sm">/Widgets/Pensacola Weather</p>
     </div>
     <div class="flex items-center justify-end w-1/2 text-right">
-        <button class="bg-emerald-700 text-white font-semibold rounded px-6 py-3 cursor-pointer">Save</button>
+        <button class="bg-emerald-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">Save</button>
     </div>
 </div>
