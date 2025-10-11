@@ -2,5 +2,5 @@ namespace FastGooey.Models.ViewModels;
 
 public class MapWorkspaceModel
 {
-    public string? MapKitToken { get; set; }
+    public List<MapCityEntryViewModel> Entries { get; set; } = [];
 }

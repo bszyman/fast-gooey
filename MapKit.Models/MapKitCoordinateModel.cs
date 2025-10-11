@@ -11,4 +11,11 @@ public class MapKitCoordinateModel
             $"{Latitude}° N, {Math.Abs(Longitude.Value)}° W" :
             $"{Latitude}° N, {Longitude}° E";
     }
+    
+    public static string CoordinateDisplay(double latitude, double longitude)
+    {
+        return (longitude < 0) ?
+            $"{latitude}° N, {Math.Abs(longitude)}° W" :
+            $"{latitude}° N, {longitude}° E";
+    }
 }

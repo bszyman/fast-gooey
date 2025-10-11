@@ -1,8 +1,3 @@
-let leftMostPoint = 0.0;
-let rightMostPoint = 0.0;
-let topMostPoint = 0.0;
-let bottomMostPoint = 0.0;
-
 let mapInstance = null;
 
 const calloutDelegate = {
@@ -15,6 +10,23 @@ const calloutDelegate = {
         return accessoryViewRight;
     }
 };
+
+async function fitMapToAnnotations() {
+    if (!mapInstance || mapInstance.annotations.length === 0) {
+        return;
+    }
+
+    const mapkit = await getMapKitAsync();
+
+    // Use showItems to automatically fit the viewport to all annotations
+    mapInstance.showItems(
+        mapInstance.annotations,
+        {
+            animate: true,
+            padding: new mapkit.Padding(50, 50, 50, 50) // Add padding around edges
+        }
+    );
+}
 
 async function getMapKitAsync() {
     if (!window.mapkit || window.mapkit.loadedLibraries.length === 0) {
@@ -37,30 +49,6 @@ async function initMapKit() {
     const locationData = JSON.parse(document.getElementById("map-data-points").innerText);
 
     locationData.forEach((item, index) => {
-        const latAsFloat = parseFloat(item["Latitude"]);
-        const longAsFloat = parseFloat(item["Longitude"]);
-
-        if (index === 0) {
-            leftMostPoint = rightMostPoint = longAsFloat;
-            topMostPoint = bottomMostPoint = latAsFloat;
-        }
-
-        if (longAsFloat < leftMostPoint) {
-            leftMostPoint = longAsFloat;
-        }
-
-        if (longAsFloat > rightMostPoint) {
-            rightMostPoint = longAsFloat;
-        }
-
-        if (latAsFloat < leftMostPoint) {
-            topMostPoint = latAsFloat;
-        }
-
-        if (latAsFloat > rightMostPoint) {
-            bottomMostPoint = latAsFloat;
-        }
-
         const coordinate = new mapkit.Coordinate(parseFloat(item["Latitude"]), parseFloat(item["Longitude"]));
         const annotation = new mapkit.MarkerAnnotation(
             coordinate,
@@ -77,19 +65,7 @@ async function initMapKit() {
         map.addAnnotation(annotation);
     });
 
-    // calculate center point
-    const midLong = (Math.abs(rightMostPoint - leftMostPoint) / 2) + leftMostPoint;
-    const midLat = (Math.abs(topMostPoint - bottomMostPoint) / 2) + bottomMostPoint;
-
-    const mapViewRegion = new mapkit.CoordinateRegion(
-        new mapkit.Coordinate(midLat, midLong),
-        new mapkit.CoordinateSpan(
-            (Math.abs(topMostPoint - bottomMostPoint) + .05),
-            (Math.abs(rightMostPoint - leftMostPoint) + .05),
-        )
-    );
-
-    map.setRegionAnimated(mapViewRegion, true);
+    fitMapToAnnotations();
 }
 
 async function updateMapWithLocation(latitude, longitude, title) {
@@ -115,11 +91,28 @@ async function updateMapWithLocation(latitude, longitude, title) {
 
     mapInstance.addAnnotation(annotation);
 
-    // Center the map on the new location with appropriate zoom
-    const region = new mapkit.CoordinateRegion(
+    fitMapToAnnotations();
+}
+
+async function addLocationToMap(latitude, longitude, title) {
+    if (!mapInstance) {
+        console.error("Map instance not initialized");
+        return;
+    }
+
+    const mapkit = await getMapKitAsync();
+
+    // Add new annotation
+    const coordinate = new mapkit.Coordinate(latitude, longitude);
+    const annotation = new mapkit.MarkerAnnotation(
         coordinate,
-        new mapkit.CoordinateSpan(0.5, 0.5) // Adjust zoom level as needed
+        {
+            title: title,
+            subtitle: `${latitude.toFixed(5)}° N, ${longitude.toFixed(5)}° W`
+        }
     );
 
-    mapInstance.setRegionAnimated(region, true);
+    mapInstance.addAnnotation(annotation);
+
+    fitMapToAnnotations();
 }

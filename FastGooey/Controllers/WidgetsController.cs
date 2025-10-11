@@ -27,7 +27,7 @@ public class WidgetsController(
     public IActionResult WeatherWorkspace()
     {
         var viewModel = new WeatherWorkspaceModel();
-        return View("~/Views/Widgets/Workspaces/Weather.cshtml", viewModel);
+        return PartialView("~/Views/Widgets/Workspaces/Weather.cshtml", viewModel);
     }
 
     public async Task<IActionResult> WeatherSearchPanel([FromQuery] string city)
@@ -44,14 +44,26 @@ public class WidgetsController(
             Results = results
         };
         
-        return View("~/Views/Widgets/Partials/WeatherSearchPanel.cshtml", viewModel);
+        return PartialView("~/Views/Widgets/Partials/WeatherSearchPanel.cshtml", viewModel);
     }
     
     public IActionResult Map()
     {
+        var workspaceViewModel = new MapWorkspaceModel();
+        
+        workspaceViewModel.Entries.Add(new MapCityEntryViewModel
+        {
+            Latitude = 30.40728,
+            Longitude = -87.21936,
+            LocationName = "Pensacola, Florida, United States",
+            LocationIdentifier = "pns-fl-usa",
+            Index = 0,
+            CoordinateDisplay = MapKitCoordinateModel.CoordinateDisplay(30.40728, -87.21936)
+        });
+        
         var viewModel = new MapViewModel
         {
-            workspaceViewModel = new MapWorkspaceModel()
+            workspaceViewModel = workspaceViewModel
         };
         
         return View(viewModel);
@@ -60,7 +72,51 @@ public class WidgetsController(
     public IActionResult MapWorkspace()
     {
         var viewModel = new MapWorkspaceModel();
-        return View("~/Views/Widgets/Workspaces/Map.cshtml", viewModel);
+        
+        viewModel.Entries.Add(new MapCityEntryViewModel
+        {
+            Latitude = 30.40728,
+            Longitude = -87.21936,
+            LocationName = "Pensacola, Florida, United States",
+            LocationIdentifier = "pns-fl-usa",
+            Index = 0,
+            CoordinateDisplay = MapKitCoordinateModel.CoordinateDisplay(30.40728, -87.21936)
+        });
+        
+        return PartialView("~/Views/Widgets/Workspaces/Map.cshtml", viewModel);
+    }
+    
+    public async Task<IActionResult> MapSearchPanel([FromQuery] string locationSearch)
+    {
+        var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
+        
+        var results = await $"https://maps-api.apple.com/v1/search?q={locationSearch}"
+            .WithHeader("Authorization", $"Bearer {mapKitServerToken}")
+            .GetJsonAsync<MapKitSearchResponseModel>();
+
+        var viewModel = new MapSearchPanelViewModel
+        {
+            SearchText = locationSearch,
+            Results = results
+        };
+        
+        return PartialView("~/Views/Widgets/Partials/MapSearchPanel.cshtml", viewModel);
+    }
+
+    [HttpPost]
+    public IActionResult CityEntry(double latitude, double longitude, string locationName, string locationIdentifier, int index)
+    {
+        var viewModel = new MapCityEntryViewModel
+        {
+            Latitude = latitude,
+            Longitude = longitude,
+            LocationName = locationName,
+            LocationIdentifier = locationIdentifier,
+            Index = index,
+            CoordinateDisplay = MapKitCoordinateModel.CoordinateDisplay(latitude, longitude)
+        };
+        
+        return PartialView("~/Views/Widgets/Partials/CityEntry.cshtml", viewModel);
     }
     
     public IActionResult Clock()
@@ -76,7 +132,7 @@ public class WidgetsController(
     public IActionResult ClockWorkspace()
     {
         var viewModel = new ClockWorkspaceModel();
-        return View("~/Views/Widgets/Workspaces/Clock.cshtml", viewModel);
+        return PartialView("~/Views/Widgets/Workspaces/Clock.cshtml", viewModel);
     }
 
     public async Task<IActionResult> ClockSearchPanel([FromQuery] string city)
@@ -99,7 +155,7 @@ public class WidgetsController(
             Results = resultsWithTime
         };
         
-        return View("~/Views/Widgets/Partials/ClockSearchPanel.cshtml", viewModel);
+        return PartialView("~/Views/Widgets/Partials/ClockSearchPanel.cshtml", viewModel);
     }
     
     public IActionResult Rss()
@@ -115,6 +171,6 @@ public class WidgetsController(
     public IActionResult RssWorkspace()
     {
         var viewModel = new RssWorkspaceModel();
-        return View("~/Views/Widgets/Workspaces/Rss.cshtml", viewModel);
+        return PartialView("~/Views/Widgets/Workspaces/Rss.cshtml", viewModel);
     }
 }

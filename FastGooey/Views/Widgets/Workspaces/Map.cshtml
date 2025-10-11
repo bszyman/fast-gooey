@@ -1,6 +1,10 @@
 @model FastGooey.Models.ViewModels.MapWorkspaceModel
 @{ Layout = null; }
 
+<script id="map-data-points">
+    [{ "Latitude": 30.40728, "Longitude": -87.21936, "Title": "Pensacola, FL" }]
+</script>
+
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
     <div class="flex-1 flex items-center">
         <input type="text" value="Chicago Map" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
@@ -19,15 +23,43 @@
     </button>
 </div>
 
-<div id="editor" class="mx-auto mt-16 max-w-5xl">
-    <div class="flex justify-center mb-16">
+<div id="editor" class="mx-auto mt-16 max-w-3xl">
+    <div class="flex justify-center mb-8">
         <div id="mapKit" class="mx-auto relative block" style="width: 800px; height: 500px;"></div>
     </div>
     
-    <div class="formGroup">
-        <div>
-            <label for="city">City</label>
-            <input type="text" id="city" name="city" />
+    <div class="formGroup mb-8">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Configuration</p>
+        </div>
+        <div id="collection">
+            @foreach (var item in Model.Entries)
+            {
+                @await Html.PartialAsync("Partials/CityEntry", item)
+            }
+        </div>
+        <div class="pt-2 pb-4 px-4">
+            <div>
+                <label for="locationSearch">Add pin</label>
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        id="locationSearch" 
+                        name="locationSearch" 
+                        value=""
+                        placeholder="Search for a location"
+                        onkeyup="if(event.key === 'Enter') document.getElementById('searchBtn').click()"
+                    />
+                    <button
+                        id="searchBtn"
+                        type="button"
+                        onclick="toggleEditor()"
+                        hx-get="/Widgets/MapSearchPanel"
+                        hx-include="#locationSearch"
+                        hx-target="#editorPanel"
+                        class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">Search...</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -40,5 +72,3 @@
         <button class="bg-emerald-700 text-white font-semibold rounded px-6 py-3 cursor-pointer">Save</button>
     </div>
 </div>
-
-<script src="~/js/cupertino-mapkit.js"></script>
