@@ -1,6 +1,10 @@
 @model FastGooey.Models.ViewModels.ClockWorkspaceModel
 @{ Layout = null; }
 
+<script id="map-data-points">
+    [{ "Latitude": 30.40728, "Longitude": -87.21936, "Title": "Pensacola, FL" }]
+</script>
+
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
     <div class="flex-1 flex items-center">
         <input type="text" value="California Clock" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
@@ -19,9 +23,56 @@
     </button>
 </div>
 
-<div id="editor" class="mx-auto mt-16 max-w-5xl">
-    <div class="flex justify-center">
+<div id="editor" class="mx-auto mt-16 max-w-3xl">
+    <div class="flex justify-center mb-8">
         <div id="mapKit" class="mx-auto relative block" style="width: 800px; height: 500px;"></div>
+    </div>
+    
+    <div class="formGroup mb-8">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Configuration</p>
+        </div>
+        <div class="py-2 px-4">
+            <input type="hidden" id="latitude" name="latitude" value="30.40728"/>
+            <input type="hidden" id="longitude" name="longitude" value="-87.21936"/>
+            <input type="hidden" id="timezone" name="timezone" value=""/>
+            <input type="hidden" id="identifier" name="id" value="" />
+            <div>
+                <label for="city">City</label>
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        id="city" 
+                        name="city" 
+                        value="Pensacola, Florida, United States"
+                        onkeyup="if(event.key === 'Enter') document.getElementById('searchBtn').click()"
+                        />
+                    <button
+                        id="searchBtn"
+                        type="button"
+                        onclick="toggleEditor()"
+                        hx-get="/Widgets/ClockSearchPanel"
+                        hx-include="#city"
+                        hx-target="#editorPanel"
+                        class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">Search...</button>
+                </div>
+                <div class="my-2">
+                    <p id="descriptiveTime" class="text-xs font-semibold uppercase text-grayMid">October 10, 2025, 7:21 PM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="formGroup ">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Preview</p>
+        </div>
+        <div class="p-4">
+            <div id="preview" class="w-72 h-36 rounded-2xl border border-blueMid flex flex-col justify-center items-center bg-gradient-to-t from-blueLight to-blueMid">
+                <p class="font-bold text-5xl flex-1 flex items-center">10:54 pm</p>
+                <p class="h-8">Pensacola, FL</p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -33,5 +84,3 @@
         <button class="bg-emerald-700 text-white font-semibold rounded px-6 py-3 cursor-pointer">Save</button>
     </div>
 </div>
-
-<script src="~/js/cupertino-mapkit.js"></script>

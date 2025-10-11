@@ -9,18 +9,20 @@
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
       <PackageReference Include="Flurl.Http" Version="4.0.2" />
+      <PackageReference Include="GeoTimeZone" Version="6.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.9" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="NodaTime" Version="3.2.2" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="9.0.4" />
+      <PackageReference Include="Npgsql.NodaTime" Version="9.0.4" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Utils\" />
       <Folder Include="Views\Account\" />
       <Folder Include="Views\Interfaces\Workspaces\macOS\" />
       <Folder Include="Views\Interfaces\Workspaces\tvOS\" />

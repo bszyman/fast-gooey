@@ -1,5 +1,6 @@
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Flurl.Http;
 using MapKit.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +77,29 @@ public class WidgetsController(
     {
         var viewModel = new ClockWorkspaceModel();
         return View("~/Views/Widgets/Workspaces/Clock.cshtml", viewModel);
+    }
+
+    public async Task<IActionResult> ClockSearchPanel([FromQuery] string city)
+    {
+        var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
+        
+        var results = await $"https://maps-api.apple.com/v1/search?q={city}"
+            .WithHeader("Authorization", $"Bearer {mapKitServerToken}")
+            .GetJsonAsync<MapKitSearchResponseModel>();
+
+        var resultsWithTime = results.Results.Select(x => new MapKitSearchResponseModelWithTime
+        {
+            Result = x,
+            LocalDateTimeSet = TimeFromCoordinates.CalculateDateTimeSet(x.Coordinate.Latitude.Value, x.Coordinate.Longitude.Value)
+        });
+
+        var viewModel = new ClockSearchPanelViewModel
+        {
+            SearchText = city,
+            Results = resultsWithTime
+        };
+        
+        return View("~/Views/Widgets/Partials/ClockSearchPanel.cshtml", viewModel);
     }
     
     public IActionResult Rss()
