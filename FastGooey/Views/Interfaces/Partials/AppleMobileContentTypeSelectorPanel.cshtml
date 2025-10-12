@@ -1,0 +1,54 @@
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Select Content Type</p>
+    </div>
+</div>
+
+<div id="interfaceOptions" class="py-4 px-4">
+    <div
+        hx-get="/Interfaces/ContentHeadlineConfigurationPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Headline</p>
+        <p class="text-xs font-medium text-grayMid mb-1">
+            Creates a headline with a single string of supersized, bolded text.
+        </p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/ContentTextConfigurationPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Text</p>
+        <p class="text-xs font-semibold text-grayMid mb-1">
+            Creates a block of text.
+        </p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/ContentImageConfigurationPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Image</p>
+        <p class="text-xs font-semibold text-grayMid mb-1">
+            Insert an inline image.
+        </p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/ContentVideoConfigurationPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Video</p>
+        <p class="text-xs font-semibold text-grayMid mb-1">
+            Insert an inline video.
+        </p>
+    </div>
+</div>
+    
+<div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+    <div class="flex items-center w-1/2"></div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        <button type="button" onclick="toggleEditor()" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-4 py-2 cursor-pointer text-sm">Cancel</button>
+    </div>
+</div>

@@ -24,7 +24,36 @@ public class InterfacesController(ILogger<InterfacesController> logger, IKeyValu
     
     public IActionResult AppleMobileContentWorkspace()
     {
-        return View("~/Views/Interfaces/Workspaces/iOS/Content.cshtml");
+        return PartialView("~/Views/Interfaces/Workspaces/iOS/Content.cshtml");
+    }
+
+    public IActionResult AppleMobileContentTypeSelectorPanel()
+    {
+        return PartialView("~/Views/Interfaces/Partials/AppleMobileContentTypeSelectorPanel.cshtml");
+    }
+
+    // [HttpGet("Content/HeadlineConfigurationPanel")]
+    public IActionResult ContentHeadlineConfigurationPanel()
+    {
+        return PartialView("~/Views/Interfaces/Partials/ContentHeadlineConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("Content/TextConfigurationPanel")]
+    public IActionResult ContentTextConfigurationPanel()
+    {
+        return PartialView("~/Views/Interfaces/Partials/ContentTextConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("Content/ImageConfigurationPanel")]
+    public IActionResult ContentImageConfigurationPanel()
+    {
+        return PartialView("~/Views/Interfaces/Partials/ContentImageConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("Content/VideoConfigurationPanel")]
+    public IActionResult ContentVideoConfigurationPanel()
+    {
+        return PartialView("~/Views/Interfaces/Partials/ContentVideoConfigurationPanel.cshtml");
     }
     
     // iOS Form
