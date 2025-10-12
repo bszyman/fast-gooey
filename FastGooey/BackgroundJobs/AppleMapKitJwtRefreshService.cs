@@ -2,7 +2,7 @@ using FastGooey.BackgroundJobs;
 using FastGooey.Services;
 
 namespace FastGooey.BackgroundJobs;
-public class AppleMapKitJwtRefreshService : BackgroundService
+public class AppleMapKitJwtRefreshService: BackgroundService
 {
     private readonly ILogger<AppleMapKitJwtRefreshService> _logger;
     private readonly IServiceProvider _serviceProvider;

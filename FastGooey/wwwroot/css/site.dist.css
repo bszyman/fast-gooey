@@ -226,6 +226,12 @@
   .left-0 {
     left: calc(var(--spacing) * 0);
   }
+  .left-\[20\%\] {
+    left: 20%;
+  }
+  .z-50 {
+    z-index: 50;
+  }
   .container {
     width: 100%;
     @media (width >= 40rem) {
@@ -253,8 +259,17 @@
   .my-2 {
     margin-block: calc(var(--spacing) * 2);
   }
+  .my-24 {
+    margin-block: calc(var(--spacing) * 24);
+  }
   .mt-16 {
     margin-top: calc(var(--spacing) * 16);
+  }
+  .mt-30 {
+    margin-top: calc(var(--spacing) * 30);
+  }
+  .mt-32 {
+    margin-top: calc(var(--spacing) * 32);
   }
   .mb-1 {
     margin-bottom: calc(var(--spacing) * 1);
@@ -270,6 +285,9 @@
   }
   .mb-8 {
     margin-bottom: calc(var(--spacing) * 8);
+  }
+  .mb-24 {
+    margin-bottom: calc(var(--spacing) * 24);
   }
   .\!hidden {
     display: none !important;

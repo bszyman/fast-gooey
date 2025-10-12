@@ -1,6 +1,6 @@
 @model FastGooey.Models.ViewModels.RssWorkspaceModel
 
-<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+<div class="fixed z-50 bg-white flex h-20 border-b border-b-zinc-300 left-[20%] right-0">
     <div class="flex-1 flex items-center">
         <input type="text" value="MacRumors RSS Feed" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
     </div>
@@ -18,7 +18,7 @@
     </button>
 </div>
 
-<div id="editor" class="mx-auto mt-16 max-w-3xl">
+<div id="editor" class="mx-auto mt-30 mb-24 max-w-3xl">
     <div class="formGroup mb-8">
         <div class="w-full border-b border-b-zinc-300 py-2 px-4">
             <p class="font-semibold">Configuration</p>
@@ -50,7 +50,7 @@
     @await Html.PartialAsync("~/Views/Widgets/Partials/RssPreviewPanel.cshtml", Model.PreviewPanelViewModel)
 </div>
 
-<div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+<div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
     <div class="flex items-center w-1/2">
         <p class="text-sm">/Widgets/MacRumors RSS Feed</p>
     </div>
