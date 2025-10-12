@@ -19,8 +19,36 @@
     </button>
 </div>
 
-<div id="editor">
+<div id="editor" class="mx-auto mt-16 max-w-3xl">
+    <div class="formGroup mb-8">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Configuration</p>
+        </div>
+        <div class="pt-2 pb-4 px-4">
+            <div>
+                <label for="feedUrl">Feed Url</label>
+                <div class="flex gap-2">
+                    <input 
+                        type="url" 
+                        id="feedUrl" 
+                        name="feedUrl" 
+                        placeholder="https://www..."
+                        value="https://daringfireball.net/feeds/main"
+                        onkeyup="if(event.key === 'Enter') document.getElementById('previewButton').click()"
+                        />
+                    <button
+                        id="previewButton"
+                        type="button"
+                        hx-get="/Widgets/RssPreviewPanel"
+                        hx-include="#feedUrl"
+                        hx-target="#previewPanel"
+                        class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">Preview...</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
+    @await Html.PartialAsync("~/Views/Widgets/Partials/RssPreviewPanel.cshtml", Model.PreviewPanelViewModel)
 </div>
 
 <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">

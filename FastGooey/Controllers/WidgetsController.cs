@@ -1,3 +1,6 @@
+using System.ServiceModel.Syndication;
+using System.Xml;
+using FastGooey.Models.Response;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
 using FastGooey.Utils;
@@ -160,9 +163,15 @@ public class WidgetsController(
     
     public IActionResult Rss()
     {
+        var rssViewModel = new RssPreviewPanelViewModel();
+        var workspaceViewModel = new RssWorkspaceModel
+        {
+            PreviewPanelViewModel = rssViewModel
+        };
+        
         var viewModel = new RssViewModel
         {
-            workspaceViewModel = new RssWorkspaceModel()
+            WorkspaceViewModel = workspaceViewModel
         };
         
         return View(viewModel);
@@ -170,7 +179,69 @@ public class WidgetsController(
     
     public IActionResult RssWorkspace()
     {
-        var viewModel = new RssWorkspaceModel();
+        var rssViewModel = new RssPreviewPanelViewModel();
+        
+        var viewModel = new RssWorkspaceModel
+        {
+            PreviewPanelViewModel = rssViewModel
+        };
+        
         return PartialView("~/Views/Widgets/Workspaces/Rss.cshtml", viewModel);
+    }
+
+    public async Task<IActionResult> RssPreviewPanel(string feedUrl)
+    {
+        if (string.IsNullOrWhiteSpace(feedUrl))
+        {
+            return BadRequest("RSS feed URL is required");
+        }
+
+        try
+        {
+            // Fetch the RSS feed using Flurl
+            var stream = await feedUrl
+                .WithTimeout(10)
+                .GetStreamAsync();
+            
+            await using (stream)
+            {
+                using var xmlReader = XmlReader.Create(stream);
+                
+                // Parse the feed
+                var feed = SyndicationFeed.Load(xmlReader);
+                
+                // Create a view model with the feed data
+                var viewModel = new RssPreviewPanelViewModel
+                {
+                    FeedTitle = feed.Title?.Text,
+                    FeedDescription = feed.Description?.Text,
+                    FeedUrl = feedUrl,
+                    Items = feed.Items.Take(10).Select(item => new RssFeedItem
+                    {
+                        Title = item.Title?.Text,
+                        Summary = item.Summary?.Text,
+                        Link = item.Links.FirstOrDefault()?.Uri?.ToString(),
+                        PublishDate = item.PublishDate.DateTime
+                    }).ToList()
+                };
+                
+                return PartialView("~/Views/Widgets/Partials/RssPreviewPanel.cshtml", viewModel);
+            }
+        }
+        catch (FlurlHttpException ex)
+        {
+            logger.LogError(ex, "Failed to fetch RSS feed from {Url}", feedUrl);
+            return BadRequest($"Failed to fetch RSS feed: {ex.Message}");
+        }
+        catch (XmlException ex)
+        {
+            logger.LogError(ex, "Failed to parse RSS feed from {Url}", feedUrl);
+            return BadRequest("Invalid RSS feed format");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing RSS feed from {Url}", feedUrl);
+            return StatusCode(500, "An error occurred while processing the RSS feed");
+        }
     }
 }
