@@ -25,9 +25,8 @@
 
     <ItemGroup>
       <Folder Include="Views\Account\" />
-      <Folder Include="Views\Interfaces\Workspaces\macOS\" />
-      <Folder Include="Views\Interfaces\Workspaces\tvOS\" />
-      <Folder Include="Views\Studio\Partials\" />
+      <Folder Include="Views\Interfaces\Partials\" />
+      <Folder Include="Views\MacOS\Workspaces\" />
       <Folder Include="Views\Team\" />
     </ItemGroup>
 
@@ -77,12 +76,15 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\LICENSE" />
+      <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileContent.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileForm.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileList.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Views\Interfaces\Workspaces\iOS\Content.cshtml" />
-      <AdditionalFiles Include="Views\Interfaces\Workspaces\iOS\Form.cshtml" />
-      <AdditionalFiles Include="Views\Interfaces\Workspaces\iOS\List.cshtml" />
+      <AdditionalFiles Include="Views\AppleMobile\Content.cshtml" />
+      <AdditionalFiles Include="Views\AppleMobile\Form.cshtml" />
+      <AdditionalFiles Include="Views\AppleMobile\List.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

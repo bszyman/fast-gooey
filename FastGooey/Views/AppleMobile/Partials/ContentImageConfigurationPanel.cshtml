@@ -1,0 +1,51 @@
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Image</p>
+    </div>
+</div>
+
+<div class="py-4 px-4 text-sm">
+    @* <div class="mb-6 text-center w-full h-80 bg-white border border-zinc-300 rounded flex flex-col items-center justify-center text-zinc-700"> *@
+    @*     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12"> *@
+    @*         <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /> *@
+    @*     </svg> *@
+    @*     <p>Image preview will appear here.</p> *@
+    @* </div> *@
+    <div class="formGroup mb-8">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold text-sm">Edit Content</p>
+        </div>
+        <div class="py-4 px-4">
+            <div class="mb-2 flex gap-2 items-center">
+                <input type="radio" id="imageModeRadio" name="imageMode" value="uploadImage" class="w-4 h-4 shrink-0" checked/>
+                <label for="imageModeRadio" style="margin-bottom: 0;">Upload Image</label>
+            </div>
+            <div class="mt-1 flex gap-2">
+                <button type="button" class="text-sm w-full rounded bg-zinc-100 text-zinc-700 font-semibold px-6 py-3 cursor-pointer" onclick="document.getElementById('image').click()">Choose Image</button>
+                <input type="file" id="image" name="image" accept="image/*" class="hidden"/>
+            </div>
+        </div>
+        <div class="py-4 px-4">
+            <div class="mb-2 flex gap-2 items-center">
+                <input type="radio" id="imageUrlModeRadio" name="imageMode" value="imageUrl" class="w-4 h-4 shrink-0"/>
+                <label for="imageUrlModeRadio" style="margin-bottom: 0;">Use Image URL</label>
+            </div>
+            <div class="mt-1 ml-4 flex items-center justify-center align-middle gap-2">
+                <label for="url" style="margin-bottom: 0;">Url</label>
+                <input
+                    type="url"
+                    id="url"
+                    name="url"
+                    value=""/>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+    <div class="flex items-center w-1/2"></div>
+    <div class="flex items-center justify-end w-1/2 text-right gap-2">
+        <button type="button" onclick="toggleEditor()" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-4 py-2 cursor-pointer text-sm">Cancel</button>
+        <button type="button" onclick="toggleEditor()" class="bg-emerald-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">Save</button>
+    </div>
+</div>

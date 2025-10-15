@@ -1,0 +1,75 @@
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Select Form Field Type</p>
+    </div>
+</div>
+
+<div id="interfaceOptions" class="py-4 px-4">
+    <div
+        hx-get="/Interfaces/AppleMobile/FormFieldTextEditorPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Text</p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/AppleMobile/FormFieldLongTextEditorPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Long Text</p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/AppleMobile/FormFieldCheckboxEditorPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Checkbox</p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/AppleMobile/FormFieldDateEditorPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Date</p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/AppleMobile/FormFieldTimeEditorPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Time</p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/AppleMobile/FormFieldDropDownEditorPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Dropdown</p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/AppleMobile/FormFieldMultiSelectEditorPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">Multi-Select</p>
+    </div>
+    
+    <div
+        hx-get="/Interfaces/AppleMobile/FormFieldFileEditorPanel"
+        hx-target="#editorPanel"
+        class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+        <p class="font-medium mb-1">File</p>
+    </div>
+</div>
+    
+<div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+    <div class="flex items-center w-1/2"></div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        <button
+            type="button"
+            onclick="toggleEditor()"
+            class="bg-zinc-300 text-zinc-700 font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+            Cancel
+        </button>
+    </div>
+</div>

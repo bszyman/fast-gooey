@@ -1,0 +1,158 @@
+using FastGooey.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace FastGooey.Controllers.Interfaces;
+
+[Route("Interfaces/AppleMobile")]
+public class AppleMobileController(
+    ILogger<InterfacesController> logger, 
+    IKeyValueService keyValueService): 
+    BaseStudioController(keyValueService)
+{
+    [HttpGet("InterfaceSelectorPanel")]
+    public IActionResult InterfaceSelectorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/AppleMobileInterfaceSelectorPanel.cshtml");
+    }
+    
+    // iOS List
+    [HttpGet("List")]
+    public IActionResult List()
+    {
+        return View();
+    }
+    
+    [HttpGet("ListWorkspace")]
+    public IActionResult ListWorkspace()
+    {
+        return PartialView("~/Views/AppleMobile/Workspaces/List.cshtml");
+    }
+
+    [HttpGet("ListItemEditorPanel")]
+    public IActionResult ListItemEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/ListItemEditorPanel.cshtml");
+    }
+    
+    // iOS Content
+    [HttpGet("Content")]
+    public IActionResult Content()
+    {
+        return View();
+    }
+    
+    [HttpGet("ContentWorkspace")]
+    public IActionResult ContentWorkspace()
+    {
+        return PartialView("~/Views/AppleMobile/Workspaces/Content.cshtml");
+    }
+
+    [HttpGet("ContentTypeSelectorPanel")]
+    public IActionResult ContentTypeSelectorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/AppleMobileContentTypeSelectorPanel.cshtml");
+    }
+
+    [HttpGet("ContentHeadlineConfigurationPanel")]
+    public IActionResult ContentHeadlineConfigurationPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/ContentHeadlineConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("ContentTextConfigurationPanel")]
+    public IActionResult ContentTextConfigurationPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/ContentTextConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("ContentLinkConfigurationPanel")]
+    public IActionResult ContentLinkConfigurationPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/ContentLinkConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("ContentImageConfigurationPanel")]
+    public IActionResult ContentImageConfigurationPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/ContentImageConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("ContentVideoConfigurationPanel")]
+    public IActionResult ContentVideoConfigurationPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/ContentVideoConfigurationPanel.cshtml");
+    }
+    
+    // iOS Form
+    [HttpGet("Form")]
+    public IActionResult Form()
+    {
+        return View();
+    }
+    
+    [HttpGet("FormWorkspace")]
+    public IActionResult FormWorkspace()
+    {
+        return PartialView("~/Views/AppleMobile/Workspaces/Form.cshtml");
+    }
+    
+    [HttpGet("FormFieldSelectorPanel")]
+    public IActionResult FormFieldSelectorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldSelectorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldTextEditorPanel")]
+    public IActionResult FormFieldTextEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldTextEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldLongTextEditorPanel")]
+    public IActionResult FormFieldLongTextEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldLongTextEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldCheckboxEditorPanel")]
+    public IActionResult FormFieldCheckboxEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldCheckboxEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldDateEditorPanel")]
+    public IActionResult FormFieldDateEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldDateEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldTimeEditorPanel")]
+    public IActionResult FormFieldTimeEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldTimeEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldDropDownEditorPanel")]
+    public IActionResult FormFieldDropDownEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldDropDownEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldMultiSelectEditorPanel")]
+    public IActionResult FormFieldMultiSelectEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldMultiSelectEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldFileEditorPanel")]
+    public IActionResult FormFieldFileEditorPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldFileEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldBlankOption")]
+    public IActionResult FormFieldBlankOption()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormFieldBlankOption.cshtml");
+    }
+}

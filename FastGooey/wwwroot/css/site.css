@@ -106,6 +106,22 @@ body {
     @apply block text-sm font-medium text-gray-700 mb-2;
 }
 
-.formGroup input {
-    @apply border border-zinc-300 rounded p-1 w-full;
+.formGroup input[type='text'],
+.formGroup input[type='tel'],
+.formGroup input[type='url'],
+.formGroup input[type='email'],
+.formGroup textarea {
+    @apply border border-zinc-300 rounded py-1 px-2 w-full text-sm bg-white;
+}
+
+.contentGroup {
+    @apply bg-white rounded shadow-md;
+}
+
+.contentGroup input[type='text'],
+.contentGroup input[type='tel'],
+.contentGroup input[type='url'],
+.contentGroup input[type='email'],
+.contentGroup textarea {
+    @apply border border-zinc-300 rounded py-1 px-2;
 }

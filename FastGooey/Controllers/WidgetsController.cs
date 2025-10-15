@@ -15,6 +15,11 @@ public class WidgetsController(
     IKeyValueService keyValueService
     ): BaseStudioController(keyValueService)
 {
+    public IActionResult NewWidgetPartialView()
+    {
+        return PartialView("~/Views/Widgets/Partials/NewWidgetPartialView.cshtml");
+    }
+    
     // Full page view
     public IActionResult Weather()
     {
