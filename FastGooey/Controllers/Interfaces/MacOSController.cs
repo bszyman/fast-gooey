@@ -5,7 +5,7 @@ namespace FastGooey.Controllers.Interfaces;
 
 [Route("Interfaces/MacOS")]
 public class MacOSController(
-    ILogger<InterfacesController> logger, 
+    ILogger<MacOSController> logger, 
     IKeyValueService keyValueService): 
     BaseStudioController(keyValueService)
 {

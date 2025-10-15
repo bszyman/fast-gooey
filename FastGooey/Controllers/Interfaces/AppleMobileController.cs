@@ -5,7 +5,7 @@ namespace FastGooey.Controllers.Interfaces;
 
 [Route("Interfaces/AppleMobile")]
 public class AppleMobileController(
-    ILogger<InterfacesController> logger, 
+    ILogger<AppleMobileController> logger, 
     IKeyValueService keyValueService): 
     BaseStudioController(keyValueService)
 {
@@ -96,10 +96,22 @@ public class AppleMobileController(
         return PartialView("~/Views/AppleMobile/Workspaces/Form.cshtml");
     }
     
+    [HttpGet("FormEntriesWorkspace")]
+    public IActionResult FormEntriesWorkspace()
+    {
+        return PartialView("~/Views/AppleMobile/Workspaces/FormEntriesWorkspace.cshtml");
+    }
+    
     [HttpGet("FormFieldSelectorPanel")]
     public IActionResult FormFieldSelectorPanel()
     {
         return PartialView("~/Views/AppleMobile/Partials/FormFieldSelectorPanel.cshtml");
+    }
+    
+    [HttpGet("FormSubmissionViewerPanel")]
+    public IActionResult FormSubmissionViewerPanel()
+    {
+        return PartialView("~/Views/AppleMobile/Partials/FormSubmissionViewerPanel.cshtml");
     }
     
     [HttpGet("FormFieldTextEditorPanel")]

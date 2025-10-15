@@ -9,4 +9,9 @@ public class StudioController(ILogger<StudioController> logger, IKeyValueService
     {
         return View();
     }
+
+    public IActionResult Info()
+    {
+        return View();
+    }
 }

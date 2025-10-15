@@ -26,3 +26,15 @@ window.addEventListener('openEditor', () => {
 window.addEventListener('closeEditor', () => {
     if (editorOpen) toggleEditor();
 });
+
+function changeSection(sender) {
+    const activeButton = sender.parentNode.querySelector('.activeSectionButton');
+    
+    if (activeButton) {
+        if (sender === activeButton) return;
+        
+        activeButton.classList.remove('activeSectionButton');
+    }
+
+    sender.classList.add('activeSectionButton');
+}

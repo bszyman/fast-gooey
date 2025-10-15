@@ -25,7 +25,6 @@
 
     <ItemGroup>
       <Folder Include="Views\Account\" />
-      <Folder Include="Views\Interfaces\Partials\" />
       <Folder Include="Views\MacOS\Workspaces\" />
       <Folder Include="Views\Team\" />
     </ItemGroup>

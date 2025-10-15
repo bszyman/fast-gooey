@@ -264,9 +264,6 @@
   .mt-1 {
     margin-top: calc(var(--spacing) * 1);
   }
-  .mt-2 {
-    margin-top: calc(var(--spacing) * 2);
-  }
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
   }
@@ -772,6 +769,26 @@ body {
 }
 .sidebar ul li a:hover {
   background-color: oklch(87.1% 0.006 286.286);
+}
+.sectionButton {
+  display: flex;
+  width: calc(var(--spacing) * 26);
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) * 2);
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+  border-left-color: var(--color-zinc-300);
+  text-align: center;
+  vertical-align: middle;
+}
+.activeSectionButton {
+  background-color: var(--color-blueMid);
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-white);
 }
 .main-content {
   overflow-y: auto;
