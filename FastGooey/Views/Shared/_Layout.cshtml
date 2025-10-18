@@ -63,6 +63,14 @@
                 </svg>
               </button>
             </div>
+            
+            <ul style="margin-left: 12px;">
+              <li><a href="/Interfaces/MacOS/Table" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/Table">Surf Spots</a></li>
+              <li><a href="/Interfaces/MacOS/Form" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/Form">Surf Spot Submission</a></li>
+              <li><a href="/Interfaces/MacOS/Content" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/Content">10th Annual Event</a></li>
+              <li><a href="/Interfaces/MacOS/SourceList" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/SourceList">Shop Products</a></li>
+              <li><a href="/Interfaces/MacOS/Outline" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/Outline">Shop Inventory</a></li>
+            </ul>
           </li>
           <li>
             <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
@@ -108,18 +116,22 @@
         </ul>
       </div>
       
-      <div class="content mb-6">
-        <div class="font-bold uppercase mb-1">Content</div>
-      </div>
-      
-      <div class="collections mb-6">
-        <div class="font-bold uppercase mb-1">Collections</div>
-      </div>
+      @* <div class="content mb-6"> *@
+      @*   <div class="font-bold uppercase mb-1">Content</div> *@
+      @* </div> *@
+      @* *@
+      @* <div class="collections mb-6"> *@
+      @*   <div class="font-bold uppercase mb-1">Collections</div> *@
+      @* </div> *@
       
       <div class="system">
         <div class="font-bold uppercase mb-1">System</div>
         <ul>
-          <li><a href="#">Manage Account</a></li>
+          <li>
+            <a href="/AccountManagement" hx-boost="true" hx-target="#workspace" hx-push-url="/AccountManagement">
+              Manage Account
+            </a>
+          </li>
           <li><a href="#">Logout</a></li>
         </ul>
       </div>

@@ -1,0 +1,114 @@
+<div id="editor" class="mx-auto max-w-3xl">
+    <div class="contentGroup mb-8">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Header Structure</p>
+        </div>
+        <div id="headerStructure" class="px-4">
+            <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4">
+                <label for="header1">Column 1</label>
+                <select id="header1" class="rounded border border-zinc-300 w-72 py-1">
+                    <option>Select</option>
+                    <option>Name</option>
+                    <option>City</option>
+                    <option>State</option>
+                    <option>Sport Type</option>
+                </select>
+            </div>
+            <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4">
+                <label for="header2">Column 2</label>
+                <select id="header2" class="rounded border border-zinc-300 w-72 py-1">
+                    <option>Select</option>
+                    <option>Name</option>
+                    <option>City</option>
+                    <option>State</option>
+                    <option>Sport Type</option>
+                </select>
+            </div>
+            <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4">
+                <label for="header3">Column 3</label>
+                <select id="header3" class="rounded border border-zinc-300 w-72 py-1">
+                    <option>Select</option>
+                    <option>Name</option>
+                    <option>City</option>
+                    <option>State</option>
+                    <option>Sport Type</option>
+                </select>
+            </div>
+            <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4">
+                <label for="header4">Column 4</label>
+                <select id="header4" class="rounded border border-zinc-300 w-72 py-1">
+                    <option>Select</option>
+                    <option>Name</option>
+                    <option>City</option>
+                    <option>State</option>
+                    <option>Sport Type</option>
+                </select>
+            </div>
+        </div>
+        <div class="py-4 px-4">
+            <button
+                hx-get="/Interfaces/MacOS/TableHeaderOptionRow"
+                hx-target="#headerStructure"
+                hx-swap="beforeend"
+                type="button"
+                class="bg-blueMid text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">
+                Add Column
+            </button>
+        </div>
+    </div>
+    
+    <div class="formGroup mb-8">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Table Structure</p>
+        </div>
+        <div class="py-4 px-4">
+            <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4 font-bold">
+                <div class="flex-1">
+                    <button type="button" disabled="disabled">Field Name</button>
+                </div>
+                <p class="w-32">Field Alias</p>
+                <p class="w-32">Field Type</p>
+                <div class="w-8"></div>
+            </div>
+            <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4">
+                <div class="flex-1">
+                    <button type="button" disabled="disabled" class="bg-zinc-200 hover:bg-zinc-300 text-shadow-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer">
+                        Name
+                    </button>
+                </div>
+                <p class="w-32">name</p>
+                <p class="w-32">Text</p>
+                <button type="button" class="w-8" disabled="disabled">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+                        <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="pb-4 px-4">
+            <button
+                hx-get="/Interfaces/MacOS/TableFieldEditorPanel"
+                hx-target="#editorPanel"
+                type="button"
+                onclick="toggleEditor()"
+                class="bg-blueMid text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">
+                Add Table Field...
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
+    <div class="flex items-center w-1/2">
+        <p class="text-sm">/Interfaces/MacOS/Surf Spots</p>
+    </div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        <button
+            hx-get="/Interfaces/MacOS/TableItemEditorPanel"
+            hx-target="#editorPanel"
+            type="button"
+            onclick="toggleEditor()" class="bg-emerald-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+            Save
+        </button>
+    </div>
+</div>

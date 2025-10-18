@@ -118,7 +118,15 @@ body {
 .formGroup input[type='tel'],
 .formGroup input[type='url'],
 .formGroup input[type='email'],
+.formGroup input[type='number'],
+.formGroup input[type='date'],
+.formGroup input[type='time'],
+.formGroup input[type='datetime-local'],
 .formGroup textarea {
+    @apply border border-zinc-300 rounded py-1 px-2 w-full text-sm bg-white;
+}
+
+.formGroup select {
     @apply border border-zinc-300 rounded py-1 px-2 w-full text-sm bg-white;
 }
 
