@@ -1,0 +1,134 @@
+<div  id="editor" class="mx-auto max-w-3xl">
+    <div class="contentGroup">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Source List Items</p>
+        </div>
+        <div class="py-4">
+            <button
+                hx-get="/Interfaces/MacOS/SourceListEditorPanel"
+                hx-target="#editorPanel"
+                onclick="toggleEditor()"
+                type="button"
+                class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-semibold rounded mx-4 mb-2 px-4 py-2 cursor-pointer text-sm">
+                iPhones
+            </button>
+            <div class="ml-8 mr-4 border border-dashed border-zinc-200 rounded">
+                <ul>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p class="underline" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/SourceListItemEditorPanel" hx-target="#editorPanel">iPhone 3GS</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>iPhone 4S</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>iPhone 5</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>iPhone 6S</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>iPhone XS</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>iPhone 13 mini</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>iPhone 15 Pro Max</p>
+                    </li>
+                    <li class="py-2 px-2">
+                        <p>iPhone 17 Pro</p>
+                    </li>
+                </ul>
+                <div class="bg-zinc-200 text-center py-2 rounded-br rounded-bl flex gap-2 items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-shadow-zinc-700">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
+                    </svg>
+
+                    <button
+                        type="button"
+                        class="font-semibold text-sm cursor-pointer text-shadow-zinc-700"
+                        onclick="toggleEditor()"
+                        hx-get="/Interfaces/MacOS/SourceListItemEditorPanel"
+                        hx-target="#editorPanel">
+                        Add Item...
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="pb-4">
+            <button
+                hx-get="/Interfaces/MacOS/SourceListEditorPanel"
+                hx-target="#editorPanel"
+                onclick="toggleEditor()"
+                type="button"
+                class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-semibold rounded mx-4 mb-2 px-4 py-2 cursor-pointer text-sm">
+                Macs
+            </button>
+            <div class="ml-8 mr-4 border border-dashed border-zinc-200 rounded">
+                <ul>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed hover:bg-zinc-100">
+                        <button
+                            type="button"
+                            onclick="toggleEditor()" 
+                            hx-get="/Interfaces/MacOS/SourceListItemEditorPanel" 
+                            hx-target="#editorPanel"
+                            class="cursor-pointer w-full text-left">
+                            iMac M4
+                        </button>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>MacBook Air M4</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>iMac G3 (Bondi)</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>iMac G3 DV (Tangerine)</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>PowerMac G4 MDD 2002 ED (1.25 GHz x2)</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>PowerMac QuickSilver (1.0 GHz x2)</p>
+                    </li>
+                    <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed">
+                        <p>PowerMac G4 Digital Audio (733 MHz)</p>
+                    </li>
+                    <li class="py-2 px-2">
+                        <p>PowerMac G3 (Blue & White)</p>
+                    </li>
+                </ul>
+                <div class="bg-zinc-200 text-center py-2 rounded-br rounded-bl flex gap-2 items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-shadow-zinc-700">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
+                    </svg>
+
+                    <button
+                        type="button"
+                        class="font-semibold text-sm cursor-pointer text-shadow-zinc-700"
+                        onclick="toggleEditor()"
+                        hx-get="/Interfaces/MacOS/SourceListItemEditorPanel"
+                        hx-target="#editorPanel">
+                        Add Item...
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
+    <div class="flex items-center w-1/2">
+        <p class="text-sm">Interfaces :: Mac OS :: Apple Hardware</p>
+    </div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        <button
+            hx-get="/Interfaces/MacOS/SourceListEditorPanel"
+            hx-target="#editorPanel"
+            onclick="toggleEditor()"
+            type="button"
+            class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+            Add Group...
+        </button>
+    </div>
+</div>

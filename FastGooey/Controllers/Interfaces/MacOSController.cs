@@ -51,6 +51,7 @@ public class MacOSController(
         return PartialView("~/Views/MacOS/Partials/TableItemEditorPanel.cshtml");    
     }
     
+    // Source List
     [HttpGet("SourceList")]
     public IActionResult SourceList()
     {
@@ -61,6 +62,18 @@ public class MacOSController(
     public IActionResult SourceListWorkspace()
     {
         return PartialView("~/Views/MacOS/Workspaces/SourceList.cshtml");
+    }
+    
+    [HttpGet("SourceListEditorPanel")]
+    public IActionResult SourceListEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/SourceListEditorPanel.cshtml");
+    }
+    
+    [HttpGet("SourceListItemEditorPanel")]
+    public IActionResult SourceListItemEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/SourceListItemEditorPanel.cshtml");
     }
     
     [HttpGet("Outline")]
@@ -75,6 +88,7 @@ public class MacOSController(
         return PartialView("~/Views/MacOS/Workspaces/Outline.cshtml");
     }
     
+    // Form
     [HttpGet("Form")]
     public IActionResult Form()
     {
@@ -87,6 +101,79 @@ public class MacOSController(
         return PartialView("~/Views/MacOS/Workspaces/Form.cshtml");
     }
     
+    [HttpGet("FormEntriesWorkspace")]
+    public IActionResult FormEntriesWorkspace()
+    {
+        return PartialView("~/Views/MacOS/Workspaces/FormEntriesWorkspace.cshtml");
+    }
+    
+    [HttpGet("FormSubmissionViewerPanel")]
+    public IActionResult FormSubmissionViewerPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/FormSubmissionViewerPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldSelectorPanel")]
+    public IActionResult FormFieldSelectorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldSelectorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldTextEditorPanel")]
+    public IActionResult FormFieldTextEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldTextEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldLongTextEditorPanel")]
+    public IActionResult FormFieldLongTextEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldLongTextEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldCheckboxEditorPanel")]
+    public IActionResult FormFieldCheckboxEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldCheckboxEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldDateEditorPanel")]
+    public IActionResult FormFieldDateEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldDateEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldTimeEditorPanel")]
+    public IActionResult FormFieldTimeEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldTimeEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldDropDownEditorPanel")]
+    public IActionResult FormFieldDropDownEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldDropDownEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldMultiSelectEditorPanel")]
+    public IActionResult FormFieldMultiSelectEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldMultiSelectEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldFileEditorPanel")]
+    public IActionResult FormFieldFileEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldFileEditorPanel.cshtml");
+    }
+    
+    [HttpGet("FormFieldBlankOption")]
+    public IActionResult FormFieldBlankOption()
+    {
+        return PartialView("~/Views/MacOS/Partials/Forms/FormFieldBlankOption.cshtml");
+    }
+    
+    // Content
     [HttpGet("Content")]
     public IActionResult Content()
     {
@@ -97,5 +184,41 @@ public class MacOSController(
     public IActionResult ContentWorkspace()
     {
         return PartialView("~/Views/MacOS/Workspaces/Content.cshtml");
+    }
+    
+    [HttpGet("ContentTypeSelectorPanel")]
+    public IActionResult ContentTypeSelectorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/ContentTypeSelectorPanel.cshtml");
+    }
+
+    [HttpGet("ContentHeadlineConfigurationPanel")]
+    public IActionResult ContentHeadlineConfigurationPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Content/ContentHeadlineConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("ContentTextConfigurationPanel")]
+    public IActionResult ContentTextConfigurationPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Content/ContentTextConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("ContentLinkConfigurationPanel")]
+    public IActionResult ContentLinkConfigurationPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Content/ContentLinkConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("ContentImageConfigurationPanel")]
+    public IActionResult ContentImageConfigurationPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Content/ContentImageConfigurationPanel.cshtml");
+    }
+    
+    [HttpGet("ContentVideoConfigurationPanel")]
+    public IActionResult ContentVideoConfigurationPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/Content/ContentVideoConfigurationPanel.cshtml");
     }
 }

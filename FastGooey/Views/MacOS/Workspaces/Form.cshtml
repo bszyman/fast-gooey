@@ -1,0 +1,55 @@
+<div id="editor" class="mx-auto max-w-3xl">
+    <div class="formGroup mb-8">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Form Structure</p>
+        </div>
+        <div class="py-4 px-4">
+            <div class="border border-zinc-300 bg-zinc-100 rounded p-2 mb-4">
+                <div class="flex gap-2 mb-2 items-center">
+                    <p>Field name: <span class="font-semibold">Text Field</span></p>
+                </div>
+                <div class="flex gap-2 mb-4 items-center">
+                    <p>Type: <span class="font-semibold">Text Field</span></p>
+                </div>
+                <div class="bg-white max-w-md rounded px-2">
+                    <p class="mb-2 py-2 font-semibold">Preview</p>
+                    <label for="">Field Name</label>
+                    <input 
+                        type="text" 
+                        value=""
+                        class="mb-2"
+                    />
+                </div>
+            </div>
+            <div class="border border-zinc-300 bg-zinc-100 rounded p-2 mb-4">
+                <div class="flex gap-2 mb-2 items-center">
+                    <p>Field name: <span class="font-semibold">Long Text Field</span></p>
+                </div>
+                <div class="flex gap-2 mb-4 items-center">
+                    <p>Type: <span class="font-semibold">Long Text Field</span></p>
+                </div>
+                <div class="bg-white max-w-md rounded px-2">
+                    <p class="mb-2 py-2 font-semibold">Preview</p>
+                    <label for="">Field Name</label>
+                    <textarea cols="30" rows="10"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
+    <div class="flex items-center w-1/2">
+        <p class="text-sm">Interfaces :: Mac OS :: Surf Spots</p>
+    </div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        <button
+            hx-get="/Interfaces/MacOS/FormFieldSelectorPanel"
+            hx-target="#editorPanel"
+            onclick="toggleEditor()"
+            type="button"
+            class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+            Add Form Field...
+        </button>
+    </div>
+</div>

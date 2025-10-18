@@ -76,6 +76,17 @@
       <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileContent.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileForm.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileList.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldBlankOption.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldCheckboxEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldDateEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldDropDownEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldFileEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldLongTextEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldMultiSelectEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldSelectorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldTextEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldTimeEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Forms\FormSubmissionViewerPanel.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
