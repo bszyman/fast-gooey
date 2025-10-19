@@ -131,7 +131,7 @@ body {
 }
 
 .contentGroup {
-    @apply bg-white rounded shadow-md;
+    @apply bg-white rounded shadow-md text-sm;
 }
 
 .contentGroup input[type='text'],

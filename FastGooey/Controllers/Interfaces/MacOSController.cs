@@ -87,6 +87,12 @@ public class MacOSController(
     {
         return PartialView("~/Views/MacOS/Workspaces/Outline.cshtml");
     }
+
+    [HttpGet("OutlineViewItemEditorPanel")]
+    public IActionResult OutlineViewItemEditorPanel()
+    {
+        return PartialView("~/Views/MacOS/Partials/OutlineViewItemEditorPanel.cshtml");
+    }
     
     // Form
     [HttpGet("Form")]
