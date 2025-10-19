@@ -1,3 +1,4 @@
+
 let mapInstance = null;
 
 const calloutDelegate = {
@@ -40,13 +41,24 @@ async function initMapKit() {
     if (document.getElementById("mapKit") === null) {
         return;
     }
-    
+
     const mapkit = await getMapKitAsync();
+
+    // Destroy existing map instance if it exists
+    if (mapInstance) {
+        mapInstance.destroy();
+        mapInstance = null;
+    }
 
     const map = new mapkit.Map("mapKit");
     mapInstance = map;
-    
-    const locationData = JSON.parse(document.getElementById("map-data-points").innerText);
+
+    const mapDataElement = document.getElementById("map-data-points");
+    if (!mapDataElement) {
+        return;
+    }
+
+    const locationData = JSON.parse(mapDataElement.innerText);
 
     locationData.forEach((item, index) => {
         const coordinate = new mapkit.Coordinate(parseFloat(item["Latitude"]), parseFloat(item["Longitude"]));
@@ -67,6 +79,14 @@ async function initMapKit() {
 
     fitMapToAnnotations();
 }
+
+// Listen for HTMX content loaded events and reinitialize map
+document.addEventListener('htmx:afterSwap', function(event) {
+    // Check if the swapped content contains a map element
+    if (event.detail.target.querySelector('#mapKit') || event.detail.target.id === 'workspace') {
+        initMapKit();
+    }
+});
 
 async function updateMapWithLocation(latitude, longitude, title) {
     if (!mapInstance) {
