@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers;
 
-public class StudioController(ILogger<StudioController> logger, IKeyValueService keyValueService): BaseStudioController(keyValueService)
+public class WorkspacesController(ILogger<WorkspacesController> logger, IKeyValueService keyValueService): BaseStudioController(keyValueService)
 {
     public IActionResult Index()
     {
