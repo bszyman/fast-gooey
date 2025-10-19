@@ -19,6 +19,20 @@ function toggleEditor() {
     }
 }
 
+function toggleSubmenu(button) {
+    const ul = button.closest('li').querySelector('ul');
+
+    if (ul.style.maxHeight && ul.style.maxHeight !== '0px') {
+        // Collapse
+        ul.style.maxHeight = '0px';
+        ul.style.opacity = '0';
+    } else {
+        // Expand
+        ul.style.maxHeight = ul.scrollHeight + 'px';
+        ul.style.opacity = '1';
+    }
+}
+
 window.addEventListener('openEditor', () => {
     if (!editorOpen) toggleEditor();
 });

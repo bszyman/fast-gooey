@@ -79,7 +79,8 @@ body {
 }
 
 
-.sidebar ul li a {
+.sidebar ul li a,
+.sidebar ul li button {
     color: oklch(44.2% 0.017 285.786);
     text-decoration: none;
     display: block;
@@ -88,7 +89,8 @@ body {
     transition: background-color 0.2s;
 }
 
-.sidebar ul li a:hover {
+.sidebar ul li a:hover,
+.sidebar ul li button:hover {
     background-color: oklch(87.1% 0.006 286.286);
 }
 
