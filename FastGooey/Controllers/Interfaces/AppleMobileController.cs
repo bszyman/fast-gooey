@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers.Interfaces;
 
-[Route("Interfaces/AppleMobile")]
+[Route("Workspaces/{workspaceId:guid}/Interfaces/AppleMobile")]
 public class AppleMobileController(
     ILogger<AppleMobileController> logger, 
     IKeyValueService keyValueService): 

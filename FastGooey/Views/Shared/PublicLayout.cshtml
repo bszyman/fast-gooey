@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - FastGooey</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/css/site.dist.css" asp-append-version="true"/>
+    @* <link rel="stylesheet" href="~/FastGooey.styles.css" asp-append-version="true"/> *@
+    @* <link rel="stylesheet" href="~/semantic/dist/semantic.min.css" /> *@
+</head>
+<body>
+
+<div class="text-sm">
+    @RenderBody()
+</div>
+
+<script src="~/lib/htmx/htmx_207.min.js"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

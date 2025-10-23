@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+  var workspaceId = ViewData["WorkspaceId"];
+  var hasWorkspace = workspaceId != null;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -20,6 +25,8 @@
   <nav class="sidebar">
     <div class="sidebar-content">
       <h2>FastGooey</h2>
+      @if (hasWorkspace)
+      {
       <div class="interfaces mb-6">
         <div class="font-bold uppercase mb-1">Interfaces</div>
         <ul>
@@ -30,7 +37,7 @@
               </svg>
               <button type="button" class="flex-1 text-left cursor-pointer" onclick="toggleSubmenu(this)">iOS</button>
               <button 
-                hx-get="/Interfaces/AppleMobile/InterfaceSelectorPanel"
+                hx-get="/Workspaces/@workspaceId/Interfaces/AppleMobile/InterfaceSelectorPanel"
                 hx-target="#editorPanel"
                 onclick="toggleEditor()"
                 type="button" 
@@ -42,9 +49,9 @@
             </div>
 
             <ul style="margin-left: 12px; max-height: 9999px; opacity: 1;" class="overflow-hidden transition-all duration-300 ease-in-out">
-              <li><a href="/Interfaces/AppleMobile/List" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/AppleMobile/List">Surf Spots</a></li>
-              <li><a href="/Interfaces/AppleMobile/Form" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/AppleMobile/Form">Surf Spot Submission</a></li>
-              <li><a href="/Interfaces/AppleMobile/Content" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/AppleMobile/Content">10th Annual Event</a></li>
+              <li><a href="/Workspaces/@workspaceId/Interfaces/AppleMobile/List" hx-boost="true" hx-target="#workspace" hx-push-url="true">Surf Spots</a></li>
+              <li><a href="/Workspaces/@workspaceId/Interfaces/AppleMobile/Form" hx-boost="true" hx-target="#workspace" hx-push-url="true">Surf Spot Submission</a></li>
+              <li><a href="/Workspaces/@workspaceId/Interfaces/AppleMobile/Content" hx-boost="true" hx-target="#workspace" hx-push-url="true">10th Annual Event</a></li>
             </ul>
           </li>
           <li>
@@ -54,7 +61,7 @@
               </svg>
               <button type="button" class="flex-1 text-left cursor-pointer" onclick="toggleSubmenu(this)">macOS</button>
               <button 
-                hx-get="/Interfaces/MacOS/InterfaceSelectorPanel"
+                hx-get="/Workspaces/@workspaceId/Interfaces/MacOS/InterfaceSelectorPanel"
                 hx-target="#editorPanel"
                 type="button" 
                 class="btn btn-sm btn-primary cursor-pointer" onclick="toggleEditor()">
@@ -65,11 +72,11 @@
             </div>
             
             <ul style="margin-left: 12px; max-height: 9999px; opacity: 1;" class="overflow-hidden transition-all duration-300 ease-in-out">
-              <li><a href="/Interfaces/MacOS/Table" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/Table">Surf Spots</a></li>
-              <li><a href="/Interfaces/MacOS/Form" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/Form">Surf Spot Submission</a></li>
-              <li><a href="/Interfaces/MacOS/Content" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/Content">10th Annual Event</a></li>
-              <li><a href="/Interfaces/MacOS/SourceList" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/SourceList">Apple Hardware</a></li>
-              <li><a href="/Interfaces/MacOS/Outline" hx-boost="true" hx-target="#workspace" hx-push-url="/Interfaces/MacOS/Outline">eFoil Products</a></li>
+              <li><a href="/Workspaces/@workspaceId/Interfaces/MacOS/Table" hx-boost="true" hx-target="#workspace" hx-push-url="true">Surf Spots</a></li>
+              <li><a href="/Workspaces/@workspaceId/Interfaces/MacOS/Form" hx-boost="true" hx-target="#workspace" hx-push-url="true">Surf Spot Submission</a></li>
+              <li><a href="/Workspaces/@workspaceId/Interfaces/MacOS/Content" hx-boost="true" hx-target="#workspace" hx-push-url="true">10th Annual Event</a></li>
+              <li><a href="/Workspaces/@workspaceId/Interfaces/MacOS/SourceList" hx-boost="true" hx-target="#workspace" hx-push-url="true">Apple Hardware</a></li>
+              <li><a href="/Workspaces/@workspaceId/Interfaces/MacOS/Outline" hx-boost="true" hx-target="#workspace" hx-push-url="true">eFoil Products</a></li>
             </ul>
           </li>
           <li>
@@ -86,7 +93,7 @@
             </div>
             
             <ul style="margin-left: 12px; max-height: 9999px; opacity: 1;" class="overflow-hidden transition-all duration-300 ease-in-out">
-              <!-- Add tvOS submenu items here when ready -->
+              <!-- tvOS submenu items -->
             </ul>
           </li>
         </ul>
@@ -96,20 +103,20 @@
         <div class="font-bold uppercase mb-1">Widgets</div>
         <ul>
           <li>
-            <a href="/Widgets/Weather" hx-boost="true" hx-target="#workspace" hx-push-url="/Widgets/Weather">Pensacola Weather</a>
+            <a href="/Workspaces/@workspaceId/Widgets/Weather" hx-boost="true" hx-target="#workspace" hx-push-url="true">Pensacola Weather</a>
           </li>
           <li>
-            <a href="/Widgets/Clock" hx-boost="true" hx-target="#workspace" hx-push-url="/Widgets/Clock">California Clock</a>
+            <a href="/Workspaces/@workspaceId/Widgets/Clock" hx-boost="true" hx-target="#workspace" hx-push-url="true">California Clock</a>
           </li>
           <li>
-            <a href="/Widgets/Map" hx-boost="true" hx-target="#workspace" hx-push-url="/Widgets/Map">Chicago Map</a>
+            <a href="/Workspaces/@workspaceId/Widgets/Map" hx-boost="true" hx-target="#workspace" hx-push-url="true">Chicago Map</a>
           </li>
           <li>
-            <a href="/Widgets/Rss" hx-boost="true" hx-target="#workspace" hx-push-url="/Widgets/Rss">MacRumors Feed</a>
+            <a href="/Workspaces/@workspaceId/Widgets/Rss" hx-boost="true" hx-target="#workspace" hx-push-url="true">MacRumors Feed</a>
           </li>
           <li>
             <button 
-              hx-get="/Widgets/NewWidgetPartialView"
+              hx-get="/Workspaces/@workspaceId/Widgets/NewWidgetPartialView"
               hx-target="#editorPanel"
               onclick="toggleEditor()" 
               type="button" 
@@ -120,25 +127,29 @@
         </ul>
       </div>
       
-      @* <div class="content mb-6"> *@
-      @*   <div class="font-bold uppercase mb-1">Content</div> *@
-      @* </div> *@
-      @* *@
-      @* <div class="collections mb-6"> *@
-      @*   <div class="font-bold uppercase mb-1">Collections</div> *@
-      @* </div> *@
-      
       <div class="system">
         <div class="font-bold uppercase mb-1">System</div>
         <ul>
           <li>
-            <a href="/AccountManagement" hx-boost="true" hx-target="#workspace" hx-push-url="/AccountManagement">
+            <a href="/AccountManagement" hx-boost="true" hx-target="#workspace" hx-push-url="true">
               Manage Account
             </a>
           </li>
-          <li><a href="#">Logout</a></li>
+          <li>
+            <a href="/Workspaces/@workspaceId/WorkspaceManagement" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+              Manage Workspace
+            </a>
+          </li>
+          <li><a href="/Auth/Logout">Logout</a></li>
         </ul>
       </div>
+      }
+      else
+      {
+        <div class="p-4 text-gray-500">
+          <p>No workspace selected</p>
+        </div>
+      }
     </div>
   </nav>
     

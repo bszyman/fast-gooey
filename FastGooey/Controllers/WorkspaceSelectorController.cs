@@ -9,18 +9,28 @@ using Microsoft.AspNetCore.Mvc;
 namespace FastGooey.Controllers;
 
 [Authorize]
-[Route("Workspaces/{workspaceId:guid}")]
-public class WorkspacesController(
+[Route("Workspaces")]
+public class WorkspaceSelectorController(
     ILogger<WorkspacesController> logger, 
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
     UserManager<ApplicationUser> userManager): 
     BaseStudioController(keyValueService)
 {
-    [HttpGet("Home")]
-    public IActionResult Home(Guid workspaceId)
+    [HttpGet]
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser == null)
+        {
+            return Unauthorized();
+        }
+        
+        var workspaces = dbContext.Workspaces
+            .Where(x => x.Users.Contains(currentUser))
+            .ToList();
+        
+        return View(workspaces);
     }
 
     [HttpGet("CreateWorkspace")]
@@ -55,26 +65,9 @@ public class WorkspacesController(
         await dbContext.SaveChangesAsync();
         
         return RedirectToAction(
-            nameof(Home), 
+            "Home",
+            "Workspaces",
             new { id = workspace.PublicId }
         );
-    }
-
-    [HttpGet("Info/{documentId:guid}")]
-    public IActionResult Info(Guid workspaceId, Guid documentId)
-    {
-        return View();
-    }
-
-    [HttpPost("Edit")]
-    public IActionResult EditWorkspace(Guid workspaceId)
-    {
-        return View();
-    }
-
-    [HttpDelete("Delete")]
-    public IActionResult DeleteWorkspace(Guid workspaceId)
-    {
-        return View();
     }
 }

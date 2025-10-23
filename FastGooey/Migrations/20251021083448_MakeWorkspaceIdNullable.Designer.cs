@@ -4,6 +4,7 @@ using System.Text.Json;
 using FastGooey.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FastGooey.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251021083448_MakeWorkspaceIdNullable")]
+    partial class MakeWorkspaceIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,7 +118,7 @@ namespace FastGooey.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("user_name");
 
-                    b.Property<long?>("WorkspaceId")
+                    b.Property<long>("WorkspaceId")
                         .HasColumnType("bigint")
                         .HasColumnName("workspace_id");
 
@@ -247,12 +250,6 @@ namespace FastGooey.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("public_id");
 
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("slug");
-
                     b.Property<Instant>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -263,10 +260,6 @@ namespace FastGooey.Migrations
                     b.HasIndex("PublicId")
                         .IsUnique()
                         .HasDatabaseName("ix_workspaces_public_id");
-
-                    b.HasIndex("Slug")
-                        .IsUnique()
-                        .HasDatabaseName("ix_workspaces_slug");
 
                     b.ToTable("workspaces", (string)null);
                 });
@@ -441,6 +434,7 @@ namespace FastGooey.Migrations
                         .WithMany("Users")
                         .HasForeignKey("WorkspaceId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_asp_net_users_workspaces_workspace_id");
 
                     b.Navigation("Workspace");

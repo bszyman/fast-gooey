@@ -6,6 +6,7 @@ using NodaTime;
 namespace FastGooey.Models;
 
 [Index(nameof(PublicId), IsUnique = true)]
+[Index(nameof(Slug), IsUnique = true)]
 public class Workspace
 {
     [Key]
@@ -19,8 +20,12 @@ public class Workspace
     [MaxLength(80)]
     public string Name { get; set; } = string.Empty;
     
+    [Required]
+    [MaxLength(100)]
+    public string Slug { get; set; } = string.Empty;
+    
     // Collection navigation properties
-    public ICollection<User> Users { get; set; } = new List<User>();
+    public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
     public ICollection<GooeyInterface> GooeyInterfaces { get; set; } = new List<GooeyInterface>();
     
     public Instant CreatedAt { get; set; }

@@ -1,13 +1,14 @@
 using FastGooey.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
 namespace FastGooey.Database;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IClock clock): DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IClock clock): 
+    IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Workspace> Workspaces { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
     public DbSet<GooeyInterface> GooeyInterfaces { get; set; } = null!;
     public DbSet<KeyValueStore> KeyValueStores { get; set; } = null!;
 
@@ -16,7 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         base.OnModelCreating(modelBuilder);
 
         // Configure relationships
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<ApplicationUser>()
             .HasOne(u => u.Workspace)
             .WithMany(w => w.Users)
             .HasForeignKey(u => u.WorkspaceId)
@@ -55,7 +56,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     workspace.CreatedAt = now;
                 workspace.UpdatedAt = now;
             }
-            else if (entry.Entity is User user)
+            else if (entry.Entity is ApplicationUser user)
             {
                 if (entry.State == EntityState.Added)
                     user.CreatedAt = now;

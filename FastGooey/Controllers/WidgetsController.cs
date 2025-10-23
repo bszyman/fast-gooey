@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers;
 
+[Route("Workspaces/{workspaceId:guid}/Widgets")]
 public class WidgetsController(
     ILogger<WidgetsController> logger, 
     IKeyValueService keyValueService

@@ -4,14 +4,25 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FastGooey.Controllers;
 
-public abstract class BaseStudioController(IKeyValueService keyValueService): Controller
+public abstract class BaseStudioController(IKeyValueService keyValueService): 
+    Controller
 {
+    protected Guid WorkspaceId { get; private set; }
+    
     public override async Task OnActionExecutionAsync(
         ActionExecutingContext context, 
         ActionExecutionDelegate next)
     {
-        // Set MapKit token in ViewBag for _Layout.cshtml
         ViewBag.MapKitToken = await keyValueService.GetValueForKey(Constants.MapKitJwt);
+        
+        if (context.RouteData.Values.TryGetValue("workspaceId", out var idValue))
+        {
+            if (idValue is string idString && Guid.TryParse(idString, out var id))
+            {
+                WorkspaceId = id;
+                ViewData["WorkspaceId"] = id;
+            }
+        }
         
         await next();
     }

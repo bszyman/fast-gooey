@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers.Interfaces;
 
-[Route("Interfaces/MacOS")]
+[Route("Workspaces/{workspaceId:guid}/Interfaces/MacOS")]
 public class MacOSController(
     ILogger<MacOSController> logger, 
     IKeyValueService keyValueService): 

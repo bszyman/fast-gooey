@@ -103,9 +103,7 @@ body {
 }
 
 .main-content {
-    overflow-y: auto;
-    /*padding: 2rem;*/
-    background-color: oklch(92% 0.004 286.32);
+    @apply bg-zinc-100 overflow-y-auto;
 }
 
 .formGroup {
@@ -124,6 +122,7 @@ body {
 .formGroup input[type='date'],
 .formGroup input[type='time'],
 .formGroup input[type='datetime-local'],
+.formGroup input[type='password'],
 .formGroup textarea {
     @apply border border-zinc-300 rounded py-1 px-2 w-full text-sm bg-white;
 }

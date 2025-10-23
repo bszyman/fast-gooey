@@ -1,0 +1,11 @@
+@model FastGooey.Models.ViewModels.ManageWorkspaceViewModel
+
+<div class="fixed z-40 bg-white flex h-20 border-b border-b-zinc-300 left-[20%] right-0">
+    <div class="flex-1 flex items-center">
+        <p class="p-2 mx-6 w-full font-bold">Workspace Management</p>
+    </div>
+</div>
+
+<div id="workspaceEditor" class="mt-30 mb-24">
+    @await Html.PartialAsync("Workspaces/WorkspaceManagement.cshtml", Model)
+</div>
