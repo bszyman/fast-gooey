@@ -1,9 +1,8 @@
 @model FastGooey.Models.ViewModels.ManageWorkspaceViewModel
 
-<form
-    method="post"
+<form method="post"
     hx-post="/Workspaces/@Model.Workspace.PublicId/WorkspaceManagement/workspace/save"
-    hx-target="#editor">
+    hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()
     <div id="editor" class="mx-auto max-w-3xl">
         <div class="formGroup mb-8">
@@ -39,8 +38,7 @@
     </div>
 
     <div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
-        <div class="flex items-center w-1/2">
-        </div>
+        <div class="flex items-center w-1/2"></div>
         <div class="flex items-center justify-end w-1/2 text-right">
             <button
                 type="submit"

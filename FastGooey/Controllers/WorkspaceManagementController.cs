@@ -1,4 +1,5 @@
 using FastGooey.Database;
+using FastGooey.Models;
 using FastGooey.Models.FormModels;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
@@ -18,16 +19,7 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .First(x => x.PublicId == WorkspaceId);
 
-        var formModel = new WorkspaceManagementModel
-        {
-            WorkspaceName = workspace.Name,
-        };
-        
-        var viewModel = new ManageWorkspaceViewModel
-        {
-            Workspace = workspace,
-            FormModel = formModel
-        };
+        var viewModel = CreateViewModel(workspace);
         
         return View(viewModel);
     }
@@ -38,16 +30,7 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .First(x => x.PublicId == WorkspaceId);
 
-        var formModel = new WorkspaceManagementModel
-        {
-            WorkspaceName = workspace.Name,
-        };
-        
-        var viewModel = new ManageWorkspaceViewModel
-        {
-            Workspace = workspace,
-            FormModel = formModel
-        };
+        var viewModel = CreateViewModel(workspace);
         
         return PartialView("~/Views/WorkspaceManagement/Workspaces/WorkspaceManagement.cshtml", viewModel);
     }
@@ -61,17 +44,20 @@ public class WorkspaceManagementController(
 
         dbContext.SaveChanges();
 
-        var formModel = new WorkspaceManagementModel
-        {
-            WorkspaceName = workspace.Name,
-        };
-        
-        var viewModel = new ManageWorkspaceViewModel
-        {
-            Workspace = workspace,
-            FormModel = formModel
-        };
+        var viewModel = CreateViewModel(workspace);
         
         return PartialView("~/Views/WorkspaceManagement/Workspaces/WorkspaceManagement.cshtml", viewModel);
+    }
+    
+    private ManageWorkspaceViewModel CreateViewModel(Workspace workspace)
+    {
+        return new ManageWorkspaceViewModel
+        {
+            Workspace = workspace,
+            FormModel = new WorkspaceManagementModel
+            {
+                WorkspaceName = workspace.Name
+            }
+        };
     }
 }

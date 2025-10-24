@@ -1,4 +1,4 @@
-@model FastGooey.Models.ViewModels.ClockViewModel
+@model FastGooey.Models.ViewModels.ManageAccountViewModel
 
 <div class="fixed z-40 bg-white flex h-20 border-b border-b-zinc-300 left-[20%] right-0">
     <div class="flex-1 flex items-center">
@@ -7,12 +7,5 @@
 </div>
 
 <div id="workspaceEditor" class="mt-30 mb-24">
-    @await Html.PartialAsync("Workspaces/AccountManagement.cshtml")
-</div>
-
-<div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
-    <div class="flex items-center w-1/2"></div>
-    <div class="flex items-center justify-end w-1/2 text-right">
-        <button class="bg-emerald-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">Save</button>
-    </div>
+    @await Html.PartialAsync("Workspaces/AccountManagement.cshtml", Model)
 </div>
