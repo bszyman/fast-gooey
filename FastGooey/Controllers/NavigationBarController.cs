@@ -40,7 +40,7 @@ public class NavigationBarController(
     {
         var weatherWidgets = await dbContext.GooeyInterfaces
             .Where(x => x.Workspace.PublicId.Equals(workspaceId))
-            .Where(x => x.Platform.Equals("widget"))
+            .Where(x => x.Platform.Equals("Widget"))
             .Select(x => new WidgetNavigationItem
             {
                 Id = x.DocId,

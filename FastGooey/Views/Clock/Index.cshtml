@@ -1,27 +1,11 @@
-@model FastGooey.Models.ViewModels.Weather.WeatherViewModel
+@model FastGooey.Models.ViewModels.Clock.ClockViewModel
 
 <div class="fixed z-40 bg-white flex h-20 border-b border-b-zinc-300 left-[20%] right-0">
     <div class="flex-1 flex items-center">
-        <form 
-            method="post"
-            hx-post="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/UpdateTitle/@Model.WorkspaceViewModel.ContentNode.DocId"
-            hx-trigger="blur from:#titleInput, keyup[key=='Enter'] from:#titleInput"
-            hx-swap="none"
-            onsubmit="return false;"
-            class="mx-6 w-full">
-            @Html.AntiForgeryToken()
-            <input 
-                type="text" 
-                name="title" 
-                id="titleInput"
-                aria-label="title" 
-                placeholder="title" 
-                value="@Model.WorkspaceViewModel.ContentNode.Name" 
-                class="border border-zinc-300 rounded p-2 w-full transition-all duration-300 ease-in-out focus:border-emerald-500 focus:outline-none" />
-        </form>
+        <input type="text" name="title" aria-label="title" placeholder="title" value="California Clock" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
     </div>
     <button 
-        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Widgets/Weather/Workspace/@Model.WorkspaceViewModel.ContentNode.DocId"
+        hx-get="/Widgets/ClockWorkspace"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton" onclick="changeSection(this)">

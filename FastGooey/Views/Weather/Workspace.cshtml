@@ -1,4 +1,4 @@
-@model FastGooey.Models.ViewModels.WeatherWorkspaceViewModel
+@model FastGooey.Models.ViewModels.Weather.WeatherWorkspaceViewModel
 @{
     decimal latitude = new Decimal(30.40728);
     decimal longitude = new Decimal(-87.21936);
@@ -59,7 +59,7 @@
         <div 
             id="previewPanel" 
             class="contentGroup"
-            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Widgets/Weather/PreviewPanel/@Model.ContentNode.DocId" 
+            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Widgets/Weather/preview-panel/@Model.ContentNode.DocId" 
             hx-trigger="load, refreshPreview from:body"
             hx-swap="innerHTML"
             hx-target="#previewPanel"

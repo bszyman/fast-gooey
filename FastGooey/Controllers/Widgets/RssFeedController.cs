@@ -1,0 +1,230 @@
+using System.ServiceModel.Syndication;
+using System.Text.Json;
+using System.Xml;
+using FastGooey.Database;
+using FastGooey.Models;
+using FastGooey.Models.FormModels;
+using FastGooey.Models.JsonDataModels;
+using FastGooey.Models.Response;
+using FastGooey.Models.ViewModels.RssFeed;
+using FastGooey.Services;
+using Flurl.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace FastGooey.Controllers.Widgets;
+
+[Route("Workspaces/{workspaceId:guid}/Widgets/RssFeed")]
+public class RssFeedController(
+    ILogger<WeatherController> logger, 
+    IKeyValueService keyValueService,
+    ApplicationDbContext dbContext,
+    UserManager<ApplicationUser> userManager
+): BaseStudioController(keyValueService, dbContext)
+{
+    private async Task<RssWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
+    {
+        var contentNode = await dbContext.GooeyInterfaces
+            .Include(x => x.Workspace)
+            .FirstAsync(x => x.DocId.Equals(interfaceId));
+        
+        var viewModel = new RssWorkspaceViewModel
+        {
+            ContentNode = contentNode,
+            Data = contentNode.Config.Deserialize<RssFeedJsonDataModel>()
+        };
+
+        return viewModel;
+    }
+    
+    [HttpGet("{interfaceId:guid}")]
+    public async Task<IActionResult> Index(Guid interfaceId)
+    {
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        var viewModel = new RssViewModel
+        {
+            WorkspaceViewModel = workspaceViewModel
+        };
+        
+        return View(viewModel);
+    }
+    
+    [HttpGet("workspace/{interfaceId:guid}")]
+    public async Task<IActionResult> Workspace(Guid interfaceId)
+    {
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        
+        return PartialView("~/Views/RssFeed/Workspace.cshtml", viewModel);
+    }
+
+    [HttpPost("create-widget")]
+    public async Task<IActionResult> CreateWidget()
+    {
+        var workspace = GetWorkspace();
+        var data = new RssFeedJsonDataModel();
+        
+        var contentNode = new GooeyInterface
+        {
+            WorkspaceId = workspace.Id,
+            Workspace = workspace,
+            Platform = "Widget",
+            ViewType = "RssFeed",
+            Name = "New Rss Feed Widget",
+            Config = JsonSerializer.SerializeToDocument(data)
+        };
+
+        await dbContext.GooeyInterfaces.AddAsync(contentNode);
+        await dbContext.SaveChangesAsync();
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(contentNode.DocId);
+        var viewModel = new RssViewModel
+        {
+            WorkspaceViewModel = workspaceViewModel
+        };
+        
+        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        
+        return PartialView("~/Views/RssFeed/Index.cshtml", viewModel);
+    }
+
+    [HttpPost("workspace/{interfaceId:guid}")]
+    public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] ClockFormModel formModel)
+    {
+        var contentNode = await dbContext.GooeyInterfaces
+            .Include(x => x.Workspace)
+            .FirstAsync(x => x.DocId.Equals(interfaceId));
+
+        var data = contentNode.Config.Deserialize<ClockJsonDataModel>();
+        data.Location = formModel.Location;
+        data.Latitude = formModel.Latitude;
+        data.Longitude = formModel.Longitude;
+        data.Coordinates = formModel.Coordinates;
+        data.Timezone = formModel.Timezone;
+        data.MapIdentifier = formModel.MapIdentifier;
+        
+        contentNode.Config = JsonSerializer.SerializeToDocument(data);
+        await dbContext.SaveChangesAsync();
+        
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        
+        return PartialView("~/Views/RssFeed/Workspace.cshtml", viewModel);
+    }
+
+    [HttpGet("preview-panel/from-url")]
+    public async Task<IActionResult> RssPreviewPanel([FromQuery] string feedUrl)
+    {
+        if (string.IsNullOrWhiteSpace(feedUrl))
+        {
+            return BadRequest("RSS feed URL is required");
+        }
+
+        try
+        {
+            // Fetch the RSS feed using Flurl
+            var stream = await feedUrl
+                .WithTimeout(10)
+                .GetStreamAsync();
+            
+            await using (stream)
+            {
+                using var xmlReader = XmlReader.Create(stream);
+                
+                // Parse the feed
+                var feed = SyndicationFeed.Load(xmlReader);
+                
+                // Create a view model with the feed data
+                var viewModel = new RssPreviewPanelViewModel
+                {
+                    FeedTitle = feed.Title?.Text,
+                    FeedDescription = feed.Description?.Text,
+                    FeedUrl = feedUrl,
+                    Items = feed.Items.Take(10).Select(item => new RssFeedItem
+                    {
+                        Title = item.Title?.Text,
+                        Summary = item.Summary?.Text,
+                        Link = item.Links.FirstOrDefault()?.Uri?.ToString(),
+                        PublishDate = item.PublishDate.DateTime
+                    }).ToList()
+                };
+                
+                return PartialView("~/Views/RssFeed/Partials/PreviewPanel.cshtml", viewModel);
+            }
+        }
+        catch (FlurlHttpException ex)
+        {
+            logger.LogError(ex, "Failed to fetch RSS feed from {Url}", feedUrl);
+            return BadRequest($"Failed to fetch RSS feed: {ex.Message}");
+        }
+        catch (XmlException ex)
+        {
+            logger.LogError(ex, "Failed to parse RSS feed from {Url}", feedUrl);
+            return BadRequest("Invalid RSS feed format");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing RSS feed from {Url}", feedUrl);
+            return StatusCode(500, "An error occurred while processing the RSS feed");
+        }
+    }
+    
+    [HttpGet("preview-panel/from-interface/{interfaceId:guid}")]
+    public async Task<IActionResult> RssPreviewPanel(Guid interfaceId)
+    {
+        var contentNode = dbContext.GooeyInterfaces.First(x => x.DocId.Equals(interfaceId));
+        var data = contentNode.Config.Deserialize<RssFeedJsonDataModel>();
+        
+        if (string.IsNullOrWhiteSpace(data.Url))
+        {
+            return BadRequest("RSS feed URL is required");
+        }
+
+        try
+        {
+            // Fetch the RSS feed using Flurl
+            var stream = await data.Url
+                .WithTimeout(10)
+                .GetStreamAsync();
+            
+            await using (stream)
+            {
+                using var xmlReader = XmlReader.Create(stream);
+                
+                // Parse the feed
+                var feed = SyndicationFeed.Load(xmlReader);
+                
+                // Create a view model with the feed data
+                var viewModel = new RssPreviewPanelViewModel
+                {
+                    FeedTitle = feed.Title?.Text,
+                    FeedDescription = feed.Description?.Text,
+                    FeedUrl = data.Url,
+                    Items = feed.Items.Take(10).Select(item => new RssFeedItem
+                    {
+                        Title = item.Title?.Text,
+                        Summary = item.Summary?.Text,
+                        Link = item.Links.FirstOrDefault()?.Uri?.ToString(),
+                        PublishDate = item.PublishDate.DateTime
+                    }).ToList()
+                };
+                
+                return PartialView("~/Views/RssFeed/Partials/PreviewPanel.cshtml", viewModel);
+            }
+        }
+        catch (FlurlHttpException ex)
+        {
+            logger.LogError(ex, "Failed to fetch RSS feed from {Url}", data.Url);
+            return BadRequest($"Failed to fetch RSS feed: {ex.Message}");
+        }
+        catch (XmlException ex)
+        {
+            logger.LogError(ex, "Failed to parse RSS feed from {Url}", data.Url);
+            return BadRequest("Invalid RSS feed format");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing RSS feed from {Url}", data.Url);
+            return StatusCode(500, "An error occurred while processing the RSS feed");
+        }
+    }
+}

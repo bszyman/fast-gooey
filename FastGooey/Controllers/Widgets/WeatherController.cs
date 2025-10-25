@@ -3,7 +3,7 @@ using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels;
-using FastGooey.Models.ViewModels;
+using FastGooey.Models.ViewModels.Weather;
 using FastGooey.Services;
 using Flurl.Http;
 using MapKit.Models;
@@ -21,62 +21,7 @@ public class WeatherController(
     UserManager<ApplicationUser> userManager
 ): BaseStudioController(keyValueService, dbContext)
 {
-    // Full page view
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Weather(Guid interfaceId)
-    {
-        var contentNode = await dbContext.GooeyInterfaces
-            .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
-        var viewModel = new WeatherViewModel
-        {
-            workspaceViewModel = new WeatherWorkspaceViewModel
-            {
-                ContentNode = contentNode,
-                Data = contentNode.Config.Deserialize<WeatherJsonDataModel>()
-            }
-        };
-        
-        return View(viewModel);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateWeatherWidget()
-    {
-        var workspace = GetWorkspace();
-        var data = new WeatherJsonDataModel();
-        
-        var contentNode = new GooeyInterface
-        {
-            WorkspaceId = workspace.Id,
-            Workspace = workspace,
-            Platform = "widget",
-            ViewType = "weather",
-            Name = "New Weather Widget",
-            Config = JsonSerializer.SerializeToDocument(data)
-        };
-
-        await dbContext.GooeyInterfaces.AddAsync(contentNode);
-        await dbContext.SaveChangesAsync();
-
-        var viewModel = new WeatherViewModel
-        {
-            workspaceViewModel = new WeatherWorkspaceViewModel
-            {
-                ContentNode = contentNode,
-                Data = data
-            }
-        };
-        
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
-        
-        return PartialView("~/Views/Weather/Weather.cshtml", viewModel);
-    }
-    
-    // Workspace partial for HTMX
-    [HttpGet("Workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> WeatherWorkspace(Guid interfaceId)
+    private async Task<WeatherWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
@@ -88,7 +33,60 @@ public class WeatherController(
             Data = contentNode.Config.Deserialize<WeatherJsonDataModel>()
         };
         
+        return viewModel;
+    }
+    
+    // Full page view
+    [HttpGet("{interfaceId:guid}")]
+    public async Task<IActionResult> Weather(Guid interfaceId)
+    {
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        
+        var viewModel = new WeatherViewModel
+        {
+            WorkspaceViewModel = workspaceViewModel
+        };
+        
+        return View(viewModel);
+    }
+    
+    // Workspace partial for HTMX
+    [HttpGet("Workspace/{interfaceId:guid}")]
+    public async Task<IActionResult> WeatherWorkspace(Guid interfaceId)
+    {
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        
         return PartialView("~/Views/Weather/Workspace.cshtml", viewModel);
+    }
+    
+    [HttpPost("create-widget")]
+    public async Task<IActionResult> CreateWidget()
+    {
+        var workspace = GetWorkspace();
+        var data = new WeatherJsonDataModel();
+        
+        var contentNode = new GooeyInterface
+        {
+            WorkspaceId = workspace.Id,
+            Workspace = workspace,
+            Platform = "Widget",
+            ViewType = "Weather",
+            Name = "New Weather Widget",
+            Config = JsonSerializer.SerializeToDocument(data)
+        };
+
+        await dbContext.GooeyInterfaces.AddAsync(contentNode);
+        await dbContext.SaveChangesAsync();
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(contentNode.DocId);
+        var viewModel = new WeatherViewModel
+        {
+            WorkspaceViewModel = workspaceViewModel
+        };
+        
+        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        
+        return PartialView("~/Views/Weather/Weather.cshtml", viewModel);
     }
     
     [HttpPost("Workspace/{interfaceId:guid}")]
@@ -114,16 +112,12 @@ public class WeatherController(
 
         await dbContext.SaveChangesAsync();
         
-        var viewModel = new WeatherWorkspaceViewModel
-        {
-            ContentNode = gooeyInterface,
-            Data = docData
-        };
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
         
         return PartialView("~/Views/Weather/Workspace.cshtml", viewModel);
     }
 
-    [HttpGet("SearchPanel")]
+    [HttpGet("search-panel")]
     public async Task<IActionResult> WeatherSearchPanel([FromQuery] string location)
     {
         var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
@@ -141,7 +135,7 @@ public class WeatherController(
         return PartialView("~/Views/Weather/Partials/WeatherSearchPanel.cshtml", viewModel);
     }
 
-    [HttpGet("PreviewPanel/{interfaceId:guid}")]
+    [HttpGet("preview-panel/{interfaceId:guid}")]
     public async Task<IActionResult> WeatherPreviewPanel(Guid interfaceId)
     {
         var gooeyInterface = await dbContext.GooeyInterfaces
