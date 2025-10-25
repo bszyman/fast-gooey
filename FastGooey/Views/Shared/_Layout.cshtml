@@ -29,7 +29,7 @@
       {
         <div 
           hx-get="/Workspaces/@workspaceId/NavigationBar" 
-          hx-trigger="load"
+          hx-trigger="load, refreshNavigation from:body"
           hx-swap="innerHTML">
           <div class="p-4 text-gray-500">
             <p>Loading...</p>

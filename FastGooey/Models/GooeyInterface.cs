@@ -30,6 +30,10 @@ public class GooeyInterface
     [MaxLength(30)]
     public string? ViewType { get; set; }
     
+    [Required]
+    [MaxLength(200)]
+    public string Name { get; set; } = string.Empty;
+    
     [Column(TypeName = "jsonb")]
     public JsonDocument Config { get; set; } = JsonDocument.Parse("{}");
     

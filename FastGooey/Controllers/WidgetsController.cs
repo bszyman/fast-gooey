@@ -1,59 +1,36 @@
 using System.ServiceModel.Syndication;
+using System.Text.Json;
 using System.Xml;
+using FastGooey.Database;
+using FastGooey.Models;
+using FastGooey.Models.FormModels;
+using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.Response;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
 using FastGooey.Utils;
 using Flurl.Http;
 using MapKit.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ClockWorkspaceModel = FastGooey.Models.ViewModels.ClockWorkspaceModel;
+using MapWorkspaceModel = FastGooey.Models.ViewModels.MapWorkspaceModel;
 
 namespace FastGooey.Controllers;
 
 [Route("Workspaces/{workspaceId:guid}/Widgets")]
 public class WidgetsController(
     ILogger<WidgetsController> logger, 
-    IKeyValueService keyValueService
-    ): BaseStudioController(keyValueService)
+    IKeyValueService keyValueService,
+    ApplicationDbContext dbContext,
+    UserManager<ApplicationUser> userManager
+    ): BaseStudioController(keyValueService, dbContext)
 {
+    [HttpGet("NewWidgetPanel")]
     public IActionResult NewWidgetPartialView()
     {
-        return PartialView("~/Views/Widgets/Partials/NewWidgetPartialView.cshtml");
-    }
-    
-    // Full page view
-    public IActionResult Weather()
-    {
-        var viewModel = new WeatherViewModel
-        {
-            workspaceViewModel = new WeatherWorkspaceModel()
-        };
-        
-        return View(viewModel);
-    }
-    
-    // Workspace partial for HTMX
-    public IActionResult WeatherWorkspace()
-    {
-        var viewModel = new WeatherWorkspaceModel();
-        return PartialView("~/Views/Widgets/Workspaces/Weather.cshtml", viewModel);
-    }
-
-    public async Task<IActionResult> WeatherSearchPanel([FromQuery] string city)
-    {
-        var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
-        
-        var results = await $"https://maps-api.apple.com/v1/search?q={city}"
-            .WithHeader("Authorization", $"Bearer {mapKitServerToken}")
-            .GetJsonAsync<MapKitSearchResponseModel>();
-
-        var viewModel = new WeatherSearchPanelViewModel
-        {
-            SearchText = city,
-            Results = results
-        };
-        
-        return PartialView("~/Views/Widgets/Partials/WeatherSearchPanel.cshtml", viewModel);
+        return PartialView("~/Views/Widgets/Partials/NewWidgetPartialView.cshtml", WorkspaceId);
     }
     
     public IActionResult Map()

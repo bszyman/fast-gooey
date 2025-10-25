@@ -11,7 +11,7 @@ namespace FastGooey.Controllers;
 public class WorkspaceManagementController(
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext): 
-    BaseStudioController(keyValueService)
+    BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
     public IActionResult Index()

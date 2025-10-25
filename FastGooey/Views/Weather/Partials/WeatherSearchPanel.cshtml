@@ -33,19 +33,17 @@
 
 <script>
     function selectLocation(sender) {
-        const cityTextField = document.getElementById("city");
+        const locationTextField = document.getElementById("location");
         const latitudeTextField = document.getElementById("latitude");
         const longitudeTextField = document.getElementById("longitude");
         const coordinatesTextField = document.getElementById("coordinates");
         const descriptiveCoordinates = document.getElementById("descriptiveCoords");
-        const identifierTextField = document.getElementById("identifier");
-        
-        cityTextField.value = sender.dataset.name;
+
+        locationTextField.value = sender.dataset.name;
         latitudeTextField.value = sender.dataset.lat;
         longitudeTextField.value = sender.dataset.lng;
         coordinatesTextField.value = sender.dataset.coords;
         descriptiveCoordinates.innerText = sender.dataset.coords;
-        identifierTextField.value = sender.dataset.identifier;
 
         updateMapWithLocation(
             parseFloat(sender.dataset.lat),

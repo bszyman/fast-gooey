@@ -15,7 +15,7 @@ public class WorkspaceSelectorController(
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
     UserManager<ApplicationUser> userManager): 
-    BaseStudioController(keyValueService)
+    BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
     public async Task<IActionResult> Index()

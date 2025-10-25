@@ -1,13 +1,17 @@
+@model Guid
+
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
     <div class="flex-1 flex items-center">
         <p class="mx-6 font-bold">Create New Widget</p>
     </div>
 </div>
 
-<div id="searchResults" class="py-4 px-4">
+<div id="selectorPanel" class="py-4 px-4">
     <div
+        hx-post="/Workspaces/@Model/Widgets?widgetType=clock"
+        hx-target="#workspace"
         data-widget-type="clock"
-        onclick="selectWidget(this)"
+        onclick="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Clock</p>
         <p class="text-xs font-semibold text-grayMid mb-1">
@@ -15,8 +19,10 @@
         </p>
     </div>
     <div
+        hx-post="/Workspaces/@Model/Widgets?widgetType=clock"
+        hx-target="#workspace"
         data-widget-type="map"
-        onclick="selectWidget(this)"
+        onclick="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Map</p>
         <p class="text-xs font-semibold text-grayMid mb-1">
@@ -24,8 +30,10 @@
         </p>
     </div>
     <div
+        hx-post="/Workspaces/@Model/Widgets?widgetType=clock"
+        hx-target="#workspace"
         data-widget-type="rss"
-        onclick="selectWidget(this)"
+        onclick="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">RSS Feed</p>
         <p class="text-xs font-semibold text-grayMid mb-1">
@@ -33,8 +41,10 @@
         </p>
     </div>
     <div
+        hx-post="/Workspaces/@Model/Widgets/Weather"
+        hx-target="#workspace"
         data-widget-type="weather"
-        onclick="selectWidget(this)"
+        hx-on::after-request="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Weather</p>
         <p class="text-xs font-semibold text-grayMid mb-1">
@@ -49,12 +59,3 @@
         <button type="button" onclick="toggleEditor()" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-4 py-2 cursor-pointer text-sm">Cancel</button>
     </div>
 </div>
-
-<script>
-    function selectWidget(sender) {
-        const widgetType = sender.dataset.widgetType;
-        console.log(widgetType);
-        
-        toggleEditor();
-    }
-</script>

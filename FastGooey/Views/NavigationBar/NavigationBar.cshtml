@@ -93,7 +93,7 @@
     @foreach (var widget in Model.Widgets)
     {
       <li>
-        <a href="/Workspaces/@Model.WorkspaceId/Widgets/@widget.Id" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+        <a href="@widget.Route" hx-boost="true" hx-target="#workspace" hx-push-url="true">
           @widget.Name
         </a>
       </li>

@@ -1,6 +1,7 @@
 using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
+using FastGooey.Models.ViewModels;
 using FastGooey.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,7 +16,7 @@ public class WorkspacesController(
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
     UserManager<ApplicationUser> userManager): 
-    BaseStudioController(keyValueService)
+    BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet("Home")]
     public IActionResult Home(Guid workspaceId)
@@ -60,10 +61,22 @@ public class WorkspacesController(
         );
     }
 
-    [HttpGet("Info/{documentId:guid}")]
-    public IActionResult Info(Guid workspaceId, Guid documentId)
+    [HttpGet("Info/{interfaceId:guid}")]
+    public IActionResult Info(Guid workspaceId, Guid interfaceId)
     {
-        return View();
+        var interfaceNode = dbContext.GooeyInterfaces
+            .First(x => x.DocId.Equals(interfaceId));
+        
+        var workspace = dbContext.Workspaces
+            .First(x => x.PublicId == workspaceId);
+
+        var viewModel = new InfoViewModel
+        {
+            ContentNode = interfaceNode,
+            Workspace = workspace
+        };
+        
+        return View(viewModel);
     }
 
     [HttpPost("Edit")]
@@ -76,5 +89,19 @@ public class WorkspacesController(
     public IActionResult DeleteWorkspace(Guid workspaceId)
     {
         return View();
+    }
+    
+    [HttpPost("UpdateTitle/{interfaceId:guid}")]
+    public async Task<IActionResult> UpdateTitle(Guid interfaceId, [FromForm] string title)
+    {
+        var interfaceNode = dbContext.GooeyInterfaces
+            .First(x => x.DocId.Equals(interfaceId));
+        
+        interfaceNode.Name = title;
+        await dbContext.SaveChangesAsync();
+        
+        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        
+        return Ok();
     }
 }

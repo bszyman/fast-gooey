@@ -1,14 +1,17 @@
+using FastGooey.Database;
 using FastGooey.Models.ViewModels.NavigationBar;
 using FastGooey.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers;
 
 [Route("Workspaces/{workspaceId:guid}/NavigationBar")]
 public class NavigationBarController(
     ILogger<NavigationBarController> logger,
-    IKeyValueService keyValueService): 
-    BaseStudioController(keyValueService)
+    IKeyValueService keyValueService,
+    ApplicationDbContext dbContext): 
+    BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
     public async Task<IActionResult> Index([FromRoute] Guid workspaceId)
@@ -35,15 +38,19 @@ public class NavigationBarController(
     
     private async Task<List<WidgetNavigationItem>> GetWidgetsForWorkspace(Guid workspaceId)
     {
-        // TODO: Replace with actual database query
-        // For now, returning mock data
-        return new List<WidgetNavigationItem>
-        {
-            new() { Id = Guid.NewGuid(), Name = "Pensacola Weather", Type = "Weather", Route = $"/Workspaces/{workspaceId}/Widgets/Weather" },
-            new() { Id = Guid.NewGuid(), Name = "California Clock", Type = "Clock", Route = $"/Workspaces/{workspaceId}/Widgets/Clock" },
-            new() { Id = Guid.NewGuid(), Name = "Chicago Map", Type = "Map", Route = $"/Workspaces/{workspaceId}/Widgets/Map" },
-            new() { Id = Guid.NewGuid(), Name = "MacRumors Feed", Type = "Rss", Route = $"/Workspaces/{workspaceId}/Widgets/Rss" }
-        };
+        var weatherWidgets = await dbContext.GooeyInterfaces
+            .Where(x => x.Workspace.PublicId.Equals(workspaceId))
+            .Where(x => x.Platform.Equals("widget"))
+            .Select(x => new WidgetNavigationItem
+            {
+                Id = x.DocId,
+                Name = x.Name,
+                Type = x.ViewType,
+                Route = $"/Workspaces/{workspaceId}/Widgets/{x.ViewType}/Workspace/{x.DocId}"
+            })
+            .ToListAsync();
+
+        return weatherWidgets;
     }
     
     private async Task<List<WidgetNavigationItem>> GetAppleMobileInterfacesForWorkspace(Guid workspaceId)

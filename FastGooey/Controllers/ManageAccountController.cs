@@ -11,8 +11,9 @@ namespace FastGooey.Controllers;
 [Route("Workspaces/{workspaceId:guid}/[controller]")]
 public class AccountManagementController(
     IKeyValueService keyValueService,
-    UserManager<ApplicationUser> userManager): 
-    BaseStudioController(keyValueService)
+    UserManager<ApplicationUser> userManager,
+    ApplicationDbContext dbContext): 
+    BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
     public async Task<IActionResult> Index()

@@ -1,10 +1,14 @@
+using FastGooey.Database;
+using FastGooey.Models;
 using FastGooey.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FastGooey.Controllers;
 
-public abstract class BaseStudioController(IKeyValueService keyValueService): 
+public abstract class BaseStudioController(
+    IKeyValueService keyValueService, 
+    ApplicationDbContext dbContext): 
     Controller
 {
     protected Guid WorkspaceId { get; private set; }
@@ -25,5 +29,10 @@ public abstract class BaseStudioController(IKeyValueService keyValueService):
         }
         
         await next();
+    }
+
+    protected Workspace? GetWorkspace()
+    {
+        return dbContext.Workspaces.First(x => x.PublicId.Equals(WorkspaceId));
     }
 }
