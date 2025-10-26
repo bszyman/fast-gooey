@@ -1,5 +1,4 @@
 @model FastGooey.Models.ViewModels.Clock.ClockSearchPanelViewModel
-@{ Layout = null; }
 
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
     <div class="flex-1 flex items-center">
@@ -17,6 +16,8 @@
             data-timezone="@location.LocalDateTimeSet.LocalTimezone"
             data-identifier="@location.Result.Id"
             data-descriptive-time="@location.LocalDateTimeSet.Formatted()"
+            data-time="@location.LocalDateTimeSet.LocalTime"
+            data-date="@location.LocalDateTimeSet.LocalDate"
             onclick="selectLocation(this)"
             class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
             <p class="font-medium mb-1">@location.Result.Name</p>
@@ -28,20 +29,22 @@
 <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
     <div class="flex items-center w-1/2"></div>
     <div class="flex items-center justify-end w-1/2 text-right">
-        <button type="button" onclick="toggleEditor()" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-4 py-2 cursor-pointer text-sm">Cancel</button>
+        <button type="button" onclick="toggleEditor()" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+            Cancel
+        </button>
     </div>
 </div>
 
 <script>
     function selectLocation(sender) {
-        const cityTextField = document.getElementById("city");
+        const locationTextField = document.getElementById("location");
         const latitudeTextField = document.getElementById("latitude");
         const longitudeTextField = document.getElementById("longitude");
         const timezoneTextField = document.getElementById("timezone");
-        const identifierTextField = document.getElementById("identifier");
+        const identifierTextField = document.getElementById("mapIdentifier");
         const descriptiveTimeText = document.getElementById("descriptiveTime");
-        
-        cityTextField.value = sender.dataset.name;
+
+        locationTextField.value = sender.dataset.name;
         latitudeTextField.value = sender.dataset.lat;
         longitudeTextField.value = sender.dataset.lng;
         timezoneTextField.value = sender.dataset.timezone;
@@ -53,6 +56,14 @@
             parseFloat(sender.dataset.lng),
             sender.dataset.name
         );
+        
+        const previewPanelTimeField = document.getElementById("previewPanelTime");
+        const previewPanelDateField = document.getElementById("previewPanelDate");
+        const previewPanelLocationField = document.getElementById("previewPanelLocation");
+        
+        previewPanelDateField.innerText = sender.dataset.date;
+        previewPanelTimeField.innerText = sender.dataset.time;
+        previewPanelLocationField.innerText = sender.dataset.name;
         
         toggleEditor();
     }

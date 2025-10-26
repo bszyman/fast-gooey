@@ -28,11 +28,17 @@ public class ClockController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
+
+        var data = contentNode.Config.Deserialize<ClockJsonDataModel>();
+        
+        var currentTime =
+            TimeFromCoordinates.CalculateDateTimeSet(data.Latitude, data.Longitude);
         
         var viewModel = new ClockWorkspaceViewModel
         {
             ContentNode = contentNode,
-            Data = contentNode.Config.Deserialize<ClockJsonDataModel>()
+            Data = data,
+            CurrentTime = currentTime
         };
 
         return viewModel;
@@ -134,5 +140,20 @@ public class ClockController(
         };
         
         return PartialView("~/Views/Clock/Partials/SearchPanel.cshtml", viewModel);
+    }
+    
+    [HttpGet("preview-panel/{interfaceId:guid}")]
+    public async Task<IActionResult> PreviewPanel(Guid interfaceId)
+    {
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        var viewModel = new ClockPreviewPanelViewModel
+        {
+            PreviewAvailable = !string.IsNullOrEmpty(workspaceViewModel.Data.Timezone),
+            Date = workspaceViewModel.CurrentTime.LocalDate,
+            Time = workspaceViewModel.CurrentTime.LocalTime,
+            Location = workspaceViewModel.Data.Location,
+        };
+        
+        return PartialView("~/Views/Clock/Partials/PreviewPanel.cshtml", viewModel);
     }
 }

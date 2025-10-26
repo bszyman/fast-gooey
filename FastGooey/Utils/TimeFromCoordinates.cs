@@ -20,6 +20,23 @@ public static class TimeFromCoordinates
         };
     }
     
+    public static LocationDateTimeSetModel CalculateDateTimeSet(string latitude, string longitude)
+    {
+        var latitudeDouble = double.Parse(latitude);
+        var longitudeDouble = double.Parse(longitude);
+        
+        var localTime = GetLocalTime(latitudeDouble, longitudeDouble);
+        var localDate = GetLocalDate(latitudeDouble, longitudeDouble);
+        var localTimezone = GetLocalTimezone(latitudeDouble, longitudeDouble);
+        
+        return new LocationDateTimeSetModel
+        {
+            LocalTime = localTime,
+            LocalDate = localDate,
+            LocalTimezone = localTimezone
+        };
+    }
+    
     public static string GetLocalTime(double latitude, double longitude)
     {
         // Get IANA timezone ID from coordinates

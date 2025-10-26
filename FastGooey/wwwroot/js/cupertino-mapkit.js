@@ -19,6 +19,22 @@ async function fitMapToAnnotations() {
 
     const mapkit = await getMapKitAsync();
 
+    if (mapInstance.annotations.length === 1) {
+        const annotation = mapInstance.annotations[0];
+        const cameraDistance = 250000; // 250km in meters (fits about half a state)
+
+        // Create a camera with the desired properties
+        const camera = new mapkit.CameraZoomRange(cameraDistance, cameraDistance);
+
+        // Set region instead of using separate camera commands
+        const span = new mapkit.CoordinateSpan(2.5, 2.5); // Roughly matches 250km view
+        const region = new mapkit.CoordinateRegion(annotation.coordinate, span);
+
+        mapInstance.setRegionAnimated(region, true);
+
+        return;
+    }
+
     // Use showItems to automatically fit the viewport to all annotations
     mapInstance.showItems(
         mapInstance.annotations,
@@ -111,7 +127,7 @@ async function updateMapWithLocation(latitude, longitude, title) {
 
     mapInstance.addAnnotation(annotation);
 
-    fitMapToAnnotations();
+    await fitMapToAnnotations();
 }
 
 async function addLocationToMap(latitude, longitude, title) {
