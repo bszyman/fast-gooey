@@ -5,7 +5,7 @@
         <input type="text" value="MacRumors RSS Feed" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
     </div>
     <button 
-        hx-get="/Widgets/RssWorkspace"
+        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Widgets/RssFeed/workspace/@Model.WorkspaceViewModel.ContentNode.DocId"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton"

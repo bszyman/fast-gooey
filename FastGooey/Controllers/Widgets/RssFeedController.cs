@@ -89,19 +89,14 @@ public class RssFeedController(
     }
 
     [HttpPost("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] ClockFormModel formModel)
+    public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] RssFeedFormModel formModel)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
 
-        var data = contentNode.Config.Deserialize<ClockJsonDataModel>();
-        data.Location = formModel.Location;
-        data.Latitude = formModel.Latitude;
-        data.Longitude = formModel.Longitude;
-        data.Coordinates = formModel.Coordinates;
-        data.Timezone = formModel.Timezone;
-        data.MapIdentifier = formModel.MapIdentifier;
+        var data = contentNode.Config.Deserialize<RssFeedJsonDataModel>();
+        data.FeedUrl = formModel.FeedUrl;
         
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
@@ -174,7 +169,7 @@ public class RssFeedController(
         var contentNode = dbContext.GooeyInterfaces.First(x => x.DocId.Equals(interfaceId));
         var data = contentNode.Config.Deserialize<RssFeedJsonDataModel>();
         
-        if (string.IsNullOrWhiteSpace(data.Url))
+        if (string.IsNullOrWhiteSpace(data.FeedUrl))
         {
             return BadRequest("RSS feed URL is required");
         }
@@ -182,7 +177,7 @@ public class RssFeedController(
         try
         {
             // Fetch the RSS feed using Flurl
-            var stream = await data.Url
+            var stream = await data.FeedUrl
                 .WithTimeout(10)
                 .GetStreamAsync();
             
@@ -198,7 +193,7 @@ public class RssFeedController(
                 {
                     FeedTitle = feed.Title?.Text,
                     FeedDescription = feed.Description?.Text,
-                    FeedUrl = data.Url,
+                    FeedUrl = data.FeedUrl,
                     Items = feed.Items.Take(10).Select(item => new RssFeedItem
                     {
                         Title = item.Title?.Text,
@@ -213,17 +208,17 @@ public class RssFeedController(
         }
         catch (FlurlHttpException ex)
         {
-            logger.LogError(ex, "Failed to fetch RSS feed from {Url}", data.Url);
+            logger.LogError(ex, "Failed to fetch RSS feed from {Url}", data.FeedUrl);
             return BadRequest($"Failed to fetch RSS feed: {ex.Message}");
         }
         catch (XmlException ex)
         {
-            logger.LogError(ex, "Failed to parse RSS feed from {Url}", data.Url);
+            logger.LogError(ex, "Failed to parse RSS feed from {Url}", data.FeedUrl);
             return BadRequest("Invalid RSS feed format");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error processing RSS feed from {Url}", data.Url);
+            logger.LogError(ex, "Error processing RSS feed from {Url}", data.FeedUrl);
             return StatusCode(500, "An error occurred while processing the RSS feed");
         }
     }

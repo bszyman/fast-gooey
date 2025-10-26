@@ -42,7 +42,7 @@
                             id="searchBtn"
                             type="button"
                             onclick="toggleEditor()"
-                            hx-get="/Widgets/WeatherSearchPanel"
+                            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Widgets/Weather/search-panel"
                             hx-include="#location"
                             hx-target="#editorPanel"
                             class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">Search...</button>

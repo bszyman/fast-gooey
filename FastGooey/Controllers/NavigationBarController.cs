@@ -46,7 +46,7 @@ public class NavigationBarController(
                 Id = x.DocId,
                 Name = x.Name,
                 Type = x.ViewType,
-                Route = $"/Workspaces/{workspaceId}/Widgets/{x.ViewType}/Workspace/{x.DocId}"
+                Route = $"/Workspaces/{workspaceId}/Widgets/{x.ViewType}/{x.DocId}"
             })
             .ToListAsync();
 
