@@ -77,7 +77,10 @@ async function initMapKit() {
     const locationData = JSON.parse(mapDataElement.innerText);
 
     locationData.forEach((item, index) => {
-        const coordinate = new mapkit.Coordinate(parseFloat(item["Latitude"]), parseFloat(item["Longitude"]));
+        const latitude = typeof item["Latitude"] === "string" ? parseFloat(item["Latitude"]) : item["Latitude"];
+        const longitude = typeof item["Longitude"] === "string" ? parseFloat(item["Longitude"]) : item["Longitude"];
+        
+        const coordinate = new mapkit.Coordinate(latitude, longitude);
         const annotation = new mapkit.MarkerAnnotation(
             coordinate,
             {

@@ -13,9 +13,7 @@
             <input type="hidden" id="locationName" name="locationName" value="@location.Name" />
             <input type="hidden" id="latitude" name="latitude" value="@location.Coordinate.Latitude" />
             <input type="hidden" id="longitude" name="longitude" value="@location.Coordinate.Longitude" />
-            <input type="hidden" id="index" name="index" value="1" />
             <input type="hidden" id="locationIdentifier" name="locationIdentifier" value="@location.Id" />
-            
             <div
                 data-name="@location.Name"
                 data-lat="@location.Coordinate.Latitude"
@@ -23,13 +21,17 @@
                 data-coords="@location.Coordinate.CoordinateDisplay()"
                 data-identifier="@location.Id"
                 onclick="selectLocation(this)"
-                hx-post="/Widgets/CityEntry"
+                hx-post="/Workspaces/@Model.WorkspaceId/Widgets/Map/add-location"
                 hx-include="closest form"
                 hx-target="#collection"
                 hx-swap="beforeend"
                 class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
-                <p class="font-medium mb-1">@location.Name</p>
-                <p class="text-xs font-semibold uppercase text-grayMid mb-1">@location.Coordinate.CoordinateDisplay()</p>
+                <p class="font-medium mb-1">
+                    @location.Name
+                </p>
+                <p class="text-xs font-semibold uppercase text-grayMid mb-1">
+                    @location.Coordinate.CoordinateDisplay()
+                </p>
             </div>
         </form>
     }
@@ -46,6 +48,8 @@
 
 <script>
     function selectLocation(sender) {
+        document.getElementById("locationSearch").value = "";
+        
         addLocationToMap(
             parseFloat(sender.dataset.lat),
             parseFloat(sender.dataset.lng),

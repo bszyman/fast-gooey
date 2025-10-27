@@ -7,8 +7,16 @@
     decimal.TryParse(Model.Data?.Longitude, out longitude);
 }
 
-<script id="map-data-points">
-    [{ "Latitude": @latitude, "Longitude": @longitude, "Title": "@Model.Data.Location" }]
+<script id="map-data-points" type="application/json">
+@Html.Raw(System.Text.Json.JsonSerializer.Serialize(new[] 
+{
+    new 
+    {
+        Latitude = latitude,
+        Longitude = longitude,
+        Title = Model.Data.Location
+    }
+}))
 </script>
 
 <form method="post"

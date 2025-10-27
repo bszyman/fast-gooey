@@ -1,8 +1,8 @@
-namespace FastGooey.Models.ViewModels;
+namespace FastGooey.Models.ViewModels.Map;
 
 public class MapCityEntryViewModel
 {
-    public int Index { get; set; }
+    public Guid EntryId { get; set; }
     public string LocationName { get; set; } = string.Empty;
     public string LocationIdentifier { get; set; } = string.Empty;
     public double Latitude { get; set; }

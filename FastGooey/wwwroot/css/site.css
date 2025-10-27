@@ -123,6 +123,7 @@ body {
 .formGroup input[type='time'],
 .formGroup input[type='datetime-local'],
 .formGroup input[type='password'],
+.formGroup input[type='search'],
 .formGroup textarea {
     @apply border border-zinc-300 rounded py-1 px-2 w-full text-sm bg-white;
 }

@@ -1,8 +1,8 @@
 using System.Text.Json;
 using FastGooey.Database;
 using FastGooey.Models;
+using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels;
-using FastGooey.Models.ViewModels;
 using FastGooey.Models.ViewModels.Map;
 using FastGooey.Services;
 using Flurl.Http;
@@ -35,7 +35,8 @@ public class MapController(
                 LocationIdentifier = x.LocationIdentifier,
                 Latitude = double.Parse(x.Latitude),
                 Longitude = double.Parse(x.Longitude),
-                CoordinateDisplay = x.Coordinates
+                CoordinateDisplay = x.Coordinates,
+                EntryId = x.EntryId
             });
         
         var viewModel = new MapWorkspaceViewModel
@@ -55,7 +56,7 @@ public class MapController(
         
         var viewModel = new MapViewModel
         {
-            workspaceViewModel = workspaceViewModel
+            WorkspaceViewModel = workspaceViewModel
         };
         
         return View(viewModel);
@@ -68,6 +69,33 @@ public class MapController(
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
         
         return PartialView(viewModel);
+    }
+    
+    [HttpPost("workspace/{interfaceId:guid}")]
+    public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] MapWorkspaceFormModel formModel)
+    {
+        var contentNode = await dbContext.GooeyInterfaces
+            .Include(x => x.Workspace)
+            .FirstAsync(x => x.DocId.Equals(interfaceId));
+        
+        var data = contentNode.Config.Deserialize<MapJsonDataModel>();
+
+        data.Pins = formModel.Locations.Select(x => new MapWorkspacePinModel
+        {
+            Coordinates = x.Coordinates,
+            EntryId = x.EntryId,
+            Latitude = x.Latitude.ToString("G"),
+            Longitude = x.Longitude.ToString("G"),
+            LocationIdentifier = string.Empty,
+            LocationName = x.LocationName
+        }).ToList();
+        
+        contentNode.Config = JsonSerializer.SerializeToDocument(data);
+        await dbContext.SaveChangesAsync();
+        
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        
+        return PartialView("~/Views/Map/Workspace.cshtml", viewModel);
     }
     
     [HttpPost("create-widget")]
@@ -92,7 +120,7 @@ public class MapController(
         var workspaceViewModel = await WorkspaceViewModelForInterfaceId(contentNode.DocId);
         var viewModel = new MapViewModel
         {
-            workspaceViewModel = workspaceViewModel
+            WorkspaceViewModel = workspaceViewModel
         };
         
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
@@ -100,6 +128,7 @@ public class MapController(
         return PartialView("~/Views/Map/Index.cshtml", viewModel);
     }
     
+    [HttpGet("search-panel")]
     public async Task<IActionResult> MapSearchPanel([FromQuery] string locationSearch)
     {
         var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
@@ -110,6 +139,7 @@ public class MapController(
 
         var viewModel = new MapSearchPanelViewModel
         {
+            WorkspaceId = WorkspaceId,
             SearchText = locationSearch,
             Results = results
         };
@@ -118,7 +148,7 @@ public class MapController(
     }
 
     [HttpPost("add-location")]
-    public IActionResult AddLocationEntry(double latitude, double longitude, string locationName, string locationIdentifier, int index)
+    public IActionResult AddLocationEntry(double latitude, double longitude, string locationName, string locationIdentifier)
     {
         var viewModel = new MapCityEntryViewModel
         {
@@ -126,7 +156,7 @@ public class MapController(
             Longitude = longitude,
             LocationName = locationName,
             LocationIdentifier = locationIdentifier,
-            Index = index,
+            EntryId = Guid.NewGuid(),
             CoordinateDisplay = MapKitCoordinateModel.CoordinateDisplay(latitude, longitude)
         };
         

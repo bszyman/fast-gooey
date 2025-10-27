@@ -2,6 +2,7 @@ namespace FastGooey.Models.JsonDataModels;
 
 public class MapWorkspacePinModel 
 {
+    public Guid EntryId { get; set; }
     public string Latitude { get; set; } = string.Empty;
     public string Longitude { get; set; } = string.Empty;
     public string Coordinates { get; set; } = string.Empty;
