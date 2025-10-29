@@ -1,17 +1,35 @@
+@model FastGooey.Models.ViewModels.AppleMobileInterface.AppleMobileInterfaceListViewModel
+
 <div class="fixed z-50 bg-white flex h-20 border-b border-b-zinc-300 left-[20%] right-0">
     <div class="flex-1 flex items-center">
-        <input type="text" value="Surf Spots" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
+        <form 
+            method="post"
+            hx-post="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/UpdateTitle/@Model.WorkspaceViewModel.ContentNode.DocId"
+            hx-trigger="blur from:#titleInput, keyup[key=='Enter'] from:#titleInput"
+            hx-swap="none"
+            onsubmit="return false;"
+            class="mx-6 w-full">
+            @Html.AntiForgeryToken()
+            <input 
+                type="text" 
+                name="title" 
+                id="titleInput"
+                aria-label="title" 
+                placeholder="title" 
+                value="@Model.WorkspaceViewModel.ContentNode.Name" 
+                class="border border-zinc-300 rounded p-2 w-full transition-all duration-300 ease-in-out focus:border-emerald-500 focus:outline-none" />
+        </form>
     </div>
     <button 
-        hx-get="/Interfaces/AppleMobile/ListWorkspace"
+        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Interfaces/AppleMobile/List/workspace/@Model.WorkspaceViewModel.ContentNode.DocId"
         hx-target="#workspaceEditor"
         type="button" 
-        class="sectionButton activeSectionButton" 
+        class="sectionButton activeSectionButton"
         onclick="changeSection(this)">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
         </svg>
-        List Content
+        List
     </button>
     @* <button type="button" class="sectionButton" onclick="changeSection(this)"> *@
     @*     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> *@
@@ -20,7 +38,7 @@
     @*     Structure *@
     @* </button> *@
     <button 
-        hx-get="/Workspaces/Info"
+        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Info/@Model.WorkspaceViewModel.ContentNode.DocId"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton" 
@@ -33,5 +51,5 @@
 </div>
 
 <div id="workspaceEditor" class="mt-30 mb-24">
-    @await Html.PartialAsync("Workspaces/List.cshtml")
+    @await Html.PartialAsync("Workspace.cshtml", Model.WorkspaceViewModel)
 </div>

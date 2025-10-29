@@ -4,52 +4,27 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers.Interfaces;
 
-[Route("Workspaces/{workspaceId:guid}/Interfaces/AppleMobile")]
-public class AppleMobileController(
-    ILogger<AppleMobileController> logger, 
+[Route("Workspaces/{workspaceId:guid}/Interfaces/AppleMobile/Content")]
+public class AppleMobileContentController(
+    ILogger<AppleMobileContentController> logger, 
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext): 
     BaseStudioController(keyValueService, dbContext)
 {
-    [HttpGet("InterfaceSelectorPanel")]
-    public IActionResult InterfaceSelectorPanel()
-    {
-        return PartialView("~/Views/AppleMobile/Partials/AppleMobileInterfaceSelectorPanel.cshtml");
-    }
-    
-    // iOS List
-    [HttpGet("List")]
-    public IActionResult List()
-    {
-        return View();
-    }
-    
-    [HttpGet("ListWorkspace")]
-    public IActionResult ListWorkspace()
-    {
-        return PartialView("~/Views/AppleMobile/Workspaces/List.cshtml");
-    }
-
-    [HttpGet("ListItemEditorPanel")]
-    public IActionResult ListItemEditorPanel()
-    {
-        return PartialView("~/Views/AppleMobile/Partials/ListItemEditorPanel.cshtml");
-    }
-    
     // iOS Content
-    [HttpGet("Content")]
-    public IActionResult Content()
+    [HttpGet]
+    public IActionResult Index()
     {
         return View();
     }
     
-    [HttpGet("ContentWorkspace")]
-    public IActionResult ContentWorkspace()
+    [HttpGet("workspace")]
+    public IActionResult Workspace()
     {
         return PartialView("~/Views/AppleMobile/Workspaces/Content.cshtml");
     }
 
-    [HttpGet("ContentTypeSelectorPanel")]
+    [HttpGet("content-type-selector-panel")]
     public IActionResult ContentTypeSelectorPanel()
     {
         return PartialView("~/Views/AppleMobile/Partials/AppleMobileContentTypeSelectorPanel.cshtml");

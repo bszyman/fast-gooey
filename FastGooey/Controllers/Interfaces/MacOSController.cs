@@ -11,12 +11,6 @@ public class MacOSController(
     ApplicationDbContext dbContext): 
     BaseStudioController(keyValueService, dbContext)
 {
-    [HttpGet("InterfaceSelectorPanel")]
-    public IActionResult MacOSInterfaceSelectorPanel()
-    {
-        return PartialView("~/Views/MacOS/Partials/MacOSInterfaceSelectorPanel.cshtml");
-    }
-    
     [HttpGet("Table")]
     public IActionResult Table()
     {

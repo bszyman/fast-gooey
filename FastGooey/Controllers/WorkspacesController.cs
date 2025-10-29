@@ -104,4 +104,16 @@ public class WorkspacesController(
         
         return Ok();
     }
+    
+    [HttpGet("apple-mobile-interface-selector-panel")]
+    public IActionResult AppleMobileInterfaceSelectorPanel(Guid workspaceId)
+    {
+        return PartialView("~/Views/Workspaces/Partials/AppleMobileInterfaceSelectorPanel.cshtml", workspaceId);
+    }
+    
+    [HttpGet("mac-interface-selector-panel")]
+    public IActionResult MacInterfaceSelectorPanel(Guid workspaceId)
+    {
+        return PartialView("~/Views/Workspaces/Partials/MacInterfaceSelectorPanel.cshtml", workspaceId);
+    }
 }

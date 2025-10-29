@@ -96,9 +96,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Views\AppleMobile\Content.cshtml" />
-      <AdditionalFiles Include="Views\AppleMobile\Form.cshtml" />
-      <AdditionalFiles Include="Views\AppleMobile\List.cshtml" />
+      <AdditionalFiles Include="Views\AppleMobileList\Content.cshtml" />
+      <AdditionalFiles Include="Views\AppleMobileList\Form.cshtml" />
+      <AdditionalFiles Include="Views\AppleMobileList\List.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

@@ -38,7 +38,7 @@ public class NavigationBarController(
     
     private async Task<List<WidgetNavigationItem>> GetWidgetsForWorkspace(Guid workspaceId)
     {
-        var weatherWidgets = await dbContext.GooeyInterfaces
+        var widgets = await dbContext.GooeyInterfaces
             .Where(x => x.Workspace.PublicId.Equals(workspaceId))
             .Where(x => x.Platform.Equals("Widget"))
             .Select(x => new WidgetNavigationItem
@@ -50,26 +50,31 @@ public class NavigationBarController(
             })
             .ToListAsync();
 
-        return weatherWidgets;
+        return widgets;
     }
     
-    private async Task<List<WidgetNavigationItem>> GetAppleMobileInterfacesForWorkspace(Guid workspaceId)
+    private async Task<List<InterfaceNavigationItem>> GetAppleMobileInterfacesForWorkspace(Guid workspaceId)
+    {
+        var interfaces = await dbContext.GooeyInterfaces
+            .Where(x => x.Workspace.PublicId.Equals(workspaceId))
+            .Where(x => x.Platform.Equals("AppleMobile"))
+            .Select(x => new InterfaceNavigationItem
+            {
+                Id = x.DocId,
+                Name = x.Name,
+                Type = x.ViewType,
+                Route = $"/Workspaces/{workspaceId}/Interfaces/AppleMobile/{x.ViewType}/{x.DocId}"
+            })
+            .ToListAsync();
+        
+        return interfaces;
+    }
+    
+    private async Task<List<InterfaceNavigationItem>> GetMacOSInterfacesForWorkspace(Guid workspaceId)
     {
         // TODO: Replace with actual database query
         // For now, returning mock data
-        return new List<WidgetNavigationItem>
-        {
-            new() { Name = "Surf Spots", Route = $"/Workspaces/{workspaceId}/Interfaces/AppleMobile/List" },
-            new() { Name = "Surf Spot Submission", Route = $"/Workspaces/{workspaceId}/Interfaces/AppleMobile/Form" },
-            new() { Name = "10th Annual Event", Route = $"/Workspaces/{workspaceId}/Interfaces/AppleMobile/Content" }
-        };
-    }
-    
-    private async Task<List<WidgetNavigationItem>> GetMacOSInterfacesForWorkspace(Guid workspaceId)
-    {
-        // TODO: Replace with actual database query
-        // For now, returning mock data
-        return new List<WidgetNavigationItem>
+        return new List<InterfaceNavigationItem>
         {
             new() { Name = "Surf Spots", Route = $"/Workspaces/{workspaceId}/Interfaces/MacOS/Table" },
             new() { Name = "Surf Spot Submission", Route = $"/Workspaces/{workspaceId}/Interfaces/MacOS/Form" },
@@ -79,10 +84,10 @@ public class NavigationBarController(
         };
     }
     
-    private async Task<List<WidgetNavigationItem>> GetTvOSInterfacesForWorkspace(Guid workspaceId)
+    private async Task<List<InterfaceNavigationItem>> GetTvOSInterfacesForWorkspace(Guid workspaceId)
     {
         // TODO: Replace with actual database query
         // For now, returning mock data
-        return new List<WidgetNavigationItem>();
+        return new List<InterfaceNavigationItem>();
     }
 }

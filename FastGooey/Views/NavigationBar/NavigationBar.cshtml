@@ -10,7 +10,7 @@
         </svg>
         <button type="button" class="flex-1 text-left cursor-pointer" onclick="toggleSubmenu(this)">iOS</button>
         <button 
-          hx-get="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/InterfaceSelectorPanel"
+          hx-get="/Workspaces/@Model.WorkspaceId/apple-mobile-interface-selector-panel"
           hx-target="#editorPanel"
           onclick="toggleEditor()"
           type="button" 
@@ -25,7 +25,7 @@
         @foreach (var workspaceInterface in Model.AppleMobileInterfaces)
         {
           <li>
-            <a href="/Workspaces/@Model.WorkspaceId/Interfaces/MacOS/@workspaceInterface.Id" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+            <a href="@workspaceInterface.Route" hx-boost="true" hx-target="#workspace" hx-push-url="true">
               @workspaceInterface.Name
             </a>
           </li>
@@ -39,7 +39,7 @@
         </svg>
         <button type="button" class="flex-1 text-left cursor-pointer" onclick="toggleSubmenu(this)">macOS</button>
         <button 
-          hx-get="/Workspaces/@Model.WorkspaceId/Interfaces/MacOS/InterfaceSelectorPanel"
+          hx-get="/Workspaces/@Model.WorkspaceId/mac-interface-selector-panel"
           hx-target="#editorPanel"
           type="button" 
           class="btn btn-sm btn-primary cursor-pointer" onclick="toggleEditor()">
