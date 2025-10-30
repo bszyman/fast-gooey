@@ -88,10 +88,7 @@ public class AppleMobileListController(
     [HttpGet("{interfaceId:guid}/item-editor-panel/item/{itemId:guid?}")]
     public IActionResult ListItemEditorPanel(Guid interfaceId, Guid? itemId)
     {
-        var editorItem = new AppleMobileListItemJsonDataModel
-        {
-            Identifier = Guid.NewGuid()
-        };
+        var editorItem = new AppleMobileListItemJsonDataModel();
 
         if (itemId.HasValue)
         {
@@ -118,30 +115,33 @@ public class AppleMobileListController(
         return PartialView("~/Views/AppleMobileList/Partials/ListItemEditorPanel.cshtml", viewModel);
     }
     
-    [HttpPost("{interfaceId:guid}/item-editor-panel/item/{itemId:guid}")]
-    public async Task<IActionResult> ListItemEditorPanelWithItem(Guid interfaceId, Guid itemId, [FromForm] AppleMobileListEditorPanelFormModel formModel)
+    [HttpPost("{interfaceId:guid}/item-editor-panel/item/{itemId:guid?}")]
+    public async Task<IActionResult> ListItemEditorPanelWithItem(Guid interfaceId, Guid? itemId, [FromForm] AppleMobileListEditorPanelFormModel formModel)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
         
         var data = contentNode.Config.Deserialize<AppleMobileListJsonDataModel>();
-        var item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId));
 
+        AppleMobileListItemJsonDataModel? item = null;
+
+        if (itemId.HasValue)
+        {
+            item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
+        }
+        
         if (item == null)
         {
             item = new AppleMobileListItemJsonDataModel
             {
-                Identifier = itemId
+                Identifier = Guid.NewGuid()
             };
             
             data.Items = data.Items.Append(item).ToList();
         }
         
-        // if (ModelState.IsValid)
-        // {
-        //     
-        // }
+        // TODO: Model state is valid?
 
         item.Title = formModel.Title;
         item.Subtitle = formModel.Subtitle;
