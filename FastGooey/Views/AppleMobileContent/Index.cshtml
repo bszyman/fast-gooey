@@ -1,9 +1,27 @@
+@model FastGooey.Models.ViewModels.AppleMobileInterface.AppleMobileContentViewModel
+
 <div class="fixed z-50 bg-white flex h-20 border-b border-b-zinc-300 left-[20%] right-0">
     <div class="flex-1 flex items-center">
-        <input type="text" value="10th Annual Event" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
+        <form 
+            method="post"
+            hx-post="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/UpdateTitle/@Model.WorkspaceViewModel.ContentNode.DocId"
+            hx-trigger="blur from:#titleInput, keyup[key=='Enter'] from:#titleInput"
+            hx-swap="none"
+            onsubmit="return false;"
+            class="mx-6 w-full">
+            @Html.AntiForgeryToken()
+            <input 
+                type="text" 
+                name="title" 
+                id="titleInput"
+                aria-label="title" 
+                placeholder="title" 
+                value="@Model.WorkspaceViewModel.ContentNode.Name" 
+                class="border border-zinc-300 rounded p-2 w-full transition-all duration-300 ease-in-out focus:border-emerald-500 focus:outline-none" />
+        </form>
     </div>
     <button 
-        hx-get="/Interfaces/AppleMobile/ContentWorkspace"
+        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Interfaces/AppleMobile/Content/workspace/@Model.WorkspaceViewModel.ContentNode.DocId"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton" onclick="changeSection(this)">
@@ -13,7 +31,7 @@
         Page Content
     </button>
     <button 
-        hx-get="/Workspaces/Info"
+        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Info/@Model.WorkspaceViewModel.ContentNode.DocId"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton" onclick="changeSection(this)">
@@ -25,5 +43,5 @@
 </div>
 
 <div id="workspaceEditor" class="mt-30 mb-24">
-    @await Html.PartialAsync("Workspaces/Content.cshtml")
+    @await Html.PartialAsync("Workspace.cshtml", Model.WorkspaceViewModel)
 </div>

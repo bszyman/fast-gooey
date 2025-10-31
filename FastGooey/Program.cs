@@ -13,8 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews()
 #if DEBUG
-    .AddRazorRuntimeCompilation();
+    .AddRazorRuntimeCompilation()
 #endif
+    .AddJsonOptions(x =>
+    {
+        x.JsonSerializerOptions.AllowOutOfOrderMetadataProperties = true;
+        x.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 
 builder.Services.AddCoreServices();
 builder.Services.AddAppleMapKitServices();
