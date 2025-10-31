@@ -159,7 +159,7 @@ public class AppleMobileListController(
         return PartialView("~/Views/AppleMobileList/Workspace.cshtml", viewModel);
     }
     
-    [HttpDelete("delete-item/{interfaceId:guid}/item/{itemId:guid}")]
+    [HttpDelete("{interfaceId:guid}/item/{itemId:guid}")]
     public async Task<IActionResult> DeleteItem(Guid interfaceId, Guid itemId)
     {
         var contentNode = await dbContext.GooeyInterfaces
