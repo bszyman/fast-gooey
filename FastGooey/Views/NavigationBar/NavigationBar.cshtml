@@ -53,7 +53,7 @@
         @foreach (var workspaceInterface in Model.MacOSInterfaces)
         {
           <li>
-            <a href="/Workspaces/@Model.WorkspaceId/Interfaces/MacOS/@workspaceInterface.Id" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+            <a href="@workspaceInterface.Route" hx-boost="true" hx-target="#workspace" hx-push-url="true">
               @workspaceInterface.Name
             </a>
           </li>

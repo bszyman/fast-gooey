@@ -72,16 +72,19 @@ public class NavigationBarController(
     
     private async Task<List<InterfaceNavigationItem>> GetMacOSInterfacesForWorkspace(Guid workspaceId)
     {
-        // TODO: Replace with actual database query
-        // For now, returning mock data
-        return new List<InterfaceNavigationItem>
-        {
-            new() { Name = "Surf Spots", Route = $"/Workspaces/{workspaceId}/Interfaces/MacOS/Table" },
-            new() { Name = "Surf Spot Submission", Route = $"/Workspaces/{workspaceId}/Interfaces/MacOS/Form" },
-            new() { Name = "10th Annual Event", Route = $"/Workspaces/{workspaceId}/Interfaces/MacOS/Content" },
-            new() { Name = "Apple Hardware", Route = $"/Workspaces/{workspaceId}/Interfaces/MacOS/SourceList" },
-            new() { Name = "eFoil Products", Route = $"/Workspaces/{workspaceId}/Interfaces/MacOS/Outline" }
-        };
+        var interfaces = await dbContext.GooeyInterfaces
+            .Where(x => x.Workspace.PublicId.Equals(workspaceId))
+            .Where(x => x.Platform.Equals("Mac"))
+            .Select(x => new InterfaceNavigationItem
+            {
+                Id = x.DocId,
+                Name = x.Name,
+                Type = x.ViewType,
+                Route = $"/Workspaces/{workspaceId}/interfaces/mac/{x.ViewType}/{x.DocId}"
+            })
+            .ToListAsync();
+        
+        return interfaces;
     }
     
     private async Task<List<InterfaceNavigationItem>> GetTvOSInterfacesForWorkspace(Guid workspaceId)
