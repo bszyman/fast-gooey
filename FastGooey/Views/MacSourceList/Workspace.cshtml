@@ -1,0 +1,68 @@
+@model FastGooey.Models.ViewModels.Mac.MacInterfaceSourceListWorkspaceViewModel
+
+<div  id="editor" class="mx-auto max-w-3xl">
+    <div class="contentGroup">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4 mb-4">
+            <p class="font-semibold">Source List Items</p>
+        </div>
+        @foreach (var group in Model.Data.Groups)
+        {
+            <div class="pb-4">
+                <button
+                    hx-get="/Workspaces/@Model.ContentNode?.Workspace.PublicId/interfaces/mac/source-list/@Model.ContentNode?.DocId/group-editor-panel/@group.Identifier"
+                    hx-target="#editorPanel"
+                    onclick="toggleEditor()"
+                    type="button"
+                    class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-semibold rounded mx-4 mb-2 px-4 py-2 cursor-pointer text-sm">
+                    @group.GroupName
+                </button>
+                <div class="ml-8 mr-4 border border-dashed border-zinc-200 rounded">
+                    <ul>
+                        @foreach (var item in group.GroupItems)
+                        {
+                            <li class="py-2 px-2 border-b border-b-zinc-200 border-dashed hover:bg-zinc-100">
+                                <button
+                                    type="button"
+                                    onclick="toggleEditor()" 
+                                    hx-get="/Workspaces/@Model.ContentNode?.Workspace.PublicId/interfaces/mac/source-list/@Model.ContentNode?.DocId/item-editor-panel/group/@group.Identifier/item/@item.Identifier" 
+                                    hx-target="#editorPanel"
+                                    class="cursor-pointer w-full text-left">
+                                    @item.Title
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                    <button
+                        type="button"
+                        class=" cursor-pointer w-full"
+                        onclick="toggleEditor()"
+                        hx-get="/Workspaces/@Model.ContentNode?.Workspace.PublicId/interfaces/mac/source-list/@Model.ContentNode?.DocId/item-editor-panel/group/@group.Identifier/item"
+                        hx-target="#editorPanel">
+                        <div class="bg-zinc-200 font-semibold text-sm text-center text-shadow-zinc-700 py-2 rounded-br rounded-bl flex gap-2 items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-shadow-zinc-700">
+                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
+                            </svg>
+                            Add Item...
+                        </div>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
+    <div class="flex items-center w-1/2">
+        <p class="text-sm">Interfaces :: Mac OS :: Source List View</p>
+    </div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        <button
+            hx-get="/Workspaces/@Model.ContentNode?.Workspace.PublicId/interfaces/mac/source-list/@Model.ContentNode?.DocId/group-editor-panel"
+            hx-target="#editorPanel"
+            onclick="toggleEditor()"
+            type="button"
+            class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+            Add Group...
+        </button>
+    </div>
+</div>

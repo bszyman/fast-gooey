@@ -1,0 +1,22 @@
+using System.Text.Json.Nodes;
+
+namespace FastGooey.Models.JsonDataModels;
+
+public class MacSourceListJsonDataModel
+{
+    public List<MacSourceListGroupJsonDataModel> Groups { get; set; } = [];
+}
+
+public class MacSourceListGroupJsonDataModel
+{
+    public Guid Identifier { get; set; } = Guid.Empty;
+    public string GroupName { get; set; } = string.Empty;
+    public List<MacSourceListGroupItemJsonDataModel> GroupItems { get; set; } = [];
+}
+
+public class MacSourceListGroupItemJsonDataModel
+{
+    public Guid Identifier { get; set; } = Guid.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+}

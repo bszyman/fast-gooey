@@ -21,7 +21,7 @@
             data-libraries="services,full-map,geojson"
             data-token="@ViewBag.MapKitToken"></script>
 </head>
-<body hx-headers='{"RequestVerificationToken": "@antiForgeryToken"}'>
+<body hx-headers='{"RequestVerificationToken": "@antiForgeryToken"}' hx-on:toggle-editor="toggleEditor()">
   <div class="absolute layout-grid text-sm">
     <nav class="sidebar">
       <div class="sidebar-content">
