@@ -1,7 +1,6 @@
-@model FastGooey.Models.ViewModels.AppleMobileInterface.AppleMobileImageConfigurationPanelViewModel
-
+@model FastGooey.Models.ViewModels.Mac.MacContentImageConfigurationPanelViewModel
 @{
-    var url = $"/Workspaces/{Model.WorkspaceId}/Interfaces/AppleMobile/Content/{Model.InterfaceId}/image-item";
+    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId}/image-item";
     url = Model.Content.Identifier.Equals(Guid.Empty) ? url : $"{url}/{Model.Content.Identifier}";
 }
 
@@ -27,30 +26,6 @@
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
                 <p class="font-semibold text-sm">Edit Content</p>
             </div>
-            @* <div class="py-4 px-4"> *@
-            @*     <div class="mb-2 flex gap-2 items-center"> *@
-            @*         <input type="radio" id="imageModeRadio" name="imageMode" value="uploadImage" class="w-4 h-4 shrink-0" checked/> *@
-            @*         <label for="imageModeRadio" style="margin-bottom: 0;">Upload Image</label> *@
-            @*     </div> *@
-            @*     <div class="mt-1 flex gap-2"> *@
-            @*         <button type="button" class="text-sm w-full rounded bg-zinc-100 text-zinc-700 font-semibold px-6 py-3 cursor-pointer" onclick="document.getElementById('image').click()">Choose Image</button> *@
-            @*         <input type="file" id="image" name="image" accept="image/*" class="hidden"/> *@
-            @*     </div> *@
-            @* </div> *@
-            @* <div class="py-4 px-4"> *@
-            @*     <div class="mb-2 flex gap-2 items-center"> *@
-            @*         <input type="radio" id="imageUrlModeRadio" name="imageMode" value="imageUrl" class="w-4 h-4 shrink-0"/> *@
-            @*         <label for="imageUrlModeRadio" style="margin-bottom: 0;">Use Image URL</label> *@
-            @*     </div> *@
-            @*     <div class="mt-1 ml-4 flex items-center justify-center align-middle gap-2"> *@
-            @*         <label for="url" style="margin-bottom: 0;">Url</label> *@
-            @*         <input *@
-            @*             type="url" *@
-            @*             id="url" *@
-            @*             name="url" *@
-            @*             value=""/> *@
-            @*     </div> *@
-            @* </div> *@
             <div class="py-4 px-4">
                 <div class="mb-4">
                     <label for="url">Image Url</label>
@@ -79,18 +54,7 @@
     </div>
         
     <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
-        <div class="flex items-center w-1/2">
-            @if (!Model.Content.Identifier.Equals(Guid.Empty))
-            {
-                <button
-                    type="button"
-                    hx-delete="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/Content/@Model.InterfaceId/item/@Model.Content.Identifier"
-                    hx-target="#workspaceEditor"
-                    class="bg-rose-600 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
-                    Delete
-                </button>
-            }
-        </div>
+        <div class="flex items-center w-1/2"></div>
         <div class="flex items-center justify-end w-1/2 text-right gap-2">
             @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
             @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")

@@ -1,0 +1,41 @@
+@model FastGooey.Models.ViewModels.Mac.MacContentTextConfigurationPanelViewModel
+@{
+    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId}/text-item";
+    url = Model.Content.Identifier.Equals(Guid.Empty) ? url : $"{url}/{Model.Content.Identifier}";
+}
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Text</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@url"
+      hx-target="#workspaceEditor"
+      hx-on::after-request="toggleEditor()">
+    @Html.AntiForgeryToken()
+    <div class="py-4 px-4">
+        <div class="formGroup mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Edit Content</p>
+            </div>
+            <div class="py-4 px-4">
+                <div>
+                    <label for="text">Text</label>
+                    <div class="flex gap-2">
+                        <textarea id="text" name="text" rows="8">@Model.Content.Text</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+        <div class="flex items-center w-1/2"></div>
+        <div class="flex items-center justify-end w-1/2 text-right gap-2">
+            @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+        </div>
+    </div>
+</form>

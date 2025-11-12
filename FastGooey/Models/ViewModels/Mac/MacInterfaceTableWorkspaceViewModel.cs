@@ -1,4 +1,4 @@
-using FastGooey.Models.JsonDataModels;
+using FastGooey.Models.JsonDataModels.Mac;
 
 namespace FastGooey.Models.ViewModels.Mac;
 

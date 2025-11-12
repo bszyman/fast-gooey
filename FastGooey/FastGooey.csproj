@@ -29,6 +29,7 @@
 
     <ItemGroup>
       <Folder Include="Migrations\" />
+      <Folder Include="Views\MacOS\Partials\Content\" />
       <Folder Include="Views\Team\" />
       <Folder Include="Views\Widgets\Workspaces\" />
     </ItemGroup>

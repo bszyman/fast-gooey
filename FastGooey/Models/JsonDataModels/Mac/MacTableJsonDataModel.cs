@@ -1,6 +1,5 @@
-using System.Text.Json.Nodes;
 
-namespace FastGooey.Models.JsonDataModels;
+namespace FastGooey.Models.JsonDataModels.Mac;
 
 public class MacTableJsonDataModel
 {
