@@ -9,8 +9,7 @@
 
 <form method="post"
       hx-post="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/List/@Model.InterfaceId/item-editor-panel/item/@Model.Item.Identifier"
-      hx-target="#workspaceEditor"
-      hx-on::after-request="toggleEditor()">
+      hx-target="#editorPanel">
     @Html.AntiForgeryToken()
     <div class="py-4 px-4">
         <div class="formGroup mb-8">

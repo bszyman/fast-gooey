@@ -130,33 +130,37 @@ public class AppleMobileListController(
         {
             item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
         }
-        
-        if (item == null)
+
+        if (ModelState.IsValid)
         {
-            item = new AppleMobileListItemJsonDataModel
+            if (item == null)
             {
-                Identifier = Guid.NewGuid()
-            };
+                item = new AppleMobileListItemJsonDataModel
+                {
+                    Identifier = Guid.NewGuid()
+                };
             
-            data.Items = data.Items.Append(item).ToList();
+                data.Items = data.Items.Append(item).ToList();
+            }
+            
+            item.Title = formModel.Title;
+            item.Subtitle = formModel.Subtitle;
+            item.Url = formModel.Url;
+        
+            contentNode.Config = JsonSerializer.SerializeToDocument(data);
+            await dbContext.SaveChangesAsync();
+            
+            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
         }
         
-        // TODO: Model state is valid?
-
-        item.Title = formModel.Title;
-        item.Subtitle = formModel.Subtitle;
-        item.Url = formModel.Url;
-        
-        contentNode.Config = JsonSerializer.SerializeToDocument(data);
-        await dbContext.SaveChangesAsync();
-        
-        var viewModel = new AppleMobileInterfaceListWorkspaceViewModel
+        var viewModel = new AppleMobileInterfaceListEditorViewModel
         {
-            ContentNode = contentNode,
-            Data = data
+            WorkspaceId = WorkspaceId,
+            InterfaceId = interfaceId,
+            Item = item
         };
         
-        return PartialView("~/Views/AppleMobileList/Workspace.cshtml", viewModel);
+        return PartialView("~/Views/AppleMobileList/Partials/ListItemEditorPanel.cshtml", viewModel);
     }
     
     [HttpDelete("{interfaceId:guid}/item/{itemId:guid}")]
