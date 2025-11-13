@@ -183,36 +183,48 @@ public class MacTableController(
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
 
-        var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
-        var existingFieldType = data.Structure
-            .FirstOrDefault(x => x.FieldAlias.Equals(fieldAlias));
-        
-        if (string.IsNullOrWhiteSpace(fieldAlias) || existingFieldType == null)
+        if (ModelState.IsValid)
         {
-            var fieldType = new MacTableStructureItemJsonDataModel
+            var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
+            var existingFieldType = data.Structure
+                .FirstOrDefault(x => x.FieldAlias.Equals(fieldAlias));
+        
+            if (string.IsNullOrWhiteSpace(fieldAlias) || existingFieldType == null)
             {
-                FieldName = form.FieldName,
-                FieldAlias = form.FieldAlias,
-                FieldType = form.FieldType,
-                DropdownOptions = form.DropdownOptions
-            };
+                var fieldType = new MacTableStructureItemJsonDataModel
+                {
+                    FieldName = form.FieldName,
+                    FieldAlias = form.FieldAlias,
+                    FieldType = form.FieldType,
+                    DropdownOptions = form.DropdownOptions
+                };
             
-            data.Structure.Add(fieldType);
-        }
-        else
-        {
-            existingFieldType.FieldName = form.FieldName;
-            existingFieldType.FieldType = form.FieldType;
-            existingFieldType.FieldAlias = form.FieldAlias;
-            existingFieldType.DropdownOptions = form.DropdownOptions;
-        }
+                data.Structure.Add(fieldType);
+            }
+            else
+            {
+                existingFieldType.FieldName = form.FieldName;
+                existingFieldType.FieldType = form.FieldType;
+                existingFieldType.FieldAlias = form.FieldAlias;
+                existingFieldType.DropdownOptions = form.DropdownOptions;
+            }
 
-        contentNode.Config =  JsonSerializer.SerializeToDocument(data);
-        await dbContext.SaveChangesAsync();
+            contentNode.Config =  JsonSerializer.SerializeToDocument(data);
+            await dbContext.SaveChangesAsync();
         
-        var viewModel = await WorkspaceStructureViewModelForInterfaceId(interfaceId);
+            Response.Headers.Append("HX-Trigger", "refreshStructureWorkspace, toggleEditor");   
+        }
         
-        return PartialView("~/Views/MacTable/StructureWorkspace.cshtml", viewModel);
+        var viewModel = new MacInterfaceTableFieldEditorPanelViewModel
+        {
+            WorkspaceId = contentNode.Workspace.PublicId,
+            InterfaceId = contentNode.DocId,
+            FieldName = form.FieldName,
+            FieldAlias = form.FieldAlias,
+            FieldType = form.FieldType
+        };
+        
+        return PartialView("~/Views/MacTable/Partials/TableFieldEditorPanel.cshtml", viewModel);
     }
     
     [HttpDelete("{interfaceId:guid}/field-editor-panel/item/{fieldAlias}")]
@@ -238,9 +250,9 @@ public class MacTableController(
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
         
-        var viewModel = await WorkspaceStructureViewModelForInterfaceId(interfaceId);
-        
-        return PartialView("~/Views/MacTable/StructureWorkspace.cshtml", viewModel);
+        Response.Headers.Append("HX-Trigger", "refreshStructureWorkspace, toggleEditor");
+
+        return Ok();
     }
     
     [HttpGet("{interfaceId:guid}/field-editor-panel/item/new-dropdown")]
@@ -288,72 +300,83 @@ public class MacTableController(
         var tableItem = data?.Data
                             .FirstOrDefault(x => x.Identifier == itemId.GetValueOrDefault())
                         ?? new MacTableItemJsonDataModel { Identifier = Guid.NewGuid() };
-
-        if (!string.IsNullOrEmpty(form["gooeyName"]))
-        {
-            tableItem.GooeyName = form["gooeyName"]!;
-        }
         
-        foreach (var field in data.Structure)
+        if (ModelState.IsValid)
         {
-            var rawValues = form[field.FieldAlias];
-            if (rawValues.Any())
+            if (!string.IsNullOrEmpty(form["gooeyName"]))
             {
-                var stringValue = rawValues.First();
-                
-                switch (field.FieldType)
+                tableItem.GooeyName = form["gooeyName"]!;
+            }
+            
+            foreach (var field in data.Structure)
+            {
+                var rawValues = form[field.FieldAlias];
+                if (rawValues.Any())
                 {
-                    case "textString":
-                    case "longText":
-                    case "url":
-                    case "email":
-                    case "phone":
-                    case "dropdown":
-                        UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(stringValue));
-                        break;
-                    case "integer":
-                        var intValue = int.TryParse(stringValue, out var i) ? (object)i : null;
-                        if (intValue != null)
-                            UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(intValue));
-                        break;
-                    case "boolean":
-                        var boolValue = bool.TryParse(stringValue, out var b) ? (object)b : null;
-                        if (boolValue != null)
-                            UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(boolValue));
-                        break;
-                    case "date":
-                        var dateValue = DateTime.TryParse(stringValue, out var d) ? (object)d.Date : null;
-                        if (dateValue != null)
-                            UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(dateValue));
-                        break;
-                    case "time":
-                        var timeValue = TimeSpan.TryParse(stringValue, out var t) ? (object)t : null;
-                        if (timeValue != null)
-                            UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(timeValue));
-                        break;
-                    case "dateTime":
-                        var dateTimeValue = DateTime.TryParse(stringValue, out var dt) ? (object)dt : null;
-                        if (dateTimeValue != null)
-                            UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(dateTimeValue));
-                        break;
-                    default:
-                        UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(stringValue));
-                        break;
+                    var stringValue = rawValues.First();
+                    
+                    switch (field.FieldType)
+                    {
+                        case "textString":
+                        case "longText":
+                        case "url":
+                        case "email":
+                        case "phone":
+                        case "dropdown":
+                            UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(stringValue));
+                            break;
+                        case "integer":
+                            var intValue = int.TryParse(stringValue, out var i) ? (object)i : null;
+                            if (intValue != null)
+                                UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(intValue));
+                            break;
+                        case "boolean":
+                            var boolValue = bool.TryParse(stringValue, out var b) ? (object)b : null;
+                            if (boolValue != null)
+                                UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(boolValue));
+                            break;
+                        case "date":
+                            var dateValue = DateTime.TryParse(stringValue, out var d) ? (object)d.Date : null;
+                            if (dateValue != null)
+                                UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(dateValue));
+                            break;
+                        case "time":
+                            var timeValue = TimeSpan.TryParse(stringValue, out var t) ? (object)t : null;
+                            if (timeValue != null)
+                                UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(timeValue));
+                            break;
+                        case "dateTime":
+                            var dateTimeValue = DateTime.TryParse(stringValue, out var dt) ? (object)dt : null;
+                            if (dateTimeValue != null)
+                                UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(dateTimeValue));
+                            break;
+                        default:
+                            UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(stringValue));
+                            break;
+                    }
                 }
             }
-        }
 
-        if (!itemId.HasValue)
-        {
-            data.Data.Add(tableItem!);
+            if (!itemId.HasValue)
+            {
+                data.Data.Add(tableItem!);
+            }
+            
+            contentNode.Config = JsonSerializer.SerializeToDocument(data);
+            await dbContext.SaveChangesAsync();
+            
+            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
         }
         
-        contentNode.Config = JsonSerializer.SerializeToDocument(data);
-        await dbContext.SaveChangesAsync();
+        var viewModel = new MacInterfaceTableItemEditorPanelViewModel
+        {
+            WorkspaceId = contentNode.Workspace.PublicId,
+            InterfaceId = contentNode.DocId,
+            Structure = data.Structure,
+            Content = tableItem
+        };
         
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
-        return PartialView("~/Views/MacTable/Workspace.cshtml", viewModel);
+        return PartialView("~/Views/MacTable/Partials/TableItemEditorPanel.cshtml", viewModel);
     }
     
     [HttpDelete("workspace/{interfaceId:guid}/item/{itemId:guid}")]
@@ -372,9 +395,13 @@ public class MacTableController(
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
         
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
-        return PartialView("~/Views/MacTable/Workspace.cshtml", viewModel);
+        Response.Headers.Append("HX-Trigger", "refreshWorkspace");
+
+        return Ok();
+
+        // var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        //
+        // return PartialView("~/Views/MacTable/Workspace.cshtml", viewModel);
     }
 
     private static void UpdateKeyOrAddIfNotExists(Dictionary<string, object>? json, string key, JsonNode? value)

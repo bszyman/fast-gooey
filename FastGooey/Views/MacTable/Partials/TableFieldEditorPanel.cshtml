@@ -34,8 +34,7 @@
 
 <form method="post"
       hx-post="/Workspaces/@Model.WorkspaceId/interfaces/mac/table/@Model.InterfaceId/field-editor-panel/item/@Model.FieldAlias"
-      hx-target="#workspaceEditor"
-      hx-on::after-request="toggleEditor()">
+      hx-target="#editorPanel">
     <div class="py-4 px-4">
         <div class="formGroup mb-4">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
@@ -110,7 +109,8 @@
             {
                 @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new DeleteButtonViewModel
                 {
-                    Url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/table/{Model.InterfaceId}/field-editor-panel/item/{Model.FieldAlias}"
+                    Url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/table/{Model.InterfaceId}/field-editor-panel/item/{Model.FieldAlias}",
+                    Target = "#editorPanel"
                 })
             }
         </div>

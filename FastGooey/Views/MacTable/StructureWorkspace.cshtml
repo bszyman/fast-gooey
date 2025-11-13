@@ -1,96 +1,100 @@
 @using FastGooey.Models.ViewModels.Mac
 @model FastGooey.Models.ViewModels.Mac.MacInterfaceTableStructureWorkspaceViewModel
 
-<div id="editor" class="mx-auto max-w-3xl">
-    <div class="contentGroup mb-8">
-        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
-            <p class="font-semibold">Header Structure</p>
-        </div>
-        <form id="headerStructureForm">
-            <div id="headerStructure" class="px-4">
-                @{ var headerCounter = 1; }
-                @foreach (var headerConfig in Model.Data.Header)
-                {
-                    var viewModel = new TableItemOptionRowViewModel
+<div
+    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/workspace/@Model.InterfaceId()/structure"
+    hx-trigger="refreshStructureWorkspace from:body">
+    <div id="editor" class="mx-auto max-w-3xl">
+        <div class="contentGroup mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold">Header Structure</p>
+            </div>
+            <form id="headerStructureForm">
+                <div id="headerStructure" class="px-4">
+                    @{ var headerCounter = 1; }
+                    @foreach (var headerConfig in Model.Data.Header)
                     {
-                        OptionRowCounter = headerCounter,
-                        SelectedAlias = headerConfig.FieldAlias,
-                        Structure = Model.Data.Structure
-                    };
-                    
-                    @await Html.PartialAsync("~/Views/MacTable/Partials/TableHeaderOptionRow.cshtml", viewModel)
-                    
-                    headerCounter += 1;
+                        var viewModel = new TableItemOptionRowViewModel
+                        {
+                            OptionRowCounter = headerCounter,
+                            SelectedAlias = headerConfig.FieldAlias,
+                            Structure = Model.Data.Structure
+                        };
+                        
+                        @await Html.PartialAsync("~/Views/MacTable/Partials/TableHeaderOptionRow.cshtml", viewModel)
+                        
+                        headerCounter += 1;
+                    }
+                </div>
+            </form>
+            <div class="py-4 px-4">
+                <button
+                    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/@Model.InterfaceId()/header-option-row"
+                    hx-target="#headerStructure"
+                    hx-swap="beforeend"
+                    type="button"
+                    class="bg-blueMid text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">
+                    Add Column
+                </button>
+            </div>
+        </div>
+        
+        <div class="formGroup mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold">Table Structure</p>
+            </div>
+            <div class="py-4 px-4">
+                <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4 font-bold">
+                    <div class="flex-1">
+                        <button type="button" disabled="disabled">Field Name</button>
+                    </div>
+                    <p class="w-32">Field Alias</p>
+                    <p class="w-32">Field Type</p>
+                </div>
+                @foreach (var fieldConfig in Model.Data.Structure)
+                {
+                    <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4">
+                        <div class="flex-1">
+                            <button 
+                                hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/@Model.InterfaceId()/field-editor-panel/@fieldConfig.FieldAlias"
+                                hx-target="#editorPanel"
+                                onclick="toggleEditor()"
+                                type="button" 
+                                class="bg-zinc-200 hover:bg-zinc-300 text-shadow-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer">
+                                @fieldConfig.FieldName
+                            </button>
+                        </div>
+                        <p class="w-32">@fieldConfig.FieldAlias</p>
+                        <p class="w-32">@fieldConfig.FieldType</p>
+                    </div>
                 }
             </div>
-        </form>
-        <div class="py-4 px-4">
-            <button
-                hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/interfaces/mac/table/@Model.ContentNode.DocId/header-option-row"
-                hx-target="#headerStructure"
-                hx-swap="beforeend"
-                type="button"
-                class="bg-blueMid text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">
-                Add Column
-            </button>
-        </div>
-    </div>
-    
-    <div class="formGroup mb-8">
-        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
-            <p class="font-semibold">Table Structure</p>
-        </div>
-        <div class="py-4 px-4">
-            <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4 font-bold">
-                <div class="flex-1">
-                    <button type="button" disabled="disabled">Field Name</button>
-                </div>
-                <p class="w-32">Field Alias</p>
-                <p class="w-32">Field Type</p>
+            <div class="pb-4 px-4">
+                <button
+                    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/@Model.InterfaceId()/field-editor-panel"
+                    hx-target="#editorPanel"
+                    type="button"
+                    onclick="toggleEditor()"
+                    class="bg-blueMid text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">
+                    Add Table Field...
+                </button>
             </div>
-            @foreach (var fieldConfig in Model.Data.Structure)
-            {
-                <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4">
-                    <div class="flex-1">
-                        <button 
-                            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/interfaces/mac/table/@Model.ContentNode.DocId/field-editor-panel/@fieldConfig.FieldAlias"
-                            hx-target="#editorPanel"
-                            onclick="toggleEditor()"
-                            type="button" 
-                            class="bg-zinc-200 hover:bg-zinc-300 text-shadow-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer">
-                            @fieldConfig.FieldName
-                        </button>
-                    </div>
-                    <p class="w-32">@fieldConfig.FieldAlias</p>
-                    <p class="w-32">@fieldConfig.FieldType</p>
-                </div>
-            }
         </div>
-        <div class="pb-4 px-4">
+    </div>
+
+    <div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
+        <div class="flex items-center w-1/2">
+            <p class="text-sm">Interfaces :: MacOS :: Table View</p>
+        </div>
+        <div class="flex items-center justify-end w-1/2 text-right">
             <button
-                hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/interfaces/mac/table/@Model.ContentNode.DocId/field-editor-panel"
-                hx-target="#editorPanel"
+                hx-post="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/@Model.InterfaceId()/save-structure-workspace"
+                hx-target="#workspaceEditor"
+                hx-include="#headerStructureForm"
                 type="button"
-                onclick="toggleEditor()"
-                class="bg-blueMid text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">
-                Add Table Field...
+                class="bg-green-600 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+                Save
             </button>
         </div>
-    </div>
-</div>
-
-<div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
-    <div class="flex items-center w-1/2">
-        <p class="text-sm">Interfaces :: MacOS :: Table View</p>
-    </div>
-    <div class="flex items-center justify-end w-1/2 text-right">
-        <button
-            hx-post="/Workspaces/@Model.ContentNode.Workspace.PublicId/interfaces/mac/table/@Model.ContentNode.DocId/save-structure-workspace"
-            hx-target="#workspaceEditor"
-            hx-include="#headerStructureForm"
-            type="button"
-            class="bg-green-600 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
-            Save
-        </button>
     </div>
 </div>

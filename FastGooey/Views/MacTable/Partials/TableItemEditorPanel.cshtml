@@ -10,8 +10,7 @@
 
 <form method="post"
       hx-post="@formUrl"
-      hx-target="#workspaceEditor"
-      hx-on::after-request="toggleEditor()">
+      hx-target="#editorPanel">
     <div class="grid grid-rows-[auto_1fr_auto] min-h-screen bg-gray-100">
         @* <!-- Header - Fixed at top --> *@
         <div class="bg-white flex w-full h-20 border-b border-b-zinc-300 flex-shrink-0">
