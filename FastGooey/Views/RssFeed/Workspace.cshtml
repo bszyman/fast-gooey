@@ -1,7 +1,7 @@
 @model FastGooey.Models.ViewModels.RssFeed.RssWorkspaceViewModel
 
 <form method="post"
-      hx-post="/Workspaces/@Model.ContentNode!.Workspace.PublicId/Widgets/RssFeed/Workspace/@Model.ContentNode.DocId"
+      hx-post="/Workspaces/@Model.WorkspaceId()/Widgets/RssFeed/Workspace/@Model.InterfaceId()"
       hx-target="#workspaceEditor">
         @Html.AntiForgeryToken()
         <div id="editor" class="mx-auto max-w-3xl">
@@ -24,7 +24,7 @@
                             <button
                                 id="previewButton"
                                 type="button"
-                                hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Widgets/RssFeed/preview-panel/from-url"
+                                hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/RssFeed/preview-panel/from-url"
                                 hx-include="#feedUrl"
                                 hx-target="#previewPanel"
                                 class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">
@@ -48,7 +48,7 @@
                 else
                 {
                     <div 
-                        hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Widgets/RssFeed/preview-panel/from-interface/@Model.ContentNode.DocId" 
+                        hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/RssFeed/preview-panel/from-interface/@Model.InterfaceId()" 
                         hx-trigger="load, refreshPreview from:body"
                         hx-target="#previewPanel"
                         hx-swap="outerHTML">

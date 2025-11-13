@@ -10,7 +10,7 @@
 </script>
 
 <form method="post"
-      hx-post="/Workspaces/@Model.ContentNode.Workspace.PublicId/Widgets/Map/Workspace/@Model.ContentNode.DocId"
+      hx-post="/Workspaces/@Model.WorkspaceId()/Widgets/Map/Workspace/@Model.InterfaceId()"
       hx-target="#workspaceEditor">
         <div id="editor" class="mx-auto mt-30 mb-24 max-w-3xl">
             <div class="flex justify-center mb-8">
@@ -39,7 +39,7 @@
                             id="searchBtn"
                             type="button"
                             onclick="toggleEditor()"
-                            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Widgets/Map/search-panel"
+                            hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Map/search-panel"
                             hx-include="#locationSearch"
                             hx-target="#editorPanel"
                             class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">
@@ -67,11 +67,7 @@
                 <p class="text-sm">Widgets :: Map</p>
             </div>
             <div class="flex items-center justify-end w-1/2 text-right">
-                <button
-                    type="submit"
-                    class="bg-emerald-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
-                    Save
-                </button>
+                @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
             </div>
         </div>
 </form>

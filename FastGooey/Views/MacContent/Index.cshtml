@@ -6,7 +6,7 @@
         @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
         {
             Url = $"/Workspaces/{Model.WorkspaceId()}/UpdateTitle/{Model.InterfaceId()}",
-            Title = Model.Workspace.ContentNode.Name
+            Title = Model.Workspace!.ContentNode!.Name
         })
     </div>
     <button 

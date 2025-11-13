@@ -2,7 +2,7 @@
 @model FastGooey.Models.ViewModels.AppleMobileInterface.AppleMobileContentWorkspaceViewModel
 
 <form method="post"
-      hx-post="/Workspaces/@Model.ContentNode.Workspace.PublicId/Interfaces/AppleMobile/Content/workspace/@Model.ContentNode.DocId"
+      hx-post="/Workspaces/@Model.WorkspaceId()/Interfaces/AppleMobile/Content/workspace/@Model.InterfaceId()"
       hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()
     <div id="editor" class="mx-auto max-w-3xl">
@@ -49,7 +49,7 @@
                         var headline = (HeadlineContentItem)item;
                         <div
                             onclick="toggleEditor()"
-                            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Interfaces/AppleMobile/Content/@Model.ContentNode.DocId/headline-config-panel/@item.Identifier"
+                            hx-get="/Workspaces/@Model.WorkspaceId()/Interfaces/AppleMobile/Content/@Model.InterfaceId()/headline-config-panel/@item.Identifier"
                             hx-target="#editorPanel"
                             class="rounded hover:bg-zinc-100 p-1 cursor-pointer">
                             <p class="text-lg font-bold">@headline.Headline</p>
@@ -61,7 +61,7 @@
                         var text = (TextContentItem)item;
                         <div
                             onclick="toggleEditor()"
-                            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Interfaces/AppleMobile/Content/@Model.ContentNode.DocId/text-config-panel/@item.Identifier"
+                            hx-get="/Workspaces/@Model.WorkspaceId()/Interfaces/AppleMobile/Content/@Model.InterfaceId()/text-config-panel/@item.Identifier"
                             hx-target="#editorPanel"
                             class="rounded hover:bg-zinc-100 p-1 cursor-pointer">
                             <p class="text-md">@text.Text</p>
@@ -73,7 +73,7 @@
                         var link = (LinkContentItem)item;
                         <div
                             onclick="toggleEditor()"
-                            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Interfaces/AppleMobile/Content/@Model.ContentNode.DocId/link-config-panel/@link.Identifier"
+                            hx-get="/Workspaces/@Model.WorkspaceId()/Interfaces/AppleMobile/Content/@Model.InterfaceId()/link-config-panel/@link.Identifier"
                             hx-target="#editorPanel"
                             class="my-3 rounded-xl hover:bg-zinc-100 px-1 py-3 cursor-pointer text-center border border-zinc-300">
                             <a href="@link.Url" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="text-md text-blueMid font-bold">
@@ -87,7 +87,7 @@
                         var image = (ImageContentItem)item;
                         <div
                             onclick="toggleEditor()"
-                            hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Interfaces/AppleMobile/Content/@Model.ContentNode.DocId/image-config-panel/@image.Identifier"
+                            hx-get="/Workspaces/@Model.WorkspaceId()/Interfaces/AppleMobile/Content/@Model.InterfaceId()/image-config-panel/@image.Identifier"
                             hx-target="#editorPanel"
                             class="rounded-xl hover:bg-zinc-100 px-1 py-3 cursor-pointer text-center">
                             <img src="@image.Url" alt="@image.AltText" class="w-full">
@@ -98,7 +98,7 @@
                 <button
                     type="button"
                     onclick="toggleEditor()"
-                    hx-get="/Workspaces/@Model.ContentNode.Workspace.PublicId/Interfaces/AppleMobile/Content/@Model.ContentNode.DocId/content-type-selector-panel"
+                    hx-get="/Workspaces/@Model.WorkspaceId()/Interfaces/AppleMobile/Content/@Model.InterfaceId()/content-type-selector-panel"
                     hx-target="#editorPanel"
                     class="w-full rounded bg-zinc-100 text-zinc-700 font-semibold px-6 py-3 mt-4 cursor-pointer">
                     Add Content
