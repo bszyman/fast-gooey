@@ -1,27 +1,16 @@
+@using FastGooey.Models.ViewModels
 @model FastGooey.Models.ViewModels.Weather.WeatherViewModel
 
 <div class="fixed z-40 bg-white flex h-20 border-b border-b-zinc-300 left-[20%] right-0">
     <div class="flex-1 flex items-center">
-        <form 
-            method="post"
-            hx-post="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/UpdateTitle/@Model.WorkspaceViewModel.ContentNode.DocId"
-            hx-trigger="blur from:#titleInput, keyup[key=='Enter'] from:#titleInput"
-            hx-swap="none"
-            onsubmit="return false;"
-            class="mx-6 w-full">
-            @Html.AntiForgeryToken()
-            <input 
-                type="text" 
-                name="title" 
-                id="titleInput"
-                aria-label="title" 
-                placeholder="title" 
-                value="@Model.WorkspaceViewModel.ContentNode.Name" 
-                class="border border-zinc-300 rounded p-2 w-full transition-all duration-300 ease-in-out focus:border-emerald-500 focus:outline-none" />
-        </form>
+        @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
+        {
+            Url = $"/Workspaces/{Model.WorkspaceId()}/UpdateTitle/{Model.InterfaceId()}",
+            Title = Model.WorkspaceViewModel!.ContentNode!.Name
+        })
     </div>
     <button 
-        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Widgets/Weather/Workspace/@Model.WorkspaceViewModel.ContentNode.DocId"
+        hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Weather/Workspace/@Model.InterfaceId()"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton" onclick="changeSection(this)">
@@ -30,16 +19,10 @@
         </svg>
         Widget
     </button>
-    <button 
-        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Info/@Model.WorkspaceViewModel.ContentNode.DocId"
-        hx-target="#workspaceEditor"
-        type="button" 
-        class="sectionButton" onclick="changeSection(this)">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-        </svg>
-        Info
-    </button>
+    @await Html.PartialAsync(
+        "~/Views/Partials/WorkspaceInfoButton.cshtml", 
+        $"/Workspaces/{Model.WorkspaceId()}/Info/{Model.InterfaceId()}"
+    )
 </div>
 
 <div id="workspaceEditor" class="mt-30 mb-24">

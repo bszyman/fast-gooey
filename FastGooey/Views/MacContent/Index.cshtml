@@ -5,7 +5,7 @@
     <div class="flex-1 flex items-center">
         @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
         {
-            Url = $"/Workspaces/{Model.Workspace?.ContentNode?.Workspace.PublicId}/UpdateTitle/{Model.Workspace?.ContentNode?.DocId}",
+            Url = $"/Workspaces/{Model.WorkspaceId()}/UpdateTitle/{Model.InterfaceId()}",
             Title = Model.Workspace.ContentNode.Name
         })
     </div>
@@ -21,7 +21,7 @@
     </button>
     @await Html.PartialAsync(
         "~/Views/Partials/WorkspaceInfoButton.cshtml", 
-        $"/Workspaces/{Model.Workspace?.ContentNode?.Workspace.PublicId}/Info/{Model.Workspace?.ContentNode?.DocId}"
+        $"/Workspaces/{Model.WorkspaceId()}/Info/{Model.InterfaceId()}"
         )
 </div>
 

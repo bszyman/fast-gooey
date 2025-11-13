@@ -1,0 +1,9 @@
+@model FastGooey.Models.ViewModels.DeleteButtonViewModel
+
+<button
+    type="button"
+    hx-delete="@Model.Url"
+    hx-target="@Model.Target"
+    class="bg-rose-600 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+    Delete
+</button>

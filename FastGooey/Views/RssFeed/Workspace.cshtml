@@ -1,7 +1,7 @@
 @model FastGooey.Models.ViewModels.RssFeed.RssWorkspaceViewModel
 
 <form method="post"
-      hx-post="/Workspaces/@Model.ContentNode.Workspace.PublicId/Widgets/RssFeed/Workspace/@Model.ContentNode.DocId"
+      hx-post="/Workspaces/@Model.ContentNode!.Workspace.PublicId/Widgets/RssFeed/Workspace/@Model.ContentNode.DocId"
       hx-target="#workspaceEditor">
         @Html.AntiForgeryToken()
         <div id="editor" class="mx-auto max-w-3xl">
@@ -65,11 +65,7 @@
                 <p class="text-sm">Widgets :: RSS Feed</p>
             </div>
             <div class="flex items-center justify-end w-1/2 text-right">
-                <button
-                    type="submit"
-                    class="bg-emerald-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
-                    Save
-                </button>
+                @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
             </div>
         </div>
 </form>
