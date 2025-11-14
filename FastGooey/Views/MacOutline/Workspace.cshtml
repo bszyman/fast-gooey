@@ -1,3 +1,5 @@
+@model FastGooey.Models.ViewModels.Mac.MacOutlineWorkspaceViewModel
+
 <div id="editor" class="mx-auto max-w-3xl">
     <div class="contentGroup">
         <div class="w-full border-b border-b-zinc-300 py-2 px-4">
@@ -8,7 +10,7 @@
                 <li>
                     <div class="flex items-center py-2 border-b border-b-zinc-200">
                         <p class="pr-3">Lift Foils</p>
-                        <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
+                        <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/outline/@Model.InterfaceId()/editor-panel" hx-target="#editorPanel">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
                                 <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
                             </svg>
@@ -155,6 +157,5 @@
     <div class="flex items-center w-1/2">
         <p class="text-sm">Interfaces :: Mac OS :: Outline View</p>
     </div>
-    <div class="flex items-center justify-end w-1/2 text-right">
-    </div>
+    <div class="flex items-center justify-end w-1/2 text-right"></div>
 </div>

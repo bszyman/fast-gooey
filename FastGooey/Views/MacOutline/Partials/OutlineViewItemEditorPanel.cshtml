@@ -1,0 +1,54 @@
+@model FastGooey.Models.ViewModels.Mac.MacOutlineEditorPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Item</p>
+    </div>
+</div>
+
+<div class="py-4 px-4">
+    @if (!string.IsNullOrEmpty(Model.ParentId) && !string.IsNullOrEmpty(Model.ParentName))
+    {
+        <div class="contentGroup mb-4">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Parent</p>
+            </div>
+            <div class="py-4 px-4">
+                <div class="mb-4">
+                    <p class="font-semibold">Parent Name</p>
+                    <p>@Model.ParentName</p>
+                </div>
+                <div class="mb-2">
+                    <p class="font-semibold">Parent Id</p>
+                    <p>@Model.ParentId</p>
+                </div>
+            </div>
+        </div>
+    }
+    
+    <div class="formGroup mb-4">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold text-sm">Content</p>
+        </div>
+        <div class="py-4 px-4">
+            <div class="mb-4">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required value="@Model.Name"/>
+            </div>
+            <div class="mb-2">
+                <label for="url">Url (optional)</label>
+                <div class="flex gap-2">
+                    <input type="url" id="url" name="url" value="@Model.Url"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+    <div class="flex gap-2 items-center w-1/2"></div>
+    <div class="flex gap-2 items-center justify-end w-1/2 text-right">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+        @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+    </div>
+</div>

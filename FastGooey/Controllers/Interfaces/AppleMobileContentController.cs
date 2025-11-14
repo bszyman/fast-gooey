@@ -107,7 +107,7 @@ public class AppleMobileContentController(
     public IActionResult ContentTypeSelectorPanel(Guid workspaceId, Guid interfaceId)
     {
         // TODO: probably set up a AppleMobileContentJsonDataModel just to initialize before attempting to add child
-        // content items, probably should do this in  CreateInterface()
+        // content items, probably should do this in CreateInterface()
         
         var viewModel = new AppleMobileContentTypeSelectorPanelViewModel
         {
@@ -131,29 +131,34 @@ public class AppleMobileContentController(
         
         var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
 
-        TItem? item = null;
-
-        if (itemId.HasValue)
+        if (ModelState.IsValid)
         {
-            item = data.Items
-                .OfType<TItem>()
-                .FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
-        }
+            TItem? item = null;
 
-        if (item == null)
-        {
-            item = new TItem
+            if (itemId.HasValue)
             {
-                ContentType = contentType,
-                Identifier = Guid.NewGuid()
-            };
-            data.Items = data.Items.Append(item).ToList();
+                item = data.Items
+                    .OfType<TItem>()
+                    .FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
+            }
+
+            if (item == null)
+            {
+                item = new TItem
+                {
+                    ContentType = contentType,
+                    Identifier = Guid.NewGuid()
+                };
+                data.Items = data.Items.Append(item).ToList();
+            }
+
+            updateItem(item, form);
+
+            contentNode.Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions);
+            await dbContext.SaveChangesAsync();
+            
+            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
         }
-
-        updateItem(item, form);
-
-        contentNode.Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions);
-        await dbContext.SaveChangesAsync();
 
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
         return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
