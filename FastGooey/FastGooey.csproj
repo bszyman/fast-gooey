@@ -29,7 +29,6 @@
 
     <ItemGroup>
       <Folder Include="Migrations\" />
-      <Folder Include="Views\MacOS\Partials\Content\" />
       <Folder Include="Views\Team\" />
       <Folder Include="Views\Widgets\Workspaces\" />
     </ItemGroup>
@@ -94,10 +93,34 @@
       <_ContentIncludedByDefault Remove="Views\Forms\FormFieldTextEditorPanel.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Forms\FormFieldTimeEditorPanel.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Forms\FormSubmissionViewerPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldBlankOption.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldDateEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldDropDownEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldFileEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldLongTextEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldMultiSelectEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldSelectorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldTextEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldTimeEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormSubmissionViewerPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\FormSubmissionViewerPanel.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
       <AdditionalFiles Include="Views\AppleMobileList\Form.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\FormSubmissionViewerPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldBlankOption.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldDateEditorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldDropDownEditorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldFileEditorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldLongTextEditorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldMultiSelectEditorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldSelectorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldTextEditorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldTimeEditorPanel.cshtml" />
+      <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormSubmissionViewerPanel.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
