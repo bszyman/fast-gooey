@@ -12,6 +12,7 @@ public abstract class BaseStudioController(
     Controller
 {
     protected Guid WorkspaceId { get; private set; }
+    protected Guid InterfaceId { get; private set; }
     
     public override async Task OnActionExecutionAsync(
         ActionExecutingContext context, 
@@ -28,11 +29,20 @@ public abstract class BaseStudioController(
             }
         }
         
+        if (context.RouteData.Values.TryGetValue("interfaceId", out var interfaceIdValue))
+        {
+            if (interfaceIdValue is string idString && Guid.TryParse(idString, out var id))
+            {
+                InterfaceId = id;
+                ViewData["InterfaceId"] = id;
+            }
+        }
+        
         await next();
     }
 
     protected Workspace? GetWorkspace()
     {
-        return dbContext.Workspaces.First(x => x.PublicId.Equals(WorkspaceId));
+        return dbContext.Workspaces.FirstOrDefault(x => x.PublicId.Equals(WorkspaceId));
     }
 }

@@ -25,6 +25,11 @@
     )
 </div>
 
-<div id="workspaceEditor" class="mt-30 mb-24">
+<div 
+    id="workspaceEditor" 
+    class="mt-30 mb-24"
+    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/outline/workspace/@Model.InterfaceId()" 
+    hx-trigger="refreshWorkspace from:body"
+    >
     @await Html.PartialAsync("Workspace.cshtml", Model.Workspace)
 </div>

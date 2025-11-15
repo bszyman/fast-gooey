@@ -2,6 +2,8 @@ namespace FastGooey.Models.ViewModels.Mac;
 
 public class MacOutlineEditorPanelViewModel
 {
+    public Guid WorkspaceId { get; set; }
+    public Guid InterfaceId { get; set; }
     public string ParentName { get; set; } = string.Empty;
     public string ParentId { get; set; } = string.Empty;
     public Guid Identifier { get; set; }

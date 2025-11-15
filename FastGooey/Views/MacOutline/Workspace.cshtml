@@ -1,154 +1,32 @@
 @model FastGooey.Models.ViewModels.Mac.MacOutlineWorkspaceViewModel
+@{
+    var url = $"/Workspaces/{ViewBag.WorkspaceId}/interfaces/mac/outline/{ViewBag.InterfaceId}/editor-panel/{Model.Data.Identifier}/new";
+}
 
 <div id="editor" class="mx-auto max-w-3xl">
     <div class="contentGroup">
         <div class="w-full border-b border-b-zinc-300 py-2 px-4">
             <p class="font-semibold">Outline Items</p>
         </div>
+        @if (Model.Data.Children.Any())
+        {
+            <div class="px-4 py-4">
+                <ul role="tree">
+                    @foreach (var rootItem in Model.Data.Children)
+                    {
+                        <partial name="Partials/MacOutlineTreeNode" model="rootItem" />
+                    }
+                </ul>
+            </div>
+        }
         <div class="px-4 py-4">
-            <ul role="tree">
-                <li>
-                    <div class="flex items-center py-2 border-b border-b-zinc-200">
-                        <p class="pr-3">Lift Foils</p>
-                        <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/outline/@Model.InterfaceId()/editor-panel" hx-target="#editorPanel">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                            </svg>
-                        </button>
-                        <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <ul class="pl-3" role="tree">
-                        <li>
-                            <div class="flex items-center py-2 border-b border-b-zinc-200">
-                                <p class="pr-3">eFoil v4</p>
-                                <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            
-                            <ul class="pl-3" role="tree">
-                                <li>
-                                    <div class="flex items-center py-2 border-b border-b-zinc-200">
-                                        <p class="pr-2">Remote (Standard)</p>
-                                        <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                        <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="flex items-center py-2 border-b border-b-zinc-200">
-                                        <p class="pr-2">eBox</p>
-                                        <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                        <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="flex items-center py-2 border-b border-b-zinc-200">
-                                        <p class="pr-2">Battery (Full)</p>
-                                        <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                        <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="flex items-center py-2 border-b border-b-zinc-200">
-                                        <p class="pr-2">Battery (Lite)</p>
-                                        <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                        <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <div class="flex items-center py-2 border-b border-b-zinc-200">
-                                <p class="pr-2">eFoil v3</p>
-                                <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="flex items-center py-2 border-b border-b-zinc-200">
-                                <p class="pr-2">eFoil v2</p>
-                                <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="flex items-center py-2 border-b border-b-zinc-200">
-                                <p class="pr-2">eFoil v1</p>
-                                <button type="button" class="cursor-pointer" onclick="toggleEditor()" hx-get="/Interfaces/MacOS/OutlineViewItemEditorPanel" hx-target="#editorPanel">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="cursor-pointer" hx-confirm="Are you sure you want to delete this item?" hx-target="#workspaceEditor" hx-delete="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-zinc-400 hover:text-blueMid">
-                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <button type="button" 
+                    class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm" 
+                    onclick="toggleEditor()" 
+                    hx-get="@url" 
+                    hx-target="#editorPanel">
+                Add Root Item...
+            </button>
         </div>
     </div>
 </div>

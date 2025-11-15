@@ -36,7 +36,12 @@ public class MacOutlineController(
     public async Task<IActionResult> CreateInterface()
     {
         var workspace = GetWorkspace();
-        var data = new MacOutlineJsonDataModel();
+        var data = new MacOutlineJsonDataModel
+        {
+            Identifier = Guid.NewGuid(),
+            Name = "Root",
+            Children = []
+        };
         
         var contentNode = new GooeyInterface
         {
@@ -97,6 +102,8 @@ public class MacOutlineController(
         
         var viewModel = new MacOutlineEditorPanelViewModel
         {
+            WorkspaceId = WorkspaceId,
+            InterfaceId = interfaceId,
             Name =  item.Name,
             Identifier =  item.Identifier,
             Url = item.Url,
@@ -117,6 +124,8 @@ public class MacOutlineController(
         
         var viewModel = new MacOutlineEditorPanelViewModel
         {
+            WorkspaceId = WorkspaceId,
+            InterfaceId = interfaceId,
             ParentId = parentItem.Identifier.ToString(),
             ParentName = parentItem.Name,
         };
