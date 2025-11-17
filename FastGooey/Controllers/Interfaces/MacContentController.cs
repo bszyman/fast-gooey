@@ -1,4 +1,5 @@
 using System.Text.Json;
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Extensions;
 using FastGooey.Models;
@@ -6,6 +7,7 @@ using FastGooey.Models.FormModels.Mac;
 using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Models.ViewModels.Mac;
 using FastGooey.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HeadlineContentFormModel = FastGooey.Models.FormModels.Mac.HeadlineContentFormModel;
@@ -19,6 +21,8 @@ using TextContentItem = FastGooey.Models.JsonDataModels.Mac.TextContentItem;
 
 namespace FastGooey.Controllers.Interfaces;
 
+[Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/interfaces/mac/content")]
 public class MacContentController(
     ILogger<MacContentController> logger, 

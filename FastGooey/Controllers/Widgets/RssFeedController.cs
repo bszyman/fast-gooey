@@ -1,6 +1,7 @@
 using System.ServiceModel.Syndication;
 using System.Text.Json;
 using System.Xml;
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
@@ -9,12 +10,15 @@ using FastGooey.Models.Response;
 using FastGooey.Models.ViewModels.RssFeed;
 using FastGooey.Services;
 using Flurl.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers.Widgets;
 
+[Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Widgets/RssFeed")]
 public class RssFeedController(
     ILogger<WeatherController> logger, 

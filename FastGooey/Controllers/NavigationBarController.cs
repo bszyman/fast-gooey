@@ -1,11 +1,15 @@
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Models.ViewModels.NavigationBar;
 using FastGooey.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers;
 
+[Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/NavigationBar")]
 public class NavigationBarController(
     ILogger<NavigationBarController> logger,

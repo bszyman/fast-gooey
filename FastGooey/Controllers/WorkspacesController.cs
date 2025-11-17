@@ -1,3 +1,4 @@
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FastGooey.Controllers;
 
 [Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}")]
 public class WorkspacesController(
     ILogger<WorkspacesController> logger, 

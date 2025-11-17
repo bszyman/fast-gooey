@@ -1,12 +1,16 @@
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers;
 
+[Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/[controller]")]
 public class WorkspaceManagementController(
     IKeyValueService keyValueService,

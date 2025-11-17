@@ -1,9 +1,13 @@
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
 namespace FastGooey.Controllers.Interfaces;
 
+[Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/tvOS")]
 public class AppleTvController(
     ILogger<AppleTvController> logger, 

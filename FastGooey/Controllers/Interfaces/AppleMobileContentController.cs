@@ -1,4 +1,5 @@
 using System.Text.Json;
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Extensions;
 using FastGooey.Models;
@@ -6,11 +7,14 @@ using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.ViewModels.AppleMobileInterface;
 using FastGooey.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers.Interfaces;
 
+[Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/AppleMobile/Content")]
 public class AppleMobileContentController(
     ILogger<AppleMobileContentController> logger, 

@@ -1,16 +1,20 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Models.ViewModels.Mac;
 using FastGooey.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers.Interfaces;
 
+[Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/interfaces/mac/table")]
 public class MacTableController(
     ILogger<MacTableController> logger, 

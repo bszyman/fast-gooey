@@ -1,4 +1,5 @@
 using System.Text.Json;
+using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
@@ -7,12 +8,15 @@ using FastGooey.Models.ViewModels.Weather;
 using FastGooey.Services;
 using Flurl.Http;
 using MapKit.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers.Widgets;
 
+[Authorize]
+[AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Widgets/Weather")]
 public class WeatherController(
     ILogger<WeatherController> logger, 
