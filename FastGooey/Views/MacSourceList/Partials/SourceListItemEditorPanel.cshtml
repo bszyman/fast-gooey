@@ -7,7 +7,7 @@
 </div>
 
 <form method="post"
-      hx-post="/Workspaces/@Model.WorkspaceId/interfaces/mac/source-list/@Model.InterfaceId/item-editor-panel/group/@Model.GroupId/item/@Model.Identifier"
+      hx-post="/Workspaces/@Model.WorkspaceId/interfaces/mac/sourcelist/@Model.InterfaceId/item-editor-panel/group/@Model.GroupId/item/@Model.Identifier"
       hx-target="#editorPanel">
     <div class="py-4 px-4">
         <div class="formGroup mb-4">
@@ -32,7 +32,7 @@
             @if (!Model.GroupId.Equals(Guid.Empty))
             {
                 <button
-                    hx-delete="/Workspaces/@Model.WorkspaceId/interfaces/mac/source-list/@Model.InterfaceId/item-editor-panel/group/@Model.GroupId/item/@Model.Identifier"
+                    hx-delete="/Workspaces/@Model.WorkspaceId/interfaces/mac/sourcelist/@Model.InterfaceId/item-editor-panel/group/@Model.GroupId/item/@Model.Identifier"
                     hx-target="#workspaceEditor"
                     hx-params="none"
                     type="button"

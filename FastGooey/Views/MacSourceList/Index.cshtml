@@ -10,7 +10,7 @@
         })
     </div>
     <button 
-        hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/source-list/workspace/@Model.InterfaceId()"
+        hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/sourcelist/workspace/@Model.InterfaceId()"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton" onclick="changeSection(this)">
@@ -28,7 +28,7 @@
 <div 
     id="workspaceEditor" 
     class="mt-30 mb-24" 
-    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/source-list/workspace/@Model.InterfaceId()" 
+    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/sourcelist/workspace/@Model.InterfaceId()" 
     hx-trigger="refreshWorkspace from:body">
     @await Html.PartialAsync("Workspace.cshtml", Model.Workspace)
 </div>

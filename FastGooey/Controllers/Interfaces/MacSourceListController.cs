@@ -14,7 +14,7 @@ namespace FastGooey.Controllers.Interfaces;
 
 [Authorize]
 [AuthorizeWorkspaceAccess]
-[Route("Workspaces/{workspaceId:guid}/interfaces/mac/source-list")]
+[Route("Workspaces/{workspaceId:guid}/interfaces/mac/sourcelist")]
 public class MacSourceListController(
     ILogger<MacSourceListController> logger, 
     IKeyValueService keyValueService,
@@ -47,7 +47,7 @@ public class MacSourceListController(
             WorkspaceId = workspace.Id,
             Workspace = workspace,
             Platform = "Mac",
-            ViewType = "source-list",
+            ViewType = "SourceList",
             Name = "New Source List Interface",
             Config = JsonSerializer.SerializeToDocument(data)
         };

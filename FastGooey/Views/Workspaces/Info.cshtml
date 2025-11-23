@@ -7,27 +7,27 @@
         </div>
         <div class="px-4 py-2 my-2">
             <p class="font-semibold font-sm">Document Name</p>
-            <p>@Model.ContentNode.Name</p>
+            <p>@Model.ContentNode?.Name</p>
         </div>
         <div class="px-4 py-2 mb-2">
             <p class="font-semibold font-sm">Document Type</p>
-            <p>@Model.ContentNode.Platform, @Model.ContentNode.ViewType</p>
+            <p>@Model.ContentNode?.Platform, @Model.ContentNode?.ViewType</p>
         </div>
         <div class="px-4 py-2 mb-2">
             <p class="font-semibold font-sm">Document ID</p>
-            <p>@Model.ContentNode.DocId</p>
+            <p>@Model.ContentNode?.DocId</p>
         </div>
         <div class="px-4 py-2 mb-2">
             <p class="font-semibold font-sm">Workspace Owner</p>
-            <p>@Model.Workspace.Name</p>
+            <p>@Model.Workspace?.Name</p>
         </div>
         <div class="px-4 py-2 mb-2">
             <p class="font-semibold font-sm">Created</p>
-            <p>@Model.Workspace.CreatedAt.InUtc().ToString("MMMM d, yyyy hh:mm tt", System.Globalization.CultureInfo.InvariantCulture)</p>
+            <p>@Model.Workspace?.CreatedAt.InUtc().ToString("MMMM d, yyyy hh:mm tt", System.Globalization.CultureInfo.InvariantCulture)</p>
         </div>
         <div class="px-4 py-2 my-2">
             <p class="font-semibold font-sm">Updated</p>
-            <p>@Model.Workspace.UpdatedAt.InUtc().ToString("MMMM d, yyyy hh:mm tt", System.Globalization.CultureInfo.InvariantCulture)</p>
+            <p>@Model.Workspace?.UpdatedAt.InUtc().ToString("MMMM d, yyyy hh:mm tt", System.Globalization.CultureInfo.InvariantCulture)</p>
         </div>
     </div>
     
@@ -37,7 +37,7 @@
         </div>
         <div class="px-4 py-2 my-2">
             <p class="font-semibold font-sm">HyperGooey Url</p>
-            <p>https://www.fastgooey.com/hypermedia/@Model.ContentNode.DocId</p>
+            <p>https://www.fastgooey.com/hypermedia/@Model.ContentNode?.DocId</p>
             <p class="my-2 text-xs font-semibold text-grayMid">
                 Pass this url into a HyperGooey view and watch it magically render it's contents in your app.
             </p>
