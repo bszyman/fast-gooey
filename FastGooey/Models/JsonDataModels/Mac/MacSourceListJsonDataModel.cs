@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-
 namespace FastGooey.Models.JsonDataModels.Mac;
 
 public class MacSourceListJsonDataModel
