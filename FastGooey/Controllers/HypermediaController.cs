@@ -50,8 +50,8 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         {
             case "Table":
                 return GenerateMacTable(gooeyInterface);
-            // case "Source-List":
-            //     break;
+            case "SourceList":
+                return GenerateMacSourceList(gooeyInterface);
             // case "Content":
             //     break;
             // case "Outline":
@@ -115,6 +115,22 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
             {
                 Headers = headers,
                 TableContent = tableData
+            }
+        };
+    }
+    
+    private MacSourceListHypermediaResponse GenerateMacSourceList(GooeyInterface gooeyInterface)
+    {
+        var content = gooeyInterface.Config.Deserialize<MacSourceListJsonDataModel>();
+        var sourceListGroups = content?.Groups
+            .Select(x => new MacSourceListGroupResponse(x)).ToList();
+        
+        return new MacSourceListHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Content = new MacSourceListContent
+            {
+                Groups = sourceListGroups ?? []
             }
         };
     }
