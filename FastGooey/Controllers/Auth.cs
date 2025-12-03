@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using FastGooey.Models;
 using FastGooey.Models.ViewModels;
+using FastGooey.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,8 @@ namespace FastGooey.Controllers;
 
 public class Auth(
     SignInManager<ApplicationUser> signInManager,
-    UserManager<ApplicationUser> userManager): 
+    UserManager<ApplicationUser> userManager,
+    ITurnstileValidatorService turnstileValidator): 
     Controller
 {
     [HttpGet]
@@ -23,23 +25,30 @@ public class Auth(
     public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
+        
+        if (!ModelState.IsValid)
+            return View(model);
 
-        if (ModelState.IsValid)
+        if (!await turnstileValidator.ValidateFormRequest(model.TurnstileToken))
         {
-            var result = await signInManager.PasswordSignInAsync(
-                model.Email, 
-                model.Password, 
-                model.RememberMe, 
-                lockoutOnFailure: true
-            );
-
-            if (result.Succeeded)
-            {
-                return LocalRedirect(returnUrl ?? "/");
-            }
-            
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ModelState.AddModelError(
+                "Request validation failed.", 
+                "Request validation failed. Refresh the page and try logging in again."
+                );
+            return View(model);
         }
+
+        var result = await signInManager.PasswordSignInAsync(
+            model.Email, 
+            model.Password, 
+            model.RememberMe, 
+            lockoutOnFailure: true
+        );
+
+        if (result.Succeeded)
+            return LocalRedirect(returnUrl ?? "/");
+            
+        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
         return View(model);
     }
@@ -121,25 +130,19 @@ public class Auth(
 
         var info = await signInManager.GetExternalLoginInfoAsync();
         if (info == null)
-        {
             return RedirectToAction(nameof(Login));
-        }
 
         var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, 
             info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
 
         if (result.Succeeded)
-        {
             return LocalRedirect(returnUrl ?? "/");
-        }
 
         // If the user does not have an account, create one
         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
 
         if (email == null)
-        {
             return RedirectToAction(nameof(Login));
-        }
 
         var user = await userManager.FindByEmailAsync(email);
             

@@ -46,6 +46,9 @@
                 
                 <div asp-validation-summary="ModelOnly" class="text-red-600 mb-4"></div>
             </div>
+            
+            @await Html.PartialAsync("~/Views/Partials/cloudflareTurnstileFormEmbed.cshtml")
+            
             <div class="border-t border-t-zinc-200 text-right p-4">
                 <button type="submit" class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
                     Register
