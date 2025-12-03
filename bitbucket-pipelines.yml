@@ -1,0 +1,31 @@
+image: mcr.microsoft.com/dotnet/sdk:9.0.200
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: "Restore and publish"
+          script:
+            - dotnet restore
+            - dotnet publish -c Release --property:PublishDir=./publish
+          artifacts:
+            - publish/**
+      - step:
+          name: 'Deploy to production'
+          deployment: production
+          script:
+            - pipe: atlassian/rsync-deploy:0.13.0
+              variables:
+                USER: 'tidelas'
+                SERVER: 'dn03.tidelas.com'
+                REMOTE_PATH: '/usr/local/www/fast-gooey'
+                LOCAL_PATH: 'publish/*' # Optional.
+                DELETE_FLAG: 'false'
+      - step:
+          name: "Cleanup deployment"
+          script:
+            - pipe: atlassian/ssh-run:0.8.1
+              variables:
+                SSH_USER: 'tidelas'
+                SERVER: 'dn03.tidelas.com'
+                COMMAND: '/home/tidelas/post_deploy_fast_gooey.zsh'
