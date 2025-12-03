@@ -8,6 +8,8 @@ pipelines:
           script:
             - dotnet restore
             - dotnet publish -c Release --property:PublishDir=./publish
+            - dotnet restore FastGooey.sln
+            - dotnet publish FastGooey/FastGooey.csproj -c Release -o ./publish
           artifacts:
             - publish/**
       - step:
