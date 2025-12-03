@@ -54,8 +54,8 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
                 return GenerateMacSourceList(gooeyInterface);
             case "Content":
                 return GenerateMacContent(gooeyInterface);
-            // case "Outline":
-            //     break;
+            case "Outline":
+                return GenerateMacOutline(gooeyInterface);
             default:
                 return NotSupported();
         }        
@@ -86,6 +86,9 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
                     
                 // It's usually helpful to include the row identifier for the UI to track selection
                 rowJson.Add("id", item.Identifier);
+                rowJson.Add("gooeyName", item.GooeyName);
+                rowJson.Add("relatedUrl", item.RelatedUrl);
+                rowJson.Add("doubleClickUrl", item.DoubleClickUrl);
 
                 // Only add fields that are defined in the Header configuration
                 foreach (var colDef in content.Header)
@@ -137,16 +140,56 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
     
     private MacContentHypermediaResponse GenerateMacContent(GooeyInterface gooeyInterface)
     {
-        var content = gooeyInterface.Config.Deserialize<MacContentJsonDataModel>();
-        var viewContent = JsonSerializer.SerializeToNode(content?.Items) as JsonArray;
+        var options = new JsonSerializerOptions
+        {
+            // This tells the serializer to look ahead/buffer properties if $type isn't first
+            AllowOutOfOrderMetadataProperties = true,
+            // Ensure case insensitivity matches your likely needs
+            PropertyNameCaseInsensitive = true
+        };
+        
+        var content = gooeyInterface.Config.Deserialize<MacContentJsonDataModel>(options);
+        var viewContent = JsonSerializer.SerializeToNode(content?.Items ?? []) as JsonArray;
         
         return new MacContentHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
-            Content = new MacContent
+            Content = viewContent
+        };
+    }
+    
+    private MacOutlineHypermediaResponse GenerateMacOutline(GooeyInterface gooeyInterface)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        List<MacOutlineJsonDataModel> rootItems = [];
+
+        // Handle both Array (Forest) and Object (Single Root) inputs from the DB
+        if (gooeyInterface.Config.RootElement.ValueKind == JsonValueKind.Array)
+        {
+            rootItems = gooeyInterface.Config.Deserialize<List<MacOutlineJsonDataModel>>(options) ?? [];
+        }
+        else if (gooeyInterface.Config.RootElement.ValueKind == JsonValueKind.Object)
+        {
+            var singleRoot = gooeyInterface.Config.Deserialize<MacOutlineJsonDataModel>(options);
+            if (singleRoot != null)
             {
-                ViewContent = viewContent
+                rootItems.Add(singleRoot);
             }
+        }
+
+        // Start recursion at Depth 1, limit to 12
+        var responseItems = rootItems
+            .Select(x => new MacOutlineItemResponse(x, currentDepth: 1, maxDepth: 12))
+            .ToList();
+
+        return new MacOutlineHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Content = responseItems
         };
     }
 }

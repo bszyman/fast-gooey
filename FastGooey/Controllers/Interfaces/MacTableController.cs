@@ -312,6 +312,16 @@ public class MacTableController(
                 tableItem.GooeyName = form["gooeyName"]!;
             }
             
+            if (!string.IsNullOrEmpty(form["relatedUrl"]))
+            {
+                tableItem.RelatedUrl = form["relatedUrl"]!;
+            }
+            
+            if (!string.IsNullOrEmpty(form["doubleClickUrl"]))
+            {
+                tableItem.DoubleClickUrl = form["doubleClickUrl"]!;
+            }
+            
             foreach (var field in data.Structure)
             {
                 var rawValues = form[field.FieldAlias];

@@ -32,6 +32,21 @@
                     </div>
                 </div>
             </div>
+            <div class="formGroup mb-4">
+                <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                    <p class="font-semibold text-sm">Relations</p>
+                </div>
+                <div class="py-4 px-4">
+                    <div class="mb-4">
+                        <label for="relatedUrl">Related Url</label>
+                        <input type="url" id="relatedUrl" name="relatedUrl" value="@Model.Content.RelatedUrl" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="doubleClickUrl">Double-Click Url</label>
+                        <input type="url" id="doubleClickUrl" name="doubleClickUrl" value="@Model.Content.DoubleClickUrl" />
+                    </div>
+                </div>
+            </div>
             <div class="formGroup mb-8">
                 <div class="w-full border-b border-b-zinc-300 py-2 px-4">
                     <p class="font-semibold text-sm">Content</p>

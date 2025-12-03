@@ -9,10 +9,10 @@ public class MacContentHypermediaResponse: HypermediaResponse
     public string Platform { get; set; } = "Mac";
     public string View { get; set; } = "Content";
     
-    public MacContent Content { get; set; } = new();
+    public JsonArray Content { get; set; } = new();
 }
 
-public class MacContent
-{
-    public JsonArray ViewContent { get; set; } = [];
-}
+// public class MacContent
+// {
+//     public JsonArray ViewContent { get; set; } = [];
+// }

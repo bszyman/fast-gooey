@@ -12,6 +12,8 @@ public class MacTableItemJsonDataModel
 {
     public Guid Identifier { get; set; } = Guid.Empty;
     public string GooeyName { get; set; } = string.Empty;
+    public string RelatedUrl { get; set; } = string.Empty;
+    public string DoubleClickUrl { get; set; } = string.Empty;
     public Dictionary<string, object> Content { get; set; } = new();
 }
 
