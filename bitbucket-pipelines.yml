@@ -30,4 +30,4 @@ pipelines:
               variables:
                 SSH_USER: 'tidelas'
                 SERVER: 'dn03.tidelas.com'
-                COMMAND: '/home/tidelas/post_deploy_fast_gooey.zsh'
+                COMMAND: '/home/tidelas/post_deploy_fast_gooey.sh'
