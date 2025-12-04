@@ -12,8 +12,7 @@
 
 <form method="post"
       hx-post="@url"
-      hx-target="#workspaceEditor"
-      hx-on::after-request="toggleEditor()">
+      hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()
     <div class="py-4 px-4">
         <div class="formGroup mb-8">

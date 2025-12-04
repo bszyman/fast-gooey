@@ -58,13 +58,6 @@
                 {
                     Url = $"/Workspaces/{Model.WorkspaceId}/Interfaces/AppleMobile/List/{Model.InterfaceId}/item/{Model.Item.Identifier}"
                 })
-                <button
-                    type="button"
-                    hx-delete="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/List/@Model.InterfaceId/item/@Model.Item.Identifier"
-                    hx-target="#workspaceEditor"
-                    class="bg-rose-600 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
-                    Delete
-                </button>
             }
         </div>
         <div class="flex items-center justify-end w-1/2 text-right gap-2">

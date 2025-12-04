@@ -343,6 +343,8 @@ public class AppleMobileContentController(
             Data = data    
         };
         
+        Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
+        
         return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
     }
     

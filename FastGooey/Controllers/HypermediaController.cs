@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using FastGooey.Database;
 using FastGooey.HypermediaResponses;
 using FastGooey.Models;
+using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.JsonDataModels.Mac;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         {
             return NotFound();
         }
-        
+
         HypermediaResponse? hypermediaResponse = null;
 
         if (contentNode.Platform.Equals("AppleMobile"))
@@ -39,9 +40,17 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         return hypermediaResponse != null ? Ok(hypermediaResponse) : NotFound();
     }
 
-    private HypermediaResponse? GenerateAppleMobileResponse(GooeyInterface gooeyInterface)
+    private HypermediaResponse GenerateAppleMobileResponse(GooeyInterface gooeyInterface)
     {
-        return null;
+        switch (gooeyInterface.ViewType)
+        {
+            case "List":
+                return GenerateAppleMobileList(gooeyInterface);
+            case "Content":
+                return GenerateAppleMobileContent(gooeyInterface);
+            default:
+                return NotSupported();
+        }
     }
     
     private HypermediaResponse GenerateMacResponse(GooeyInterface gooeyInterface)
@@ -58,12 +67,46 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
                 return GenerateMacOutline(gooeyInterface);
             default:
                 return NotSupported();
-        }        
+        }
     }
 
     private NotSupported NotSupported()
     {
         return new NotSupported();
+    }
+    
+    private AppleMobileListHypermediaResponse GenerateAppleMobileList(GooeyInterface gooeyInterface)
+    {
+        var content = gooeyInterface.Config.Deserialize<AppleMobileListJsonDataModel>();
+        var listData = content?.Items
+            .Select(x => new AppleMobileListItemResponse(x))
+            .ToList();
+        
+        return new AppleMobileListHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Content = listData
+        };
+    }
+    
+    private AppleMobileContentHypermediaResponse GenerateAppleMobileContent(GooeyInterface gooeyInterface)
+    {
+        var options = new JsonSerializerOptions
+        {
+            // This tells the serializer to look ahead/buffer properties if $type isn't first
+            AllowOutOfOrderMetadataProperties = true,
+            // Ensure case insensitivity matches your likely needs
+            PropertyNameCaseInsensitive = true
+        };
+        
+        var content = gooeyInterface.Config.Deserialize<AppleMobileContentJsonDataModel>(options);
+        var viewContent = JsonSerializer.SerializeToNode(content?.Items ?? []) as JsonArray;
+        
+        return new AppleMobileContentHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Content = viewContent
+        };
     }
 
     private MacTableHypermediaResponse GenerateMacTable(GooeyInterface gooeyInterface)
