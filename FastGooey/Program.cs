@@ -22,6 +22,7 @@ builder.Services.AddControllersWithViews()
     });
 
 builder.Services.AddCoreServices();
+builder.Services.AddCloudflareTurnstileServices();
 builder.Services.AddAppleMapKitServices();
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

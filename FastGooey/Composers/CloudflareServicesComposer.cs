@@ -4,9 +4,11 @@ namespace FastGooey.Composers;
 
 public static class CloudflareServicesComposer
 {
-    public static IServiceCollection AddCoreServices(this IServiceCollection services)
+    public static IServiceCollection AddCloudflareTurnstileServices(this IServiceCollection services)
     {
+        
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddSingleton<IHttpContextAccessorService, HttpContextAccessorService>();
         services.AddSingleton<ITurnstileValidatorService, TurnstileValidatorService>();
 
         return services;

@@ -3,10 +3,10 @@ namespace FastGooey.Services;
 public interface IHttpContextAccessorService
 {
     HttpContext? HttpContext { get; }
-    string GetRemoteIpAddress();
+    public string GetRemoteIpAddress();
 }
 
-public class HttpContextAccessorService
+public class HttpContextAccessorService: IHttpContextAccessorService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -17,7 +17,7 @@ public class HttpContextAccessorService
     
     public HttpContext? HttpContext => _httpContextAccessor.HttpContext;
     
-    string GetRemoteIpAddress()
+    public string GetRemoteIpAddress()
     {
         var context = _httpContextAccessor.HttpContext;
         if (context == null)
@@ -26,13 +26,9 @@ public class HttpContextAccessorService
         var ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
 
         if (string.IsNullOrEmpty(ip))
-        {
             ip = context.Connection.RemoteIpAddress?.ToString();
-        }
         else
-        {
             ip = ip.Split(',').First().Trim();
-        }
         
         return ip ?? string.Empty;
     }
