@@ -85,6 +85,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         return new AppleMobileListHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
+            Title = gooeyInterface.Name,
             Content = listData
         };
     }
@@ -105,6 +106,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         return new AppleMobileContentHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
+            Title = gooeyInterface.Name,
             Content = viewContent
         };
     }
