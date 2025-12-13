@@ -1,4 +1,3 @@
-
 using FastGooey.Models.WebServiceResponse;
 using Flurl.Http;
 
@@ -12,11 +11,17 @@ public interface ITurnstileValidatorService
 public class TurnstileValidatorService(
     IConfiguration configuration, 
     IHttpContextAccessorService httpContextAccessorService, 
+    IWebHostEnvironment environment,
     ILogger<TurnstileValidatorService> logger): 
     ITurnstileValidatorService
 {
     public async Task<bool> ValidateFormRequest(string? token)
     {
+        if (!environment.IsProduction())
+        {
+            return true;
+        }
+        
         var cloudflareEnabled = configuration.GetValue<bool?>("CloudFlare:enabled");
 
         if (!cloudflareEnabled.HasValue)
