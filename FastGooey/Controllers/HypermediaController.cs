@@ -20,12 +20,9 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
             .Include(x => x.Workspace)
             .FirstOrDefaultAsync(x => x.DocId.Equals(interfaceId));
 
-        if (contentNode == null)
-        {
-            return NotFound();
-        }
+        if (contentNode is null) return NotFound();
 
-        HypermediaResponse? hypermediaResponse = null;
+        IHypermediaResponse? hypermediaResponse = null;
 
         if (contentNode.Platform.Equals("AppleMobile"))
         {
@@ -40,7 +37,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         return hypermediaResponse != null ? Ok(hypermediaResponse) : NotFound();
     }
 
-    private HypermediaResponse GenerateAppleMobileResponse(GooeyInterface gooeyInterface)
+    private IHypermediaResponse GenerateAppleMobileResponse(GooeyInterface gooeyInterface)
     {
         switch (gooeyInterface.ViewType)
         {
@@ -53,7 +50,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         }
     }
     
-    private HypermediaResponse GenerateMacResponse(GooeyInterface gooeyInterface)
+    private IHypermediaResponse GenerateMacResponse(GooeyInterface gooeyInterface)
     {
         switch (gooeyInterface.ViewType)
         {
@@ -123,7 +120,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         
         var tableData = new JsonArray();
 
-        if (content?.Data != null)
+        if (content?.Data is not null)
         {
             foreach (var item in content.Data)
             {
@@ -213,17 +210,15 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         List<MacOutlineJsonDataModel> rootItems = [];
 
         // Handle both Array (Forest) and Object (Single Root) inputs from the DB
-        if (gooeyInterface.Config.RootElement.ValueKind == JsonValueKind.Array)
+        if (gooeyInterface.Config.RootElement.ValueKind is JsonValueKind.Array)
         {
             rootItems = gooeyInterface.Config.Deserialize<List<MacOutlineJsonDataModel>>(options) ?? [];
         }
-        else if (gooeyInterface.Config.RootElement.ValueKind == JsonValueKind.Object)
+        else if (gooeyInterface.Config.RootElement.ValueKind is JsonValueKind.Object)
         {
             var singleRoot = gooeyInterface.Config.Deserialize<MacOutlineJsonDataModel>(options);
-            if (singleRoot != null)
-            {
+            if (singleRoot is not null)
                 rootItems.Add(singleRoot);
-            }
         }
 
         // Start recursion at Depth 1, limit to 12

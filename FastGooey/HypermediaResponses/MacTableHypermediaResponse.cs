@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace FastGooey.HypermediaResponses;
 
-public class MacTableHypermediaResponse: HypermediaResponse
+public class MacTableHypermediaResponse: IHypermediaResponse
 {
     public Guid InterfaceId { get; set; } = Guid.Empty;
     public string Platform { get; set; } = "Mac";

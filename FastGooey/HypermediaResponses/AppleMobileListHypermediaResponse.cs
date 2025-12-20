@@ -3,7 +3,7 @@ using FastGooey.Models.JsonDataModels;
 
 namespace FastGooey.HypermediaResponses;
 
-public class AppleMobileListHypermediaResponse: HypermediaResponse
+public class AppleMobileListHypermediaResponse: IHypermediaResponse
 {
     public Guid InterfaceId { get; set; } = Guid.Empty;
     public string Title { get; set; } = string.Empty;

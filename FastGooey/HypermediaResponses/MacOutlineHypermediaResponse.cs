@@ -2,7 +2,7 @@ using FastGooey.Models.JsonDataModels.Mac;
 
 namespace FastGooey.HypermediaResponses;
 
-public class MacOutlineHypermediaResponse : HypermediaResponse
+public class MacOutlineHypermediaResponse: IHypermediaResponse
 {
     public Guid InterfaceId { get; set; } = Guid.Empty;
     public string Platform { get; set; } = "Mac";

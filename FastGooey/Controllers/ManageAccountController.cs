@@ -23,10 +23,8 @@ public class AccountManagementController(
     public async Task<IActionResult> Index()
     {
         var currentUser = await userManager.GetUserAsync(User);
-        if (currentUser == null)
-        {
+        if (currentUser is null)
             return Unauthorized();
-        }
         
         var viewModel = CreateViewModel(currentUser);
         
@@ -37,10 +35,8 @@ public class AccountManagementController(
     public async Task<IActionResult> AccountWorkspace()
     {
         var currentUser = await userManager.GetUserAsync(User);
-        if (currentUser == null)
-        {
+        if (currentUser is null)
             return Unauthorized();
-        }
         
         var viewModel = CreateViewModel(currentUser);
         
@@ -51,10 +47,8 @@ public class AccountManagementController(
     public async Task<IActionResult> SaveAccountWorkspace([Bind(Prefix = "FormModel")] AccountManagementFormModel formModel)
     {
         var currentUser = await userManager.GetUserAsync(User);
-        if (currentUser == null)
-        {
+        if (currentUser is null)
             return Unauthorized();
-        }
         
         currentUser.FirstName = formModel.FirstName;
         currentUser.LastName = formModel.LastName;
