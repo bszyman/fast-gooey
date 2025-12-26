@@ -46,10 +46,18 @@ public class Auth(
         );
 
         if (result.Succeeded)
-            return LocalRedirect(returnUrl ?? "/");
+        {
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+            
+            // render workspace partial
+        }
             
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
+        // render form partial
         return View(model);
     }
 
@@ -122,14 +130,14 @@ public class Auth(
     [HttpGet]
     public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
     {
-        if (remoteError != null)
+        if (remoteError is not null)
         {
             ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
             return RedirectToAction(nameof(Login));
         }
 
         var info = await signInManager.GetExternalLoginInfoAsync();
-        if (info == null)
+        if (info is null)
             return RedirectToAction(nameof(Login));
 
         var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, 
@@ -141,12 +149,12 @@ public class Auth(
         // If the user does not have an account, create one
         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
 
-        if (email == null)
+        if (email is null)
             return RedirectToAction(nameof(Login));
 
         var user = await userManager.FindByEmailAsync(email);
             
-        if (user == null)
+        if (user is null)
         {
             user = new ApplicationUser
             {

@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - FastGooey</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/css/site.dist.css" asp-append-version="true"/>
-    @* <link rel="stylesheet" href="~/FastGooey.styles.css" asp-append-version="true"/> *@
-    @* <link rel="stylesheet" href="~/semantic/dist/semantic.min.css" /> *@
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-</head>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>@ViewData["Title"] - FastGooey</title>
+        <script type="importmap"></script>
+        <link rel="stylesheet" href="~/css/site.dist.css" asp-append-version="true"/>
+        @* <link rel="stylesheet" href="~/FastGooey.styles.css" asp-append-version="true"/> *@
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    </head>
 <body>
 
-<div class="text-sm">
+<div>
     @RenderBody()
 </div>
 

@@ -22,6 +22,9 @@
     
     --shadow-panelShadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
 
+    --font-mont: "Montserrat", sans-serif;
+    --font-exo: "Exo 2", sans-serif;
+
     --animate-slideInEditorPanel: slideInEditorPanelFrames .5s ease-in-out forwards;
     --animate-slideOutEditorPanel: slideOutEditorPanelFrames .5s ease-in-out forwards;
 }
@@ -78,7 +81,6 @@ body {
     list-style: none;
 }
 
-
 .sidebar ul li a,
 .sidebar ul li button {
     color: oklch(44.2% 0.017 285.786);
@@ -125,7 +127,7 @@ body {
 .formGroup input[type='password'],
 .formGroup input[type='search'],
 .formGroup textarea {
-    @apply border border-zinc-300 rounded py-1 px-2 w-full text-sm bg-white;
+    @apply border border-zinc-300 rounded py-2 px-3 w-full text-sm bg-white;
 }
 
 .formGroup select {

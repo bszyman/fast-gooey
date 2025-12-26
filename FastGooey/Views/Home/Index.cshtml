@@ -1,9 +1,27 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
-    Layout = null;
+    ViewData["Title"] = "Welcome";
+    Layout = "PublicLayout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="w-screen h-screen bg-blueMid bg-no-repeat bg-top-left bg-size-auto lg:bg-size-[auto_1200px]" style="background-image: url('/theme/landing-background.jpg');">
+    <div class="flex w-full h-full justify-center items-center">
+        <div class="w-1/2 h-full px-12 flex flex-col justify-center">
+            <h1 class="font-exo text-5xl md:text-8xl lg:text-[120pt]/[140px] font-bold italic lg:max-w-xl tracking-tighter text-shadow-md max-w-full sm:max-w-28">
+                Fast Gooey
+            </h1>
+            <p class="font-mont font-bold text-2xl lg:text-3xl/snug lg:max-w-xl pb-8 sm:mb-12 lg:mb-16 leading-relaxed max-w-full sm:max-w-[450px] mt-8 lg:mt-24 text-shadow-md">
+                The missing hypermedia system for macOS and iOS.
+            </p>
+        </div>
+        <div class="w-1/2 h-full px-12 bg-stone-100 shadow-md flex flex-col justify-center">
+            @if (User.Identity is not null && User.Identity.IsAuthenticated)
+            {
+                
+            }
+            else
+            {
+                <partial name="~/Views/Home/Partials/loginForm.cshtml" />
+            }
+        </div>
+    </div>
 </div>
