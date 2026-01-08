@@ -57,10 +57,18 @@ public class WorkspacesController(
         dbContext.Workspaces.Add(workspace);
         await dbContext.SaveChangesAsync();
         
-        return RedirectToAction(
-            nameof(Home), 
-            new { id = workspace.PublicId }
-        );
+        return Redirect("/");
+        
+        // return RedirectToAction(
+        //     nameof(Index), 
+        //     nameof(Home), 
+        //     new { id = workspace.PublicId }
+        // );
+        
+        // return RedirectToAction(
+        //     nameof(Home), 
+        //     new { id = workspace.PublicId }
+        // );
     }
 
     [HttpGet("Info/{interfaceId:guid}")]

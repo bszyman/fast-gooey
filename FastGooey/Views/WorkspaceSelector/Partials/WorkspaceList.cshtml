@@ -1,0 +1,33 @@
+@model IEnumerable<Workspace>
+
+<div class="my-10 mx-6 xl:mx-auto max-w-xl">
+    <h1 class="mb-8 font-bold text-6xl text-shadow-zinc-600">
+        Workspaces
+    </h1>
+    
+    @if (Model.Any())
+    {
+        foreach (var workspace in Model)
+        {
+            <a href="/Workspaces/@workspace.PublicId/Home">
+                <div class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+                    <p class="font-medium mb-1">@workspace.Name</p>
+                    <p class="text-xs font-medium text-grayMid mb-1">
+                        Open workspace &rarr;
+                    </p>
+                </div>
+            </a>
+        }
+    }
+    else
+    {
+        <a href="/Workspaces/CreateWorkspace">
+            <div class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+                <p class="font-medium mb-1">You don't have any workspaces.</p>
+                <p class="text-xs font-medium text-grayMid mb-1">
+                    Create one now &rarr;
+                </p>
+            </div>
+        </a>
+    }
+</div>

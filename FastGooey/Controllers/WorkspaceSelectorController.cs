@@ -5,6 +5,8 @@ using FastGooey.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Slugify;
 
 namespace FastGooey.Controllers;
 
@@ -32,6 +34,22 @@ public class WorkspaceSelectorController(
         
         return View(workspaces);
     }
+    
+    [HttpGet("WorkspaceList")]
+    public async Task<IActionResult> WorkspaceList()
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser == null)
+        {
+            return Unauthorized();
+        }
+        
+        var workspaces = dbContext.Workspaces
+            .Where(x => x.Users.Contains(currentUser))
+            .ToList();
+        
+        return PartialView("~/Views/WorkspaceSelector/Partials/WorkspaceList.cshtml", workspaces);
+    }
 
     [HttpGet("CreateWorkspace")]
     public IActionResult CreateWorkspace(Guid workspaceId)
@@ -54,9 +72,21 @@ public class WorkspaceSelectorController(
             return Unauthorized();
         }
 
+        var helper = new SlugHelper();
+        var slug = helper.GenerateSlug(form.WorkspaceName);
+        
+        var existingSlug = await dbContext.Workspaces.FirstOrDefaultAsync(w => w.Slug == slug);
+        if (existingSlug != null)
+        {
+            // Handle duplicate (e.g., append a number or return an error)
+            ModelState.AddModelError("WorkspaceName", "A workspace with a similar name already exists.");
+            return View(form);
+        }
+        
         var workspace = new Workspace
         {
-            Name = form.WorkspaceName
+            Name = form.WorkspaceName,
+            Slug = slug
         };
         
         workspace.Users.Add(currentUser);
@@ -64,10 +94,12 @@ public class WorkspaceSelectorController(
         dbContext.Workspaces.Add(workspace);
         await dbContext.SaveChangesAsync();
         
-        return RedirectToAction(
-            "Home",
-            "Workspaces",
-            new { id = workspace.PublicId }
-        );
+        return Redirect("/");
+        
+        // return RedirectToAction(
+        //     "Home",
+        //     "Workspaces",
+        //     new { id = workspace.PublicId }
+        // );
     }
 }

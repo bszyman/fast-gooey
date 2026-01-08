@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
@@ -10,6 +11,7 @@ namespace FastGooey.Controllers;
 public class Auth(
     SignInManager<ApplicationUser> signInManager,
     UserManager<ApplicationUser> userManager,
+    ApplicationDbContext dbContext,
     ITurnstileValidatorService turnstileValidator): 
     Controller
 {
@@ -42,7 +44,7 @@ public class Auth(
             model.Email, 
             model.Password, 
             model.RememberMe, 
-            lockoutOnFailure: true
+            lockoutOnFailure: false // TODO: Revist
         );
 
         if (result.Succeeded)
@@ -53,6 +55,13 @@ public class Auth(
             }
             
             // render workspace partial
+            var currentUser = await userManager.GetUserAsync(User);
+            
+            var workspaces = dbContext.Workspaces
+                .Where(x => x.Users.Contains(currentUser))
+                .ToList();
+        
+            return PartialView("~/Views/WorkspaceSelector/Partials/WorkspaceList.cshtml", workspaces);
         }
             
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");

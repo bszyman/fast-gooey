@@ -16,11 +16,16 @@
         <div class="w-1/2 h-full px-12 bg-stone-100 shadow-md flex flex-col justify-center">
             @if (User.Identity is not null && User.Identity.IsAuthenticated)
             {
-                
+                <div id="workspaceSelector"
+                     hx-get="/Workspaces/WorkspaceList"
+                     hx-target="#workspaceSelector"
+                     hx-swap="innerHTML"
+                     hx-trigger="load">
+                </div>
             }
             else
             {
-                <partial name="~/Views/Home/Partials/loginForm.cshtml" />
+                <partial name="~/Views/Home/Partials/loginForm.cshtml"/>
             }
         </div>
     </div>

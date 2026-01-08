@@ -1,7 +1,7 @@
 @model FastGooey.Models.ViewModels.LoginViewModel
 
 <div id="mainPanel">
-    <form asp-action="Login" asp-controller="Auth" method="post" hx-boost="true">
+    <form asp-action="Login" asp-controller="Auth" method="post" hx-boost="true" hx-target="#mainPanel">
         <div class="formGroup mb-4">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
                 <p class="font-semibold text-sm">Log in</p>
