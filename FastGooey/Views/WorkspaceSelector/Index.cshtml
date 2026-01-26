@@ -1,9 +1,14 @@
 @model FastGooey.Models.ViewModels.WorkspaceSelector.WorkspaceSelectorViewModel
-@{ Layout = "~/Views/Shared/PublicLayout.cshtml"; }
+@{
+    ViewData["Title"] = "Workspaces";
+    Layout = "~/Views/Shared/PublicLayout.cshtml";
+}
 
 <div class="w-screen h-screen bg-blueDark font-mont">
     <div class="p-6 flex gap-6 items-baseline">
-        <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md">FastGooey</h1>
+        <a href="/workspaces">
+            <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md">FastGooey</h1>
+        </a>
         <p class="text-white font-mont text-shadow-md font-medium flex-1">@User.Identity.Name</p>
         <a href="/auth/logout" class="text-white font-mont text-shadow-md font-medium">Logout</a>
     </div>

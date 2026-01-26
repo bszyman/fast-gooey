@@ -2,13 +2,16 @@
 @model FastGooey.Models.FormModels.CreateWorkspace
 @inject UserManager<ApplicationUser> UserManager
 @{
+    ViewData["Title"] = "Create Workspace";
     Layout = "~/Views/Shared/PublicLayout.cshtml";
     var currentUser = await UserManager.GetUserAsync(User);
 }
 
 <div class="w-screen h-screen bg-blueDark font-mont">
     <div class="p-6 flex gap-6 items-baseline">
-        <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md">FastGooey</h1>
+        <a href="/">
+            <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md">FastGooey</h1>
+        </a>
         <p class="text-white font-mont text-shadow-md font-medium flex-1">@User.Identity.Name</p>
         <a href="/auth/logout" class="text-white font-mont text-shadow-md font-medium">Logout</a>
     </div>
