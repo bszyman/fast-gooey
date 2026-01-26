@@ -133,4 +133,9 @@
         <ProjectReference Include="..\WeatherKit.Models\WeatherKit.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="*.handlebars">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>
