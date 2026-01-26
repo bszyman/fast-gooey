@@ -1,6 +1,9 @@
 using System.Net;
 using System.Net.Mail;
+using FastGooey.Models;
 using FastGooey.Models.Configuration;
+using Flurl;
+using HandlebarsDotNet;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 
@@ -34,5 +37,29 @@ public class EmailerService: IEmailSender
         mailMessage.To.Add(recipientEmailAddress);
              
         await client.SendMailAsync(mailMessage);
+    }
+
+    public async Task SendVerificationEmail(ApplicationUser user, string confirmationLink)
+    {
+        var name = $"{user.FirstName} {user.LastName}";
+
+        const string filePath = "Views/EmailNotifications/emailVerification.handlebars";
+        var fileContents = await System.IO.File.ReadAllTextAsync(filePath);
+
+        var template = Handlebars.Compile(fileContents);
+
+        var data = new
+        {
+            name,
+            confirmationLink
+        };
+
+        var messageContents = template(data);
+
+        await SendEmailAsync(
+            user.Email,
+            "Welcome to FastGooey! Please verify your email address.",
+            messageContents
+        );
     }
 }

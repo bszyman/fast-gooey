@@ -9,7 +9,8 @@ public static class CoreServiceExtensions
     { 
         services.AddScoped<IKeyValueService, KeyValueService>();
         services.AddSingleton<IAppleSignInJwtService, AppleSignInJwtService>();
-        services.AddSingleton<IEmailSender, EmailerService>();
+        services.AddTransient<IEmailSender, EmailerService>();
+        services.AddTransient<EmailerService>();
         
         return services;
     }

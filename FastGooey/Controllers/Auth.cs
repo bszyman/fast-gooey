@@ -3,9 +3,7 @@ using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
-using HandlebarsDotNet;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers;
@@ -15,7 +13,7 @@ public class Auth(
     UserManager<ApplicationUser> userManager,
     ApplicationDbContext dbContext,
     ITurnstileValidatorService turnstileValidator,
-    IEmailSender emailSender): 
+    EmailerService emailSender): 
     Controller
 {
     [HttpGet]
@@ -75,6 +73,7 @@ public class Auth(
         try
         {
             var currentUser = await userManager.GetUserAsync(User);
+
             var token = await userManager.GenerateEmailConfirmationTokenAsync(currentUser);
             var confirmationLink = Url.Action(
                 "ConfirmEmail",
@@ -82,27 +81,8 @@ public class Auth(
                 new { userId = currentUser.Id, token },
                 Request.Scheme
             );
-
-            var name = $"{currentUser.FirstName} {currentUser.LastName}";
-
-            const string filePath = "Views/EmailNotifications/emailVerification.handlebars";
-            var fileContents = await System.IO.File.ReadAllTextAsync(filePath);
-
-            var template = Handlebars.Compile(fileContents);
-
-            var data = new
-            {
-                name,
-                confirmationLink
-            };
-
-            var messageContents = template(data);
-
-            await emailSender.SendEmailAsync(
-                currentUser.Email,
-                "Welcome to FastGooey! Please verify your email address.",
-                messageContents
-            );
+            
+            await emailSender.SendVerificationEmail(currentUser, confirmationLink);
 
             return Ok("<p class='mt-4'>A new verification email has been sent.</p>");
         }

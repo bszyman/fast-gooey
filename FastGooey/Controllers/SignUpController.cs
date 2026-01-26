@@ -1,9 +1,7 @@
 using FastGooey.Models;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
-using HandlebarsDotNet;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers;
@@ -12,7 +10,7 @@ public class SignUpController(
     SignInManager<ApplicationUser> signInManager,
     UserManager<ApplicationUser> userManager,
     ITurnstileValidatorService turnstileValidator,
-    IEmailSender emailSender): 
+    EmailerService emailSender): 
     Controller
 {
     [HttpGet]
@@ -54,7 +52,6 @@ public class SignUpController(
         {
             await signInManager.SignInAsync(user, isPersistent: false);
             
-            // TODO: Extract this logic out
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmationLink = Url.Action(
                 "ConfirmEmail",
@@ -63,28 +60,11 @@ public class SignUpController(
                 Request.Scheme
             );
             
-            var name = $"{user.FirstName} {user.LastName}";
-
-            const string filePath = "Views/EmailNotifications/emailVerification.handlebars";
-            var fileContents = await System.IO.File.ReadAllTextAsync(filePath);
-
-            var template = Handlebars.Compile(fileContents);
-
-            var data = new
-            {
-                name,
-                confirmationLink
-            };
-
-            var messageContents = template(data);
-
-            await emailSender.SendEmailAsync(
-                user.Email,
-                "Welcome to FastGooey! Please verify your email address.",
-                messageContents
-            );
+            await emailSender.SendVerificationEmail(user, confirmationLink);
             
-            return LocalRedirect(returnUrl ?? "/"); // TODO: better redirect using redirect action
+            return string.IsNullOrWhiteSpace(returnUrl) ?
+                RedirectToAction("Index", "WorkspaceSelector") : 
+                LocalRedirect(returnUrl);
         }
 
         foreach (var error in result.Errors)
