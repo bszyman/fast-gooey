@@ -19,6 +19,9 @@
     --color-destructiveButton: #D92D20;
     --color-panelNegativeSpace: rgba(0, 0, 0, 0.6);
     --color-halfWhite: rgba(255, 255, 255, 0.5);
+    --color-nuclearGreen: #70FF68;
+    --color-nuclearGreenLighter: #20FF11;
+    --color-nuclearGreenDarker: #05AD21;
     
     --shadow-panelShadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
 
@@ -109,11 +112,11 @@ body {
 }
 
 .formGroup {
-    @apply bg-white rounded shadow-md;
+    @apply mb-8;
 }
 
 .formGroup label {
-    @apply block text-sm font-medium text-gray-700 mb-2;
+    @apply font-mont block text-sm font-medium mb-2;
 }
 
 .formGroup input[type='text'],
@@ -127,7 +130,7 @@ body {
 .formGroup input[type='password'],
 .formGroup input[type='search'],
 .formGroup textarea {
-    @apply border border-zinc-300 rounded py-2 px-3 w-full text-sm bg-white;
+    @apply border border-blueMid rounded py-2 px-3 w-full text-sm;
 }
 
 .formGroup select {
@@ -144,4 +147,22 @@ body {
 .contentGroup input[type='email'],
 .contentGroup textarea {
     @apply border border-zinc-300 rounded py-1 px-2;
+}
+
+#loginPanel input[type='text'],
+#loginPanel input[type='tel'],
+#loginPanel input[type='url'],
+#loginPanel input[type='email'],
+#loginPanel input[type='number'],
+#loginPanel input[type='date'],
+#loginPanel input[type='time'],
+#loginPanel input[type='datetime-local'],
+#loginPanel input[type='password'],
+#loginPanel input[type='search'],
+#loginPanel textarea {
+    @apply font-mont border border-zinc-300 rounded-lg py-2 px-3 w-full text-sm bg-white;
+}
+
+#loginPanel button {
+    @apply font-mont bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg cursor-pointer;
 }

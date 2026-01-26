@@ -11,6 +11,7 @@
       <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
       <PackageReference Include="Flurl.Http" Version="4.0.2" />
       <PackageReference Include="GeoTimeZone" Version="6.0.0" />
+      <PackageReference Include="Handlebars.Net" Version="2.1.6" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.10" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="9.0.10" />
@@ -31,6 +32,7 @@
 
     <ItemGroup>
       <Folder Include="Migrations\" />
+      <Folder Include="Views\Home\Partials\" />
       <Folder Include="Views\Team\" />
       <Folder Include="Views\Widgets\Workspaces\" />
     </ItemGroup>
@@ -107,6 +109,7 @@
       <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldTimeEditorPanel.cshtml" />
       <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormSubmissionViewerPanel.cshtml" />
       <_ContentIncludedByDefault Remove="Views\MacOS\Partials\FormSubmissionViewerPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\wwwroot\site.dist.css" />
     </ItemGroup>
 
     <ItemGroup>

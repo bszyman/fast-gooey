@@ -1,40 +1,70 @@
-@model IEnumerable<Workspace>
+@model FastGooey.Models.ViewModels.WorkspaceSelector.WorkspaceSelectorViewModel
 @{ Layout = "~/Views/Shared/PublicLayout.cshtml"; }
 
-<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
-    <div class="flex-1 flex items-center px-6">
-        <p class="mx-6 font-bold">FastGooey</p>
+<div class="w-screen h-screen bg-blueDark font-mont">
+    <div class="p-6 flex gap-6 items-baseline">
+        <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md">FastGooey</h1>
+        <p class="text-white font-mont text-shadow-md font-medium flex-1">@User.Identity.Name</p>
+        <a href="/auth/logout" class="text-white font-mont text-shadow-md font-medium">Logout</a>
     </div>
-</div>
-
-<div class="my-10 mx-6 xl:mx-auto max-w-xl">
-    <h1 class="mb-8 font-bold text-6xl text-shadow-zinc-600">
-        Workspaces
-    </h1>
-    
-    @if (Model.Any())
-    {
-        foreach (var workspace in Model)
+    <div class="max-w-xl mx-auto pt-24">
+        <h1 class="text-white font-exo text-5xl md:text-7xl font-bold italic tracking-tighter text-shadow-md mb-6">Workspaces</h1>
+        
+        @if (Model.Workspaces.Any())
         {
-            <a href="/Workspaces/@workspace.PublicId/Home">
-                <div class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
-                    <p class="font-medium mb-1">@workspace.Name</p>
-                    <p class="text-xs font-medium text-grayMid mb-1">
-                        Open workspace &rarr;
-                    </p>
-                </div>
-            </a>
-        }
-    }
-    else
-    {
-        <a href="/Workspaces/CreateWorkspace">
-            <div class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
-                <p class="font-medium mb-1">You don't have any workspaces.</p>
-                <p class="text-xs font-medium text-grayMid mb-1">
-                    Create one now &rarr;
-                </p>
+            <div class="border border-white shadow-md rounded-xl text-white">
+                @foreach (var workspace in Model.Workspaces)
+                {
+                    var borderStyles = workspace.Equals(Model.Workspaces.Last()) ? "border-b-0" : "border-b";
+                    
+                    <a href="/Workspaces/@workspace.PublicId/Home">
+                        <div class="p-4 @borderStyles border-white hover:underline">
+                            <p class="font-medium mb-1 text-shadow-md">@workspace.Name</p>
+                            <p class="text-xs font-medium mb-1 text-shadow-md">
+                                Open workspace &rarr;
+                            </p>
+                        </div>
+                    </a>
+                }
             </div>
-        </a>
-    }
+        }
+        else
+        {
+            @if (Model.UserIsConfirmed)
+            {
+                <div class="border border-white shadow-md rounded-xl text-white">
+                    <a asp-action="CreateWorkspace" asp-controller="WorkspaceSelector">
+                        <div class="cursor-pointer rounded-xl shadow p-4 hover:underline">
+                            <p class="font-medium mb-1 text-shadow-md">You don't have any workspaces.</p>
+                            <p class="text-xs font-medium mb-1 text-shadow-md">
+                                Create one now &rarr;
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="border border-white shadow-md rounded-xl text-white mb-6">
+                    <div class="rounded-xl shadow p-4">
+                        <p class="font-medium mb-1 text-shadow-md">You don't have any workspaces.</p>
+                        <p class="text-xs font-medium text-shadow-md mb-6">
+                            Your email address must be verified before you can create a workspace. You should have
+                            received an email on sign-up, but you can request another one using the button below.
+                        </p>
+                        
+                        <button 
+                            hx-post="/Auth/SendEmailValidation"
+                            hx-target="#validationRequestResult"
+                            type="button" 
+                            class="text-white text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer border-3 border-nuclearGreenLighter shadow-md">
+                            Request validation
+                        </button>
+                        
+                        <div id="validationRequestResult" class="text-xs font-medium text-shadow-md"></div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
 </div>

@@ -3,7 +3,9 @@ using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
+using HandlebarsDotNet;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastGooey.Controllers;
@@ -12,7 +14,8 @@ public class Auth(
     SignInManager<ApplicationUser> signInManager,
     UserManager<ApplicationUser> userManager,
     ApplicationDbContext dbContext,
-    ITurnstileValidatorService turnstileValidator): 
+    ITurnstileValidatorService turnstileValidator,
+    IEmailSender emailSender): 
     Controller
 {
     [HttpGet]
@@ -54,20 +57,72 @@ public class Auth(
                 return LocalRedirect(returnUrl);
             }
             
-            // render workspace partial
-            var currentUser = await userManager.GetUserAsync(User);
-            
-            var workspaces = dbContext.Workspaces
-                .Where(x => x.Users.Contains(currentUser))
-                .ToList();
-        
-            return PartialView("~/Views/WorkspaceSelector/Partials/WorkspaceList.cshtml", workspaces);
+            // render workspace succeeded partial
+            HttpContext.Response.Headers["HX-Redirect"] = "/workspaces";
+            return PartialView("~/Views/Auth/LoginSucceeded.cshtml");
         }
             
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
         // render form partial
         return View(model);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SendEmailValidation()
+    {
+        try
+        {
+            var currentUser = await userManager.GetUserAsync(User);
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(currentUser);
+            var confirmationLink = Url.Action(
+                "ConfirmEmail",
+                "Auth",
+                new { userId = currentUser.Id, token },
+                Request.Scheme
+            );
+
+            var name = $"{currentUser.FirstName} {currentUser.LastName}";
+
+            const string filePath = "Views/EmailNotifications/emailVerification.handlebars";
+            var fileContents = await System.IO.File.ReadAllTextAsync(filePath);
+
+            var template = Handlebars.Compile(fileContents);
+
+            var data = new
+            {
+                name,
+                confirmationLink
+            };
+
+            var messageContents = template(data);
+
+            await emailSender.SendEmailAsync(
+                currentUser.Email,
+                "Welcome to FastGooey! Please verify your email address.",
+                messageContents
+            );
+
+            return Ok("<p class='mt-4'>A new verification email has been sent.</p>");
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"<p class='mt-4'>${e}</p>");
+        }
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> ConfirmEmail(string userId, string token)
+    {
+        if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
+            return RedirectToAction("Index", "Home");
+    
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null) return NotFound();
+    
+        var result = await userManager.ConfirmEmailAsync(user, token);
+        return result.Succeeded ? RedirectToAction("Index", "WorkspaceSelector") : View("Error");
     }
 
     // [HttpGet]

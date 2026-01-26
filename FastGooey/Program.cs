@@ -1,6 +1,7 @@
 using FastGooey.Composers;
 using FastGooey.Database;
 using FastGooey.Models;
+using FastGooey.Models.Configuration;
 using FastGooey.Services;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Identity;
@@ -32,6 +33,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             o => o.UseNodaTime())
     .UseSnakeCaseNamingConvention());
 builder.Services.AddSingleton<DatabaseInitializer>();
+builder.Services.Configure<SmtpConfigurationModel>(builder.Configuration.GetSection("Smtp"));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

@@ -1,32 +1,57 @@
-﻿@{
+﻿@model FastGooey.Models.ViewModels.LoginViewModel
+
+@{
     ViewData["Title"] = "Welcome";
     Layout = "PublicLayout";
 }
 
-<div class="w-screen h-screen bg-blueMid bg-no-repeat bg-top-left bg-size-auto lg:bg-size-[auto_1200px]" style="background-image: url('/theme/landing-background.jpg');">
-    <div class="flex w-full h-full justify-center items-center">
-        <div class="w-1/2 h-full px-12 flex flex-col justify-center">
-            <h1 class="font-exo text-5xl md:text-8xl lg:text-[120pt]/[140px] font-bold italic lg:max-w-xl tracking-tighter text-shadow-md max-w-full sm:max-w-28">
-                Fast Gooey
+<div class="w-screen h-screen bg-blueDark bg-cover bg-center" style="background-image: url('/theme/login-background.jpg');">
+    <div class="flex flex-col justify-center items-center h-full">
+        <div class="text-center text-nuclearGreen">
+            <h1 class="font-exo text-5xl md:text-8xl lg:text-[100pt]/[140px] font-bold italic tracking-tighter text-shadow-md mb-6">
+                FastGooey
             </h1>
-            <p class="font-mont font-bold text-2xl lg:text-3xl/snug lg:max-w-xl pb-8 sm:mb-12 lg:mb-16 leading-relaxed max-w-full sm:max-w-[450px] mt-8 lg:mt-24 text-shadow-md">
+            <p class="font-mont font-bold text-2xl lg:text-3xl/snug italic max-w-lg mx-auto text-shadow-md">
                 The missing hypermedia system for macOS and iOS.
             </p>
         </div>
-        <div class="w-1/2 h-full px-12 bg-stone-100 shadow-md flex flex-col justify-center">
-            @if (User.Identity is not null && User.Identity.IsAuthenticated)
-            {
-                <div id="workspaceSelector"
-                     hx-get="/Workspaces/WorkspaceList"
-                     hx-target="#workspaceSelector"
-                     hx-swap="innerHTML"
-                     hx-trigger="load">
-                </div>
-            }
-            else
-            {
-                <partial name="~/Views/Home/Partials/loginForm.cshtml"/>
-            }
+        
+        <div id="mainPanel" class="flex flex-row gap-4 mx-auto my-4">
+            <div id="loginPanel">
+                <form asp-action="Login" asp-controller="Home" method="post">
+                    <p class="mb-2 text-white font-semibold text-shadow-md">Sign in with your email address and password.</p>
+        
+                    <div class="flex flex-row gap-4 w-2xl">
+                        <input asp-for="Email" type="email" placeholder="app@fastgooey.com" aria-label="Email Address" class="flex-6" />
+                        <input asp-for="Password" type="password" placeholder="Password" aria-label="Password" class="flex-6" />
+                        <button type="submit" class="flex-2 bg-gradient-to-b from-nuclearGreenLighter to-nuclearGreenDarker border border-white/10 shadow-md">Log In</button>
+                    </div>
+        
+                    <div class="mx-4">
+                        <partial name="~/Views/Partials/cloudflareTurnstileFormEmbed.cshtml" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="mx-auto w-2xl bg-stone-100/35 border border-stone-100/40 text-white p-4 rounded-lg shadow-md bg-blend-color-dodge">
+            <h2 class="font-mont font-semibold text-lg mb-2">New to FastGooey?</h2>
+            <p>
+                Create an account and discover the power of hypermedia.
+                <a href="/SignUp">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 inline-block align-middle">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </p>
         </div>
     </div>
 </div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="rounded-2xl fixed bottom-0 m-6 p-6 bg-rose-400 shadow max-w-lg">
+        <h3 class="mb-2 font-semibold">We ran into the following errors while attempting to log you in:</h3>
+        <div asp-validation-summary="All"></div>
+    </div>
+}

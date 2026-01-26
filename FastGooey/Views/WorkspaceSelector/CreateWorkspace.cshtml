@@ -1,43 +1,73 @@
+@using Microsoft.AspNetCore.Identity
 @model FastGooey.Models.FormModels.CreateWorkspace
-@{ Layout = "~/Views/Shared/PublicLayout.cshtml"; }
+@inject UserManager<ApplicationUser> UserManager
+@{
+    Layout = "~/Views/Shared/PublicLayout.cshtml";
+    var currentUser = await UserManager.GetUserAsync(User);
+}
 
-<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
-    <div class="flex-1 flex items-center px-6">
-        <p class="mx-6 font-bold">Create Workspace</p>
+<div class="w-screen h-screen bg-blueDark font-mont">
+    <div class="p-6 flex gap-6 items-baseline">
+        <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md">FastGooey</h1>
+        <p class="text-white font-mont text-shadow-md font-medium flex-1">@User.Identity.Name</p>
+        <a href="/auth/logout" class="text-white font-mont text-shadow-md font-medium">Logout</a>
+    </div>
+    <div class="max-w-2xl mx-auto pt-24">
+        <h1 class="text-white font-exo text-5xl md:text-7xl font-bold italic tracking-tighter text-shadow-md mb-6">
+            Create Workspace
+        </h1>
+        
+        @if (currentUser.EmailConfirmed)
+        {
+            <form asp-action="SaveNewWorkspace" asp-controller="WorkspaceSelector" method="post" hx-boost="true">
+                <div class="border border-white shadow-md rounded-xl text-white p-4">
+                    <div class="formGroup">
+                        <div class="mb-4">
+                            <label asp-for="WorkspaceName"></label>
+                            <input asp-for="WorkspaceName"
+                                   type="text"
+                                   class="w-full"
+                                   placeholder="Workspace Name"
+                            />
+                            <span asp-validation-for="WorkspaceName" class="text-red-600 text-sm mt-1 block"></span>
+                        </div>
+                        <div class="mb-4">
+                            <p class="font-mont block text-sm font-medium mb-2">For account:</p>
+                            <p class="font-mont block text-sm font-semibold mb-2">@User.Identity.Name</p>
+                        </div>
+                    </div>
+                
+                    <button type="submit" class="text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer bg-gradient-to-b from-nuclearGreenLighter to-nuclearGreenDarker border border-white/10 shadow-md">
+                        Create workspace
+                    </button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="border border-white shadow-md rounded-xl text-white mb-6">
+                <div class="rounded-xl shadow p-4">
+                    <p class="font-medium mb-1 text-shadow-md">Your email address has not been verified.</p>
+                    <p class="text-xs font-medium text-shadow-md mb-6">
+                        Your email address must be verified before you can create a workspace. You should have
+                        received an email on sign-up, but you can request another one using the button below.
+                    </p>
+                        
+                    <button 
+                        hx-post="/Auth/SendEmailValidation"
+                        hx-target="#validationRequestResult"
+                        type="button" 
+                        class="text-white text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer border-3 border-nuclearGreenLighter shadow-md">
+                        Request validation
+                    </button>
+                        
+                    <div id="validationRequestResult" class="text-xs font-medium text-shadow-md"></div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
-<form asp-action="CreateWorkspace" asp-controller="Workspaces" method="post" hx-boost="true">
-    <div id="editor" class="mx-auto mt-18 max-w-3xl">
-        <div class="formGroup mb-8">
-            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
-                <p class="font-semibold">Workspace Details</p>
-            </div>
-            <div class="py-2 px-4 mt-1">
-                <div class="mb-4">
-                    <label asp-for="WorkspaceName"></label>
-                    <input asp-for="WorkspaceName" 
-                           type="text" 
-                           class="w-full"
-                    />
-                    <span asp-validation-for="WorkspaceName" class="text-red-600 text-sm mt-1 block"></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-0 right-0">
-        <div class="flex items-center w-1/2">
-            <a asp-action="Index" asp-controller="Home" class="text-zinc-600 hover:text-zinc-800">Cancel</a>
-        </div>
-        <div class="flex items-center justify-end w-1/2 text-right">
-            <button type="submit" class="bg-emerald-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm hover:bg-emerald-800">
-                Create workspace
-            </button>
-        </div>
-    </div>
-</form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+@* @section Scripts { *@
+@*     <partial name="_ValidationScriptsPartial" /> *@
+@* } *@

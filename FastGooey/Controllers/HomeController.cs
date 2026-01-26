@@ -1,14 +1,65 @@
 using System.Diagnostics;
+using FastGooey.Models;
 using Microsoft.AspNetCore.Mvc;
 using FastGooey.Models.ViewModels;
+using FastGooey.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace FastGooey.Controllers;
 
-public class HomeController(ILogger<HomeController> logger): Controller
+public class HomeController(
+    SignInManager<ApplicationUser> signInManager,
+    UserManager<ApplicationUser> userManager,
+    ITurnstileValidatorService turnstileValidator,
+    ILogger<HomeController> logger): Controller
 {
     public IActionResult Index()
     {
+        if (User.Identity?.IsAuthenticated ?? false) 
+            return RedirectToAction(nameof(WorkspaceSelectorController.Index), "WorkspaceSelector");
+        
         return View();
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
+    {
+        ViewData["ReturnUrl"] = returnUrl;
+        
+        if (!ModelState.IsValid)
+            return View("Index", model);
+
+        if (!await turnstileValidator.ValidateFormRequest(model.TurnstileToken))
+        {
+            ModelState.AddModelError(
+                "Request validation failed.", 
+                "Request validation failed. Refresh the page and try logging in again."
+            );
+            
+            return View("Index", model);
+        }
+
+        var result = await signInManager.PasswordSignInAsync(
+            model.Email, 
+            model.Password, 
+            model.RememberMe, 
+            lockoutOnFailure: false // TODO: Revist
+        );
+
+        if (result.Succeeded)
+        {
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+            
+            return RedirectToAction(nameof(WorkspaceSelectorController.Index), "WorkspaceSelector");
+        }
+            
+        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
+        return View("Index", model);
     }
 
     public IActionResult Privacy()

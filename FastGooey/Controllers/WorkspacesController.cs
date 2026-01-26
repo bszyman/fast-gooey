@@ -1,7 +1,6 @@
 using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Models;
-using FastGooey.Models.FormModels;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -24,51 +23,6 @@ public class WorkspacesController(
     public IActionResult Home(Guid workspaceId)
     {
         return View();
-    }
-
-    [HttpGet("CreateWorkspace")]
-    public IActionResult CreateWorkspace(Guid workspaceId)
-    {
-        return View(new CreateWorkspace());
-    }
-
-    [HttpPost("CreateWorkspace")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateWorkspace(Guid workspaceId, CreateWorkspace form)
-    {
-        if (!ModelState.IsValid)
-        {
-            return View(form);
-        }
-        
-        var currentUser = await userManager.GetUserAsync(User);
-        if (currentUser == null)
-        {
-            return Unauthorized();
-        }
-
-        var workspace = new Workspace
-        {
-            Name = form.WorkspaceName
-        };
-        
-        workspace.Users.Add(currentUser);
-
-        dbContext.Workspaces.Add(workspace);
-        await dbContext.SaveChangesAsync();
-        
-        return Redirect("/");
-        
-        // return RedirectToAction(
-        //     nameof(Index), 
-        //     nameof(Home), 
-        //     new { id = workspace.PublicId }
-        // );
-        
-        // return RedirectToAction(
-        //     nameof(Home), 
-        //     new { id = workspace.PublicId }
-        // );
     }
 
     [HttpGet("Info/{interfaceId:guid}")]
