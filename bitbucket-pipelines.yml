@@ -1,20 +1,30 @@
 image: mcr.microsoft.com/dotnet/sdk:10.0
 
+definitions:
+  caches:
+    dotnetcore: ~/.nuget/packages
+
 pipelines:
   branches:
     master:
       - step:
           name: "Restore and test"
+          caches:
+            - dotnetcore
           script:
-            - dotnet restore
-            - dotnet test FastGooey.Tests/FastGooey.Tests.csproj
+            - export DOTNET_CLI_TELEMETRY_OPTOUT=1
+            - export NUGET_XMLDOC_MODE=skip
+            - dotnet restore FastGooey.sln
+            - dotnet test FastGooey.Tests/FastGooey.Tests.csproj --no-restore
       - step:
           name: "Restore and publish"
+          caches:
+            - dotnetcore
           script:
-            - dotnet restore
-            - dotnet publish -c Release --property:PublishDir=./publish
+            - export DOTNET_CLI_TELEMETRY_OPTOUT=1
+            - export NUGET_XMLDOC_MODE=skip
             - dotnet restore FastGooey.sln
-            - dotnet publish FastGooey/FastGooey.csproj -c Release -o ./publish
+            - dotnet publish FastGooey/FastGooey.csproj -c Release -o ./publish --no-restore
           artifacts:
             - publish/**
       - step:
