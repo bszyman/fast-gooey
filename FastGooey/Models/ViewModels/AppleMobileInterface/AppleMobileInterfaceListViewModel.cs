@@ -3,7 +3,7 @@ namespace FastGooey.Models.ViewModels.AppleMobileInterface;
 public class AppleMobileInterfaceListViewModel
 {
     public AppleMobileInterfaceListWorkspaceViewModel? WorkspaceViewModel { get; set; }
-    
+
     public string WorkspaceId()
     {
         return WorkspaceViewModel!.ContentNode!.Workspace.PublicId.ToString();

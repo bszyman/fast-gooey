@@ -11,39 +11,40 @@ public class HomeController(
     SignInManager<ApplicationUser> signInManager,
     UserManager<ApplicationUser> userManager,
     ITurnstileValidatorService turnstileValidator,
-    ILogger<HomeController> logger): Controller
+    ILogger<HomeController> logger) : 
+    Controller
 {
     public IActionResult Index()
     {
-        if (User.Identity?.IsAuthenticated ?? false) 
+        if (User.Identity?.IsAuthenticated ?? false)
             return RedirectToAction(nameof(WorkspaceSelectorController.Index), "WorkspaceSelector");
-        
+
         return View();
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
-        
+
         if (!ModelState.IsValid)
             return View("Index", model);
 
         if (!await turnstileValidator.ValidateFormRequest(model.TurnstileToken))
         {
             ModelState.AddModelError(
-                "Request validation failed.", 
+                "Request validation failed.",
                 "Request validation failed. Refresh the page and try logging in again."
             );
-            
+
             return View("Index", model);
         }
 
         var result = await signInManager.PasswordSignInAsync(
-            model.Email, 
-            model.Password, 
-            model.RememberMe, 
+            model.Email,
+            model.Password,
+            model.RememberMe,
             lockoutOnFailure: false // TODO: Revist
         );
 
@@ -53,10 +54,10 @@ public class HomeController(
             {
                 return LocalRedirect(returnUrl);
             }
-            
+
             return RedirectToAction(nameof(WorkspaceSelectorController.Index), "WorkspaceSelector");
         }
-            
+
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
         return View("Index", model);

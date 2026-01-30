@@ -19,11 +19,11 @@ namespace FastGooey.Controllers.Widgets;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Widgets/Map")]
 public class MapController(
-    ILogger<WeatherController> logger, 
+    ILogger<WeatherController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager
-): BaseStudioController(keyValueService, dbContext)
+    UserManager<ApplicationUser> userManager ) : 
+    BaseStudioController(keyValueService, dbContext)
 {
     private async Task<MapWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
@@ -33,8 +33,8 @@ public class MapController(
 
         var entries = contentNode.Config.Deserialize<MapJsonDataModel>()
             .Pins
-            .Select(x => new MapCityEntryViewModel 
-            { 
+            .Select(x => new MapCityEntryViewModel
+            {
                 LocationName = x.LocationName,
                 LocationIdentifier = x.LocationIdentifier,
                 Latitude = double.Parse(x.Latitude),
@@ -42,7 +42,7 @@ public class MapController(
                 CoordinateDisplay = x.Coordinates,
                 EntryId = x.EntryId
             });
-        
+
         var viewModel = new MapWorkspaceViewModel
         {
             ContentNode = contentNode,
@@ -51,37 +51,37 @@ public class MapController(
 
         return viewModel;
     }
-    
+
     // Full page view
     [HttpGet("{interfaceId:guid}")]
     public async Task<IActionResult> Index(Guid interfaceId)
     {
         var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         var viewModel = new MapViewModel
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         return View(viewModel);
     }
-    
+
     // Workspace view
     [HttpGet("workspace/{interfaceId:guid}")]
     public async Task<IActionResult> Workspace(Guid interfaceId)
     {
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView(viewModel);
     }
-    
+
     [HttpPost("workspace/{interfaceId:guid}")]
     public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] MapWorkspaceFormModel formModel)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var data = contentNode.Config.Deserialize<MapJsonDataModel>();
 
         data.Pins = formModel.Locations.Select(x => new MapWorkspacePinModel
@@ -93,21 +93,21 @@ public class MapController(
             LocationIdentifier = string.Empty,
             LocationName = x.LocationName
         }).ToList();
-        
+
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
-        
+
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/Map/Workspace.cshtml", viewModel);
     }
-    
+
     [HttpPost("create-widget")]
     public async Task<IActionResult> CreateWidget()
     {
         var workspace = GetWorkspace();
         var data = new WeatherJsonDataModel();
-        
+
         var contentNode = new GooeyInterface
         {
             WorkspaceId = workspace.Id,
@@ -126,17 +126,17 @@ public class MapController(
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
-        
+
         return PartialView("~/Views/Map/Index.cshtml", viewModel);
     }
-    
+
     [HttpGet("search-panel")]
     public async Task<IActionResult> MapSearchPanel([FromQuery] string locationSearch)
     {
         var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
-        
+
         var results = await $"https://maps-api.apple.com/v1/search?q={locationSearch}"
             .WithHeader("Authorization", $"Bearer {mapKitServerToken}")
             .GetJsonAsync<MapKitSearchResponseModel>();
@@ -147,7 +147,7 @@ public class MapController(
             SearchText = locationSearch,
             Results = results
         };
-        
+
         return PartialView("~/Views/Map/Partials/SearchPanel.cshtml", viewModel);
     }
 
@@ -163,7 +163,7 @@ public class MapController(
             EntryId = Guid.NewGuid(),
             CoordinateDisplay = MapKitCoordinateModel.CoordinateDisplay(latitude, longitude)
         };
-        
+
         return PartialView("~/Views/Map/Partials/CityEntry.cshtml", viewModel);
     }
 }

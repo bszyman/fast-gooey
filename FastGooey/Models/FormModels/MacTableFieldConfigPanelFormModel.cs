@@ -10,6 +10,6 @@ public class MacTableFieldConfigPanelFormModel
     public string FieldAlias { get; set; } = string.Empty;
     [Required]
     public string FieldType { get; set; } = string.Empty;
-    
+
     public List<string> DropdownOptions = [];
 }

@@ -6,7 +6,7 @@ public class MacOutlineJsonDataModel
     public string Name { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
     public List<MacOutlineJsonDataModel> Children { get; set; } = [];
-    
+
     public MacOutlineJsonDataModel? FindById(Guid id)
     {
         var stack = new Stack<MacOutlineJsonDataModel>();
@@ -30,7 +30,7 @@ public class MacOutlineJsonDataModel
 
         return null;
     }
-    
+
     public bool TryFindParentListFor(Guid id, out List<MacOutlineJsonDataModel>? parentList)
     {
         // Special-case: root itself

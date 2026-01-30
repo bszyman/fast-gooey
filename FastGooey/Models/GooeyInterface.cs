@@ -16,27 +16,27 @@ public class GooeyInterface
 
     [Required]
     public Guid DocId { get; set; } = Guid.NewGuid();
-    
+
     [Required]
     [ForeignKey(nameof(Workspace))]
     public long WorkspaceId { get; set; }
-    
+
     // Navigation property
     public Workspace Workspace { get; set; } = null!;
 
     [MaxLength(20)]
     public string Platform { get; set; } = string.Empty;
-    
+
     [MaxLength(30)]
     public string? ViewType { get; set; }
-    
+
     [Required]
     [MaxLength(200)]
     public string Name { get; set; } = string.Empty;
-    
+
     [Column(TypeName = "jsonb")]
     public JsonDocument Config { get; set; } = JsonDocument.Parse("{}");
-    
+
     public Instant CreatedAt { get; set; }
     public Instant UpdatedAt { get; set; }
 }

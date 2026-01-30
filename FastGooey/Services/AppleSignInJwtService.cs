@@ -11,8 +11,8 @@ public interface IAppleSignInJwtService
 }
 
 public class AppleSignInJwtService(
-    IConfiguration configuration, 
-    ILogger<AppleSignInJwtService> logger): 
+    IConfiguration configuration,
+    ILogger<AppleSignInJwtService> logger) :
     IAppleSignInJwtService
 {
     public string GenerateClientSecret()
@@ -22,16 +22,16 @@ public class AppleSignInJwtService(
         try
         {
             var privateKeyBytes = LoadPrivateKey(config.KeyLocation);
-            
+
             var ecdsa = ECDsa.Create();
             ecdsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
-            
+
             var securityKey = new ECDsaSecurityKey(ecdsa) { KeyId = config.KeyId };
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.EcdsaSha256);
-            
+
             var issuedAt = DateTime.UtcNow;
             var expiresAt = issuedAt.AddMinutes(5); // Apple allows up to 6 months
-            
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = config.TeamId,
@@ -44,14 +44,14 @@ public class AppleSignInJwtService(
                 Expires = expiresAt,
                 SigningCredentials = signingCredentials
             };
-            
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
-            
+
             securityToken.Header["typ"] = "JWT";
             securityToken.Header["kid"] = config.KeyId;
             securityToken.Header["alg"] = "ES256";
-            
+
             return tokenHandler.WriteToken(securityToken);
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public class AppleSignInJwtService(
         }
 
         var pemKey = File.ReadAllText(keyLocation);
-        
+
         if (pemKey.Contains("-----BEGIN PRIVATE KEY-----"))
         {
             var base64Key = pemKey
@@ -78,10 +78,10 @@ public class AppleSignInJwtService(
                 .Replace("\n", "")
                 .Replace("\r", "")
                 .Trim();
-            
+
             return Convert.FromBase64String(base64Key);
         }
-        
+
         return File.ReadAllBytes(keyLocation);
     }
 }

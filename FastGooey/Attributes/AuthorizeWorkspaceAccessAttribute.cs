@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FastGooey.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AuthorizeWorkspaceAccessAttribute: Attribute, IAsyncActionFilter
+public class AuthorizeWorkspaceAccessAttribute : Attribute, IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {

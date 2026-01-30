@@ -3,7 +3,7 @@ namespace FastGooey.Models.ViewModels.Map;
 public class MapViewModel
 {
     public MapWorkspaceViewModel? WorkspaceViewModel { get; set; }
-    
+
     public string WorkspaceId()
     {
         return WorkspaceViewModel!.ContentNode!.Workspace.PublicId.ToString();

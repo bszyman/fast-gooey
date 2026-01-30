@@ -21,18 +21,18 @@ namespace FastGooey.Controllers.Widgets;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Widgets/RssFeed")]
 public class RssFeedController(
-    ILogger<WeatherController> logger, 
+    ILogger<WeatherController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
     UserManager<ApplicationUser> userManager
-): BaseStudioController(keyValueService, dbContext)
+) : BaseStudioController(keyValueService, dbContext)
 {
     private async Task<RssWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var viewModel = new RssWorkspaceViewModel
         {
             ContentNode = contentNode,
@@ -41,7 +41,7 @@ public class RssFeedController(
 
         return viewModel;
     }
-    
+
     [HttpGet("{interfaceId:guid}")]
     public async Task<IActionResult> Index(Guid interfaceId)
     {
@@ -50,15 +50,15 @@ public class RssFeedController(
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         return View(viewModel);
     }
-    
+
     [HttpGet("workspace/{interfaceId:guid}")]
     public async Task<IActionResult> Workspace(Guid interfaceId)
     {
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/RssFeed/Workspace.cshtml", viewModel);
     }
 
@@ -67,7 +67,7 @@ public class RssFeedController(
     {
         var workspace = GetWorkspace();
         var data = new RssFeedJsonDataModel();
-        
+
         var contentNode = new GooeyInterface
         {
             WorkspaceId = workspace.Id,
@@ -86,9 +86,9 @@ public class RssFeedController(
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
-        
+
         return PartialView("~/Views/RssFeed/Index.cshtml", viewModel);
     }
 
@@ -101,12 +101,12 @@ public class RssFeedController(
 
         var data = contentNode.Config.Deserialize<RssFeedJsonDataModel>();
         data.FeedUrl = formModel.FeedUrl;
-        
+
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
-        
+
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/RssFeed/Workspace.cshtml", viewModel);
     }
 
@@ -124,14 +124,14 @@ public class RssFeedController(
             var stream = await feedUrl
                 .WithTimeout(10)
                 .GetStreamAsync();
-            
+
             await using (stream)
             {
                 using var xmlReader = XmlReader.Create(stream);
-                
+
                 // Parse the feed
                 var feed = SyndicationFeed.Load(xmlReader);
-                
+
                 // Create a view model with the feed data
                 var viewModel = new RssPreviewPanelViewModel
                 {
@@ -146,7 +146,7 @@ public class RssFeedController(
                         PublishDate = item.PublishDate.DateTime
                     }).ToList()
                 };
-                
+
                 return PartialView("~/Views/RssFeed/Partials/PreviewPanel.cshtml", viewModel);
             }
         }
@@ -166,13 +166,13 @@ public class RssFeedController(
             return StatusCode(500, "An error occurred while processing the RSS feed");
         }
     }
-    
+
     [HttpGet("preview-panel/from-interface/{interfaceId:guid}")]
     public async Task<IActionResult> RssPreviewPanel(Guid interfaceId)
     {
         var contentNode = dbContext.GooeyInterfaces.First(x => x.DocId.Equals(interfaceId));
         var data = contentNode.Config.Deserialize<RssFeedJsonDataModel>();
-        
+
         if (string.IsNullOrWhiteSpace(data.FeedUrl))
         {
             return BadRequest("RSS feed URL is required");
@@ -184,14 +184,14 @@ public class RssFeedController(
             var stream = await data.FeedUrl
                 .WithTimeout(10)
                 .GetStreamAsync();
-            
+
             await using (stream)
             {
                 using var xmlReader = XmlReader.Create(stream);
-                
+
                 // Parse the feed
                 var feed = SyndicationFeed.Load(xmlReader);
-                
+
                 // Create a view model with the feed data
                 var viewModel = new RssPreviewPanelViewModel
                 {
@@ -206,7 +206,7 @@ public class RssFeedController(
                         PublishDate = item.PublishDate.DateTime
                     }).ToList()
                 };
-                
+
                 return PartialView("~/Views/RssFeed/Partials/PreviewPanel.cshtml", viewModel);
             }
         }

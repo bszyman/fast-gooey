@@ -5,7 +5,7 @@ using NodaTime;
 
 namespace FastGooey.Database;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IClock clock): 
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IClock clock) :
     IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Workspace> Workspaces { get; set; } = null!;

@@ -2,7 +2,8 @@ using FastGooey.BackgroundJobs;
 using FastGooey.Services;
 
 namespace FastGooey.BackgroundJobs;
-public class AppleMapKitJwtRefreshService: BackgroundService
+
+public class AppleMapKitJwtRefreshService : BackgroundService
 {
     private readonly ILogger<AppleMapKitJwtRefreshService> _logger;
     private readonly IServiceProvider _serviceProvider;
@@ -25,7 +26,7 @@ public class AppleMapKitJwtRefreshService: BackgroundService
         // Do initial refresh
         await RefreshJwtAsync(stoppingToken);
 
-        while (!stoppingToken.IsCancellationRequested && 
+        while (!stoppingToken.IsCancellationRequested &&
                await timer.WaitForNextTickAsync(stoppingToken))
         {
             await RefreshJwtAsync(stoppingToken);
@@ -37,11 +38,11 @@ public class AppleMapKitJwtRefreshService: BackgroundService
         try
         {
             _logger.LogInformation("Refreshing Apple MapKit JWT at: {time}", DateTimeOffset.UtcNow);
-            
+
             using var scope = _serviceProvider.CreateScope();
             var jwtService = scope.ServiceProvider.GetRequiredService<IAppleMapKitJwtService>();
             await jwtService.RefreshTokenAsync(stoppingToken);
-            
+
             _logger.LogInformation("Apple MapKit JWT refreshed successfully.");
         }
         catch (Exception ex)

@@ -16,7 +16,7 @@ namespace FastGooey.Controllers;
 public class AccountManagementController(
     IKeyValueService keyValueService,
     UserManager<ApplicationUser> userManager,
-    ApplicationDbContext dbContext): 
+    ApplicationDbContext dbContext) :
     BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
@@ -25,9 +25,9 @@ public class AccountManagementController(
         var currentUser = await userManager.GetUserAsync(User);
         if (currentUser is null)
             return Unauthorized();
-        
+
         var viewModel = CreateViewModel(currentUser);
-        
+
         return View(viewModel);
     }
 
@@ -37,9 +37,9 @@ public class AccountManagementController(
         var currentUser = await userManager.GetUserAsync(User);
         if (currentUser is null)
             return Unauthorized();
-        
+
         var viewModel = CreateViewModel(currentUser);
-        
+
         return PartialView("~/Views/AccountManagement/Workspaces/AccountManagement.cshtml", viewModel);
     }
 
@@ -49,12 +49,12 @@ public class AccountManagementController(
         var currentUser = await userManager.GetUserAsync(User);
         if (currentUser is null)
             return Unauthorized();
-        
+
         currentUser.FirstName = formModel.FirstName;
         currentUser.LastName = formModel.LastName;
-        
+
         var result = await userManager.UpdateAsync(currentUser);
-    
+
         if (!result.Succeeded)
         {
             foreach (var error in result.Errors)
@@ -62,12 +62,12 @@ public class AccountManagementController(
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
-        
+
         var viewModel = CreateViewModel(currentUser);
-        
+
         return PartialView("~/Views/AccountManagement/Workspaces/AccountManagement.cshtml", viewModel);
     }
-    
+
     private ManageAccountViewModel CreateViewModel(ApplicationUser user)
     {
         return new ManageAccountViewModel

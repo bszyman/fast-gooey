@@ -10,12 +10,12 @@ public interface IKeyValueService
     public Task<string?> GetValueForKey(string key);
 }
 
-public class KeyValueService(ApplicationDbContext context): IKeyValueService
+public class KeyValueService(ApplicationDbContext context) : IKeyValueService
 {
     public async Task SetValueForKey(string key, string value)
     {
         var existing = await context.KeyValueStores.FirstOrDefaultAsync(x => x.Key == key);
-        
+
         if (existing != null)
         {
             existing.Value = value;
@@ -27,10 +27,10 @@ public class KeyValueService(ApplicationDbContext context): IKeyValueService
                 Key = key,
                 Value = value
             };
-            
+
             context.KeyValueStores.Add(kvs);
         }
-        
+
         await context.SaveChangesAsync();
     }
 
@@ -39,7 +39,7 @@ public class KeyValueService(ApplicationDbContext context): IKeyValueService
         var kvs = await context
             .KeyValueStores
             .FirstOrDefaultAsync(x => x.Key == key);
-        
+
         return kvs?.Value;
     }
 }

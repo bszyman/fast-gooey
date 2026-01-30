@@ -14,7 +14,7 @@ namespace FastGooey.Controllers;
 public class NavigationBarController(
     ILogger<NavigationBarController> logger,
     IKeyValueService keyValueService,
-    ApplicationDbContext dbContext): 
+    ApplicationDbContext dbContext) :
     BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
@@ -22,12 +22,12 @@ public class NavigationBarController(
     {
         // Query all widgets for this workspace
         var widgets = await GetWidgetsForWorkspace(workspaceId);
-        
+
         // Query all interfaces for this workspace
         var appleMobileInterfaces = await GetAppleMobileInterfacesForWorkspace(workspaceId);
         var macOSInterfaces = await GetMacOSInterfacesForWorkspace(workspaceId);
         var tvOSInterfaces = await GetTvOSInterfacesForWorkspace(workspaceId);
-        
+
         var viewModel = new NavigationBarViewModel
         {
             WorkspaceId = workspaceId,
@@ -36,10 +36,10 @@ public class NavigationBarController(
             MacOSInterfaces = macOSInterfaces,
             TvOSInterfaces = tvOSInterfaces
         };
-        
+
         return PartialView("~/Views/NavigationBar/NavigationBar.cshtml", viewModel);
     }
-    
+
     private async Task<List<WidgetNavigationItem>> GetWidgetsForWorkspace(Guid workspaceId)
     {
         var widgets = await dbContext.GooeyInterfaces
@@ -56,7 +56,7 @@ public class NavigationBarController(
 
         return widgets;
     }
-    
+
     private async Task<List<InterfaceNavigationItem>> GetAppleMobileInterfacesForWorkspace(Guid workspaceId)
     {
         var interfaces = await dbContext.GooeyInterfaces
@@ -70,10 +70,10 @@ public class NavigationBarController(
                 Route = $"/Workspaces/{workspaceId}/Interfaces/AppleMobile/{x.ViewType}/{x.DocId}"
             })
             .ToListAsync();
-        
+
         return interfaces;
     }
-    
+
     private async Task<List<InterfaceNavigationItem>> GetMacOSInterfacesForWorkspace(Guid workspaceId)
     {
         var interfaces = await dbContext.GooeyInterfaces
@@ -87,10 +87,10 @@ public class NavigationBarController(
                 Route = $"/Workspaces/{workspaceId}/interfaces/mac/{x.ViewType}/{x.DocId}"
             })
             .ToListAsync();
-        
+
         return interfaces;
     }
-    
+
     private async Task<List<InterfaceNavigationItem>> GetTvOSInterfacesForWorkspace(Guid workspaceId)
     {
         // TODO: Replace with actual database query

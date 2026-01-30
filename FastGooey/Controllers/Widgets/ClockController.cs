@@ -21,11 +21,11 @@ namespace FastGooey.Controllers.Widgets;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Widgets/Clock")]
 public class ClockController(
-    ILogger<WeatherController> logger, 
+    ILogger<WeatherController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager
-): BaseStudioController(keyValueService, dbContext)
+    UserManager<ApplicationUser> userManager) : 
+    BaseStudioController(keyValueService, dbContext)
 {
     private async Task<ClockWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
@@ -34,10 +34,10 @@ public class ClockController(
             .FirstAsync(x => x.DocId.Equals(interfaceId));
 
         var data = contentNode.Config.Deserialize<ClockJsonDataModel>();
-        
+
         var currentTime =
             TimeFromCoordinates.CalculateDateTimeSet(data.Latitude, data.Longitude);
-        
+
         var viewModel = new ClockWorkspaceViewModel
         {
             ContentNode = contentNode,
@@ -47,7 +47,7 @@ public class ClockController(
 
         return viewModel;
     }
-    
+
     [HttpGet("{interfaceId:guid}")]
     public async Task<IActionResult> Index(Guid interfaceId)
     {
@@ -56,24 +56,24 @@ public class ClockController(
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         return View(viewModel);
     }
-    
+
     [HttpGet("workspace/{interfaceId:guid}")]
     public async Task<IActionResult> Workspace(Guid interfaceId)
     {
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/Clock/Workspace.cshtml", viewModel);
     }
-    
+
     [HttpPost("create-widget")]
     public async Task<IActionResult> CreateWidget()
     {
         var workspace = GetWorkspace();
         var data = new ClockJsonDataModel();
-        
+
         var contentNode = new GooeyInterface
         {
             WorkspaceId = workspace.Id,
@@ -92,9 +92,9 @@ public class ClockController(
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
-        
+
         return PartialView("~/Views/Clock/Index.cshtml", viewModel);
     }
 
@@ -112,12 +112,12 @@ public class ClockController(
         data.Coordinates = formModel.Coordinates;
         data.Timezone = formModel.Timezone;
         data.MapIdentifier = formModel.MapIdentifier;
-        
+
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
-        
+
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/Clock/Workspace.cshtml", viewModel);
     }
 
@@ -125,27 +125,27 @@ public class ClockController(
     public async Task<IActionResult> SearchPanel([FromQuery] string location)
     {
         var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
-        
+
         var results = await $"https://maps-api.apple.com/v1/search?q={location}"
             .WithHeader("Authorization", $"Bearer {mapKitServerToken}")
             .GetJsonAsync<MapKitSearchResponseModel>();
 
         var resultsWithTime = results.Results
             .Select(x => new MapKitSearchResponseModelWithTime
-        {
-            Result = x,
-            LocalDateTimeSet = TimeFromCoordinates.CalculateDateTimeSet(x.Coordinate.Latitude.Value, x.Coordinate.Longitude.Value)
-        });
+            {
+                Result = x,
+                LocalDateTimeSet = TimeFromCoordinates.CalculateDateTimeSet(x.Coordinate.Latitude.Value, x.Coordinate.Longitude.Value)
+            });
 
         var viewModel = new ClockSearchPanelViewModel
         {
             SearchText = location,
             Results = resultsWithTime
         };
-        
+
         return PartialView("~/Views/Clock/Partials/SearchPanel.cshtml", viewModel);
     }
-    
+
     [HttpGet("preview-panel/{interfaceId:guid}")]
     public async Task<IActionResult> PreviewPanel(Guid interfaceId)
     {
@@ -157,7 +157,7 @@ public class ClockController(
             Time = workspaceViewModel.CurrentTime.LocalTime,
             Location = workspaceViewModel.Data.Location,
         };
-        
+
         return PartialView("~/Views/Clock/Partials/PreviewPanel.cshtml", viewModel);
     }
 }

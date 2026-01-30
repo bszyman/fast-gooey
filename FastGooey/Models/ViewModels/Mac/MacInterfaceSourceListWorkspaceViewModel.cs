@@ -6,7 +6,7 @@ public class MacInterfaceSourceListWorkspaceViewModel
 {
     public GooeyInterface? ContentNode { get; set; }
     public MacSourceListJsonDataModel Data { get; set; } = new();
-    
+
     public string WorkspaceId()
     {
         return ContentNode!.Workspace.PublicId.ToString();

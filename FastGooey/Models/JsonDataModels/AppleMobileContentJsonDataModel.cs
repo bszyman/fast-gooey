@@ -22,29 +22,29 @@ public abstract class AppleMobileContentItemJsonDataModel
     public Guid Identifier { get; set; } = Guid.Empty;
 }
 
-public class HeadlineContentItem: AppleMobileContentItemJsonDataModel
+public class HeadlineContentItem : AppleMobileContentItemJsonDataModel
 {
     public string Headline { get; set; } = string.Empty;
 }
 
-public class LinkContentItem: AppleMobileContentItemJsonDataModel
+public class LinkContentItem : AppleMobileContentItemJsonDataModel
 {
     public string Url { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
 }
 
-public class TextContentItem: AppleMobileContentItemJsonDataModel
+public class TextContentItem : AppleMobileContentItemJsonDataModel
 {
     public string Text { get; set; } = string.Empty;
 }
 
-public class ImageContentItem: AppleMobileContentItemJsonDataModel
+public class ImageContentItem : AppleMobileContentItemJsonDataModel
 {
     public string Url { get; set; } = string.Empty;
     public string AltText { get; set; } = string.Empty;
 }
 
-public class VideoContentItem: AppleMobileContentItemJsonDataModel
+public class VideoContentItem : AppleMobileContentItemJsonDataModel
 {
     public string Url { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;

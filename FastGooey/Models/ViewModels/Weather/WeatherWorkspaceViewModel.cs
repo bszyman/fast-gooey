@@ -6,7 +6,7 @@ public class WeatherWorkspaceViewModel
 {
     public GooeyInterface? ContentNode { get; set; }
     public WeatherJsonDataModel? Data { get; set; }
-    
+
     public string WorkspaceId()
     {
         return ContentNode!.Workspace.PublicId.ToString();

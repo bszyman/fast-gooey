@@ -13,8 +13,8 @@ public interface IAppleMapKitJwtService
 }
 
 public class AppleMapKitJwtService(
-    ILogger<AppleMapKitJwtService> logger, 
-    IConfiguration configuration, 
+    ILogger<AppleMapKitJwtService> logger,
+    IConfiguration configuration,
     IKeyValueService keyValueService) : IAppleMapKitJwtService
 {
     private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -42,7 +42,7 @@ public class AppleMapKitJwtService(
     private async Task GenerateAndSaveToken(CancellationToken cancellationToken = default)
     {
         var config = configuration.GetSection("uCupertino:mapkit").Get<MapKitConfigurationModel>();
-        
+
         if (config == null)
         {
             logger.LogError("MapKit configuration not found");
@@ -62,10 +62,10 @@ public class AppleMapKitJwtService(
         try
         {
             var token = GenerateJwtToken(config);
-            
+
             await keyValueService.SetValueForKey(Constants.MapKitJwt, token);
             await keyValueService.SetValueForKey(Constants.MapKitLastRefreshKey, DateTime.UtcNow.ToString("O"));
-            
+
             logger.LogInformation("MapKit JWT token refreshed successfully");
         }
         catch (Exception ex)
@@ -79,19 +79,19 @@ public class AppleMapKitJwtService(
     {
         // Load and parse the private key
         var privateKeyBytes = LoadPrivateKey(config.KeyLocation);
-        
+
         // Create the ECDsa key
         var ecdsa = ECDsa.Create();
         ecdsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
-        
+
         // Create security key and signing credentials
         var securityKey = new ECDsaSecurityKey(ecdsa) { KeyId = config.KeyId };
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.EcdsaSha256);
-        
+
         // Set timestamps
         var issuedAt = DateTime.UtcNow;
         var expiresAt = issuedAt.AddHours(6);
-        
+
         // Create JWT token descriptor
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -107,15 +107,15 @@ public class AppleMapKitJwtService(
             Expires = expiresAt,
             SigningCredentials = signingCredentials
         };
-        
+
         // Create and customize the token
         var tokenHandler = new JwtSecurityTokenHandler();
         var securityToken = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
-        
+
         // Ensure header contains required fields
         securityToken.Header["typ"] = "JWT";
         securityToken.Header["kid"] = config.KeyId;
-        
+
         return tokenHandler.WriteToken(securityToken);
     }
 
@@ -127,7 +127,7 @@ public class AppleMapKitJwtService(
         }
 
         var pemKey = File.ReadAllText(keyLocation);
-        
+
         // Extract key from PEM format if needed
         if (pemKey.Contains("-----BEGIN PRIVATE KEY-----"))
         {
@@ -137,10 +137,10 @@ public class AppleMapKitJwtService(
                 .Replace("\n", "")
                 .Replace("\r", "")
                 .Trim();
-            
+
             return Convert.FromBase64String(base64Key);
         }
-        
+
         return File.ReadAllBytes(keyLocation);
     }
 
@@ -152,7 +152,7 @@ public class AppleMapKitJwtService(
             .GetJsonAsync<MapKitServerTokenResponse>();
 
         await keyValueService.SetValueForKey(
-            key: Constants.MapKitServerKey, 
+            key: Constants.MapKitServerKey,
             value: response.AccessToken
         );
     }

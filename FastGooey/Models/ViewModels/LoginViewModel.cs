@@ -12,8 +12,8 @@ public class LoginViewModel
     [Required]
     [DataType(DataType.Password)]
     public string Password { get; set; } = string.Empty;
-    
-    [BindProperty(Name="cf-turnstile-response")]
+
+    [BindProperty(Name = "cf-turnstile-response")]
     public string? TurnstileToken { get; set; }
 
     [Display(Name = "Remember me?")]

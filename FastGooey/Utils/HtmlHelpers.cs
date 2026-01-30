@@ -10,9 +10,9 @@ public static class HtmlHelpers
     {
         var antiforgery = helper.ViewContext.HttpContext.RequestServices.GetService<IAntiforgery>();
         var tokens = antiforgery.GetAndStoreTokens(helper.ViewContext.HttpContext);
-        
+
         var tokenValue = tokens.RequestToken;
-        
+
         return new HtmlString(tokenValue);
     }
 }

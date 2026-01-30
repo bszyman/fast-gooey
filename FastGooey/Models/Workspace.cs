@@ -15,19 +15,19 @@ public class Workspace
 
     [Required]
     public Guid PublicId { get; set; } = Guid.NewGuid();
-    
+
     [Required]
     [MaxLength(80)]
     public string Name { get; set; } = string.Empty;
-    
+
     [Required]
     [MaxLength(100)]
     public string Slug { get; set; } = string.Empty;
-    
+
     // Collection navigation properties
     public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
     public ICollection<GooeyInterface> GooeyInterfaces { get; set; } = new List<GooeyInterface>();
-    
+
     public Instant CreatedAt { get; set; }
     public Instant UpdatedAt { get; set; }
 }

@@ -9,19 +9,19 @@ using Microsoft.EntityFrameworkCore;
 namespace FastGooey.Controllers;
 
 public abstract class BaseStudioController(
-    IKeyValueService keyValueService, 
-    ApplicationDbContext dbContext): 
+    IKeyValueService keyValueService,
+    ApplicationDbContext dbContext) :
     Controller
 {
     protected Guid WorkspaceId { get; private set; }
     protected Guid InterfaceId { get; private set; }
-    
+
     public override async Task OnActionExecutionAsync(
-        ActionExecutingContext context, 
+        ActionExecutingContext context,
         ActionExecutionDelegate next)
     {
         ViewBag.MapKitToken = await keyValueService.GetValueForKey(Constants.MapKitJwt);
-        
+
         if (context.RouteData.Values.TryGetValue("workspaceId", out var idValue))
         {
             if (idValue is string idString && Guid.TryParse(idString, out var id))
@@ -30,7 +30,7 @@ public abstract class BaseStudioController(
                 ViewData["WorkspaceId"] = id;
             }
         }
-        
+
         if (context.RouteData.Values.TryGetValue("interfaceId", out var interfaceIdValue))
         {
             if (interfaceIdValue is string idString && Guid.TryParse(idString, out var id))
@@ -39,7 +39,7 @@ public abstract class BaseStudioController(
                 ViewData["InterfaceId"] = id;
             }
         }
-        
+
         await next();
     }
 

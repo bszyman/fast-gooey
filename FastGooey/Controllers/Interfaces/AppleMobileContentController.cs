@@ -17,9 +17,9 @@ namespace FastGooey.Controllers.Interfaces;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/AppleMobile/Content")]
 public class AppleMobileContentController(
-    ILogger<AppleMobileContentController> logger, 
+    ILogger<AppleMobileContentController> logger,
     IKeyValueService keyValueService,
-    ApplicationDbContext dbContext): 
+    ApplicationDbContext dbContext) :
     BaseStudioController(keyValueService, dbContext)
 {
     private async Task<AppleMobileContentWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
@@ -27,7 +27,7 @@ public class AppleMobileContentController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var viewModel = new AppleMobileContentWorkspaceViewModel
         {
             ContentNode = contentNode,
@@ -36,44 +36,44 @@ public class AppleMobileContentController(
 
         return viewModel;
     }
-    
+
     [HttpGet("{interfaceId:guid}")]
     public async Task<IActionResult> Index(Guid workspaceId, Guid interfaceId)
     {
         var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         var viewModel = new AppleMobileContentViewModel
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         return View(viewModel);
     }
-    
+
     [HttpGet("workspace/{interfaceId:guid}")]
     public async Task<IActionResult> Workspace(Guid workspaceId, Guid interfaceId)
     {
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
     }
-    
+
     [HttpPost("workspace/{interfaceId:guid}")]
     public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] AppleMobileContentWorkspaceFormModel formModel)
     {
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
         var data = viewModel.Data;
-        
+
         data.HeaderTitle = formModel.HeaderTitle;
         data.HeaderBackgroundImage = formModel.HeaderBackgroundImage;
-        
+
         viewModel.ContentNode.Config = JsonSerializer.SerializeToDocument(data);
 
         await dbContext.SaveChangesAsync();
-        
+
         return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
     }
-    
+
     [HttpPost("create-interface")]
     public async Task<IActionResult> CreateInterface()
     {
@@ -84,7 +84,7 @@ public class AppleMobileContentController(
 
         var workspace = GetWorkspace();
         var data = new AppleMobileContentJsonDataModel();
-        
+
         var contentNode = new GooeyInterface
         {
             WorkspaceId = workspace.Id,
@@ -106,9 +106,9 @@ public class AppleMobileContentController(
                 Data = data
             }
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
-        
+
         return PartialView("~/Views/AppleMobileContent/Index.cshtml", viewModel);
     }
 
@@ -117,16 +117,16 @@ public class AppleMobileContentController(
     {
         // TODO: probably set up a AppleMobileContentJsonDataModel just to initialize before attempting to add child
         // content items, probably should do this in CreateInterface()
-        
+
         var viewModel = new AppleMobileContentTypeSelectorPanelViewModel
         {
             WorkspaceId = workspaceId,
             InterfaceId = interfaceId
         };
-        
+
         return PartialView("~/Views/AppleMobileContent/Partials/AppleMobileContentTypeSelectorPanel.cshtml", viewModel);
     }
-    
+
     private async Task<IActionResult> SaveContentItem<TItem, TForm>(
         Guid interfaceId,
         Guid? itemId,
@@ -137,7 +137,7 @@ public class AppleMobileContentController(
     {
         var contentNode = await dbContext.GooeyInterfaces
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
 
         if (ModelState.IsValid)
@@ -165,14 +165,14 @@ public class AppleMobileContentController(
 
             contentNode.Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions);
             await dbContext.SaveChangesAsync();
-            
+
             Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
         }
 
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
         return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
     }
-    
+
     private async Task<IActionResult> LoadConfigurationPanel<TItem, TViewModel>(
         Guid interfaceId,
         Guid? itemId,
@@ -188,7 +188,7 @@ public class AppleMobileContentController(
         {
             var contentNode = await dbContext.GooeyInterfaces
                 .FirstAsync(x => x.DocId.Equals(interfaceId));
-            
+
             var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
             contentItem = data.Items
                 .OfType<TItem>()
@@ -200,7 +200,7 @@ public class AppleMobileContentController(
 
         return PartialView(viewPath, viewModel);
     }
-    
+
     [HttpGet("{interfaceId:guid}/headline-config-panel/{itemId:guid?}")]
     public async Task<IActionResult> HeadlineConfigurationPanel(Guid interfaceId, Guid? itemId)
     {
@@ -216,7 +216,7 @@ public class AppleMobileContentController(
             (vm, content) => vm.Content = content
         );
     }
-    
+
     [HttpPost("{interfaceId:guid}/headline-item/{itemId:guid?}")]
     public async Task<IActionResult> SaveHeadline(Guid workspaceId, Guid interfaceId, Guid? itemId, HeadlineContentFormModel form)
     {
@@ -228,7 +228,7 @@ public class AppleMobileContentController(
             (item, f) => item.Headline = f.Headline
         );
     }
-    
+
     [HttpGet("{interfaceId:guid}/link-config-panel/{itemId:guid?}")]
     public async Task<IActionResult> LinkConfigurationPanel(Guid interfaceId, Guid? itemId)
     {
@@ -244,7 +244,7 @@ public class AppleMobileContentController(
             (vm, content) => vm.Content = content
         );
     }
-    
+
     [HttpPost("{interfaceId:guid}/link-item/{itemId:guid?}")]
     public async Task<IActionResult> SaveLink(Guid workspaceId, Guid interfaceId, Guid? itemId, LinkContentFormModel form)
     {
@@ -260,7 +260,7 @@ public class AppleMobileContentController(
             }
         );
     }
-    
+
     [HttpGet("{interfaceId:guid}/text-config-panel/{itemId:guid?}")]
     public async Task<IActionResult> TextConfigurationPanel(Guid interfaceId, Guid? itemId)
     {
@@ -276,7 +276,7 @@ public class AppleMobileContentController(
             (vm, content) => vm.Content = content
         );
     }
-    
+
     [HttpPost("{interfaceId:guid}/text-item/{itemId:guid?}")]
     public async Task<IActionResult> SaveText(Guid workspaceId, Guid interfaceId, Guid? itemId, TextContentFormModel form)
     {
@@ -288,7 +288,7 @@ public class AppleMobileContentController(
             (item, f) => item.Text = f.Text
         );
     }
-    
+
     [HttpGet("{interfaceId:guid}/image-config-panel/{itemId:guid?}")]
     public async Task<IActionResult> ImageConfigurationPanel(Guid interfaceId, Guid? itemId)
     {
@@ -304,7 +304,7 @@ public class AppleMobileContentController(
             (vm, content) => vm.Content = content
         );
     }
-    
+
     [HttpPost("{interfaceId:guid}/image-item/{itemId:guid?}")]
     public async Task<IActionResult> SaveImage(Guid workspaceId, Guid interfaceId, Guid? itemId, ImageContentFormModel form)
     {
@@ -327,16 +327,16 @@ public class AppleMobileContentController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
         var item = data.Items
             .FirstOrDefault(x => x.Identifier.Equals(itemId));
-        
+
         if (item == null)
         {
             return NotFound();
         }
-        
+
         data.Items.Remove(item);
 
         contentNode.Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions);
@@ -345,14 +345,14 @@ public class AppleMobileContentController(
         var viewModel = new AppleMobileContentWorkspaceViewModel
         {
             ContentNode = contentNode,
-            Data = data    
+            Data = data
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
-        
+
         return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
     }
-    
+
     // [HttpGet("{interfaceId:guid}/video-config-panel/{itemId:guid?}")]
     // public async Task<IActionResult> VideoConfigurationPanel(Guid interfaceId, Guid? itemId)
     // {
@@ -384,7 +384,7 @@ public class AppleMobileContentController(
     //         }
     //     );
     // }
-    
+
     // unfurl url
     // inline list
     // any widget

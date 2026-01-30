@@ -19,56 +19,56 @@ namespace FastGooey.Controllers.Widgets;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Widgets/Weather")]
 public class WeatherController(
-    ILogger<WeatherController> logger, 
+    ILogger<WeatherController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager
-): BaseStudioController(keyValueService, dbContext)
+    UserManager<ApplicationUser> userManager ): 
+    BaseStudioController(keyValueService, dbContext)
 {
     private async Task<WeatherWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var viewModel = new WeatherWorkspaceViewModel
         {
             ContentNode = contentNode,
             Data = contentNode.Config.Deserialize<WeatherJsonDataModel>()
         };
-        
+
         return viewModel;
     }
-    
+
     // Full page view
     [HttpGet("{interfaceId:guid}")]
     public async Task<IActionResult> Weather(Guid interfaceId)
     {
         var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         var viewModel = new WeatherViewModel
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         return View(viewModel);
     }
-    
+
     // Workspace partial for HTMX
     [HttpGet("Workspace/{interfaceId:guid}")]
     public async Task<IActionResult> WeatherWorkspace(Guid interfaceId)
     {
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/Weather/Workspace.cshtml", viewModel);
     }
-    
+
     [HttpPost("create-widget")]
     public async Task<IActionResult> CreateWidget()
     {
         var workspace = GetWorkspace();
         var data = new WeatherJsonDataModel();
-        
+
         var contentNode = new GooeyInterface
         {
             WorkspaceId = workspace.Id,
@@ -87,12 +87,12 @@ public class WeatherController(
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
-        
+
         return PartialView("~/Views/Weather/Weather.cshtml", viewModel);
     }
-    
+
     [HttpPost("Workspace/{interfaceId:guid}")]
     public async Task<IActionResult> SaveWeatherWorkspace(Guid interfaceId, [FromForm] WeatherWorkspaceFormModel formModel)
     {
@@ -101,7 +101,7 @@ public class WeatherController(
         {
             return Unauthorized();
         }
-        
+
         var gooeyInterface = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
@@ -111,13 +111,13 @@ public class WeatherController(
         docData.Latitude = formModel.Latitude;
         docData.Longitude = formModel.Longitude;
         docData.Coordinates = formModel.Coordinates;
-        
+
         gooeyInterface.Config = JsonSerializer.SerializeToDocument(docData);
 
         await dbContext.SaveChangesAsync();
-        
+
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/Weather/Workspace.cshtml", viewModel);
     }
 
@@ -125,7 +125,7 @@ public class WeatherController(
     public async Task<IActionResult> WeatherSearchPanel([FromQuery] string location)
     {
         var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
-        
+
         var results = await $"https://maps-api.apple.com/v1/search?q={location}"
             .WithHeader("Authorization", $"Bearer {mapKitServerToken}")
             .GetJsonAsync<MapKitSearchResponseModel>();
@@ -135,7 +135,7 @@ public class WeatherController(
             SearchText = location,
             Results = results
         };
-        
+
         return PartialView("~/Views/Weather/Partials/WeatherSearchPanel.cshtml", viewModel);
     }
 
@@ -144,22 +144,22 @@ public class WeatherController(
     {
         var gooeyInterface = await dbContext.GooeyInterfaces
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         // var config = gooeyInterface.Config.Deserialize<WeatherJsonDataModel>();
         // var weatherKitKey = keyValueService.GetValueForKey("");
-        
+
         // fetch from weatherkit
         // var weatherDataRequest =
         //     await $"https://weatherkit.apple.com/api/v1/weather/en/{config.Latitude}/{config.Longitude}?timezone=America/Chicago&dataSets=currentWeather,forecastDaily&dailyEnd={endDateAsString}Z"
         //         .WithHeader("Authorization", $"Bearer {authorizationToken}")
         //         .GetJsonAsync<WeatherKitResponseModel>();
-        
+
         var viewModel = new WeatherPreviewPanelViewModel
         {
             Temperature = "79",
             Location = "Pensacola, FL",
         };
-        
+
         return PartialView("~/Views/Weather/Partials/WeatherPreviewPanel.cshtml", viewModel);
     }
 }

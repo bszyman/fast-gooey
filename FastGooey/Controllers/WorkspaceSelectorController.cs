@@ -16,7 +16,7 @@ namespace FastGooey.Controllers;
 public class WorkspaceSelectorController(
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager): 
+    UserManager<ApplicationUser> userManager) :
     BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
@@ -27,7 +27,7 @@ public class WorkspaceSelectorController(
         {
             return Unauthorized();
         }
-        
+
         var workspaces = dbContext.Workspaces
             .Where(x => x.Users.Contains(currentUser))
             .ToList();
@@ -37,7 +37,7 @@ public class WorkspaceSelectorController(
             Workspaces = workspaces,
             UserIsConfirmed = currentUser.EmailConfirmed
         };
-        
+
         return View(viewModel);
     }
 
@@ -68,7 +68,7 @@ public class WorkspaceSelectorController(
         {
             return View(form);
         }
-        
+
         var currentUser = await userManager.GetUserAsync(User);
         if (currentUser is null)
         {
@@ -79,7 +79,7 @@ public class WorkspaceSelectorController(
         {
             return RedirectToAction("Index", "WorkspaceSelector");
         }
-        
+
         if (currentUser.SubscriptionLevel is SubscriptionLevel.Explorer or SubscriptionLevel.Standard)
         {
             var hasWorkspace = await dbContext.Workspaces
@@ -94,7 +94,7 @@ public class WorkspaceSelectorController(
 
         var helper = new SlugHelper();
         var slug = helper.GenerateSlug(form.WorkspaceName);
-        
+
         var existingSlug = await dbContext.Workspaces.FirstOrDefaultAsync(w => w.Slug == slug);
         if (existingSlug is not null)
         {
@@ -102,24 +102,21 @@ public class WorkspaceSelectorController(
             ModelState.AddModelError("WorkspaceName", "A workspace with a similar name already exists.");
             return View(form);
         }
-        
+
         var workspace = new Workspace
         {
             Name = form.WorkspaceName,
             Slug = slug
         };
-        
+
         workspace.Users.Add(currentUser);
 
         dbContext.Workspaces.Add(workspace);
         await dbContext.SaveChangesAsync();
-        
-        return Redirect("/");
-        
-        // return RedirectToAction(
-        //     "Home",
-        //     "Workspaces",
-        //     new { id = workspace.PublicId }
-        // );
+
+        return RedirectToAction(
+            "Index", 
+            "WorkspaceSelector"
+        );
     }
 }

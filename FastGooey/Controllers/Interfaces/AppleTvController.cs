@@ -10,10 +10,10 @@ namespace FastGooey.Controllers.Interfaces;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/tvOS")]
 public class AppleTvController(
-    ILogger<AppleTvController> logger, 
+    ILogger<AppleTvController> logger,
     IKeyValueService keyValueService,
-    ApplicationDbContext dbContext): 
+    ApplicationDbContext dbContext) :
     BaseStudioController(keyValueService, dbContext)
 {
-    
+
 }

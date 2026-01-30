@@ -6,7 +6,7 @@ public interface IHttpContextAccessorService
     public string GetRemoteIpAddress();
 }
 
-public class HttpContextAccessorService: IHttpContextAccessorService
+public class HttpContextAccessorService : IHttpContextAccessorService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -14,9 +14,9 @@ public class HttpContextAccessorService: IHttpContextAccessorService
     {
         _httpContextAccessor = httpContextAccessor;
     }
-    
+
     public HttpContext? HttpContext => _httpContextAccessor.HttpContext;
-    
+
     public string GetRemoteIpAddress()
     {
         var context = _httpContextAccessor.HttpContext;
@@ -29,7 +29,7 @@ public class HttpContextAccessorService: IHttpContextAccessorService
             ip = context.Connection.RemoteIpAddress?.ToString();
         else
             ip = ip.Split(',').First().Trim();
-        
+
         return ip ?? string.Empty;
     }
 }

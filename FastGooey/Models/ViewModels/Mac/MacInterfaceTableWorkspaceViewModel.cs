@@ -6,7 +6,7 @@ public class MacInterfaceTableWorkspaceViewModel
 {
     public GooeyInterface? ContentNode { get; set; }
     public MacTableJsonDataModel Data { get; set; } = new();
-    
+
     public string WorkspaceId()
     {
         return ContentNode!.Workspace.PublicId.ToString();

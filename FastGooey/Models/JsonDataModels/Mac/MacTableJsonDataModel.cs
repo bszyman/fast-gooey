@@ -17,7 +17,7 @@ public class MacTableItemJsonDataModel
     public Dictionary<string, object> Content { get; set; } = new();
 }
 
-public class MacTableStructureItemJsonDataModel 
+public class MacTableStructureItemJsonDataModel
 {
     public string FieldName { get; set; } = string.Empty;
     public string FieldAlias { get; set; } = string.Empty;

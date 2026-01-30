@@ -29,7 +29,7 @@ builder.Services.AddAppleMapKitServices();
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
-            builder.Configuration.GetConnectionString("DefaultConnection"), 
+            builder.Configuration.GetConnectionString("DefaultConnection"),
             o => o.UseNodaTime())
     .UseSnakeCaseNamingConvention());
 builder.Services.AddSingleton<DatabaseInitializer>();
@@ -43,11 +43,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 8;
-    
+
     // Lockout settings
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
-    
+
     // User settings
     options.User.RequireUniqueEmail = true;
     options.SignIn.RequireConfirmedEmail = false; // Set to true if you want email confirmation
@@ -78,7 +78,7 @@ builder.Services.AddAuthentication()
         options.Scope.Add("openid");
         options.Scope.Add("email");
         options.Scope.Add("name");
-        
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidIssuer = "https://appleid.apple.com",
@@ -95,7 +95,7 @@ builder.Services.AddAuthentication()
                 var jwtService = context.HttpContext.RequestServices
                     .GetRequiredService<IAppleSignInJwtService>();
                 context.TokenEndpointRequest!.ClientSecret = jwtService.GenerateClientSecret();
-                
+
                 return Task.CompletedTask;
             }
         };

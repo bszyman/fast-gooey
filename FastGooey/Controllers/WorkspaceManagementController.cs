@@ -14,7 +14,7 @@ namespace FastGooey.Controllers;
 [Route("Workspaces/{workspaceId:guid}/[controller]")]
 public class WorkspaceManagementController(
     IKeyValueService keyValueService,
-    ApplicationDbContext dbContext): 
+    ApplicationDbContext dbContext) :
     BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
@@ -24,10 +24,10 @@ public class WorkspaceManagementController(
             .First(x => x.PublicId == WorkspaceId);
 
         var viewModel = CreateViewModel(workspace);
-        
+
         return View(viewModel);
     }
-    
+
     [HttpGet("workspace")]
     public IActionResult OrganizationWorkspace()
     {
@@ -35,10 +35,10 @@ public class WorkspaceManagementController(
             .First(x => x.PublicId == WorkspaceId);
 
         var viewModel = CreateViewModel(workspace);
-        
+
         return PartialView("~/Views/WorkspaceManagement/Workspaces/WorkspaceManagement.cshtml", viewModel);
     }
-    
+
     [HttpPost("workspace/save")]
     public IActionResult EditWorkspace([Bind(Prefix = "FormModel")] WorkspaceManagementModel model)
     {
@@ -49,10 +49,10 @@ public class WorkspaceManagementController(
         dbContext.SaveChanges();
 
         var viewModel = CreateViewModel(workspace);
-        
+
         return PartialView("~/Views/WorkspaceManagement/Workspaces/WorkspaceManagement.cshtml", viewModel);
     }
-    
+
     private ManageWorkspaceViewModel CreateViewModel(Workspace workspace)
     {
         return new ManageWorkspaceViewModel

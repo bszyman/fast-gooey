@@ -4,7 +4,7 @@ public class MapWorkspaceViewModel
 {
     public GooeyInterface? ContentNode { get; set; }
     public IEnumerable<MapCityEntryViewModel> Entries { get; set; } = [];
-    
+
     public string WorkspaceId()
     {
         return ContentNode!.Workspace.PublicId.ToString();

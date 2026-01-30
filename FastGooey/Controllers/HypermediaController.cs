@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FastGooey.Controllers;
 
 [Route("hypermedia")]
-public class HypermediaController(ApplicationDbContext dbContext): Controller
+public class HypermediaController(ApplicationDbContext dbContext) : Controller
 {
     [HttpGet("{interfaceId:guid}")]
     public async Task<IActionResult> Get(Guid interfaceId)
@@ -33,7 +33,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         {
             hypermediaResponse = GenerateMacResponse(contentNode);
         }
-        
+
         return hypermediaResponse != null ? Ok(hypermediaResponse) : NotFound();
     }
 
@@ -49,7 +49,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
                 return NotSupported();
         }
     }
-    
+
     private IHypermediaResponse GenerateMacResponse(GooeyInterface gooeyInterface)
     {
         switch (gooeyInterface.ViewType)
@@ -71,14 +71,14 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
     {
         return new NotSupported();
     }
-    
+
     private AppleMobileListHypermediaResponse GenerateAppleMobileList(GooeyInterface gooeyInterface)
     {
         var content = gooeyInterface.Config.Deserialize<AppleMobileListJsonDataModel>();
         var listData = content?.Items
             .Select(x => new AppleMobileListItemResponse(x))
             .ToList();
-        
+
         return new AppleMobileListHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
@@ -86,7 +86,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
             Content = listData
         };
     }
-    
+
     private AppleMobileContentHypermediaResponse GenerateAppleMobileContent(GooeyInterface gooeyInterface)
     {
         var options = new JsonSerializerOptions
@@ -96,10 +96,10 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
             // Ensure case insensitivity matches your likely needs
             PropertyNameCaseInsensitive = true
         };
-        
+
         var content = gooeyInterface.Config.Deserialize<AppleMobileContentJsonDataModel>(options);
         var viewContent = JsonSerializer.SerializeToNode(content?.Items ?? []) as JsonArray;
-        
+
         return new AppleMobileContentHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
@@ -114,10 +114,10 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
         var headers = content?.Header
             .Select(x => new MacTableHeaderResponse
             {
-                Alias = x.FieldAlias, 
+                Alias = x.FieldAlias,
                 Title = x.FieldName
             }).ToList();
-        
+
         var tableData = new JsonArray();
 
         if (content?.Data is not null)
@@ -125,7 +125,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
             foreach (var item in content.Data)
             {
                 var rowJson = new JsonObject();
-                    
+
                 // It's usually helpful to include the row identifier for the UI to track selection
                 rowJson.Add("id", item.Identifier);
                 rowJson.Add("gooeyName", item.GooeyName);
@@ -148,11 +148,11 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
                         rowJson.Add(colDef.FieldAlias, null);
                     }
                 }
-                    
+
                 tableData.Add(rowJson);
             }
         }
-        
+
         return new MacTableHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
@@ -163,13 +163,13 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
             }
         };
     }
-    
+
     private MacSourceListHypermediaResponse GenerateMacSourceList(GooeyInterface gooeyInterface)
     {
         var content = gooeyInterface.Config.Deserialize<MacSourceListJsonDataModel>();
         var sourceListGroups = content?.Groups
             .Select(x => new MacSourceListGroupResponse(x)).ToList();
-        
+
         return new MacSourceListHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
@@ -179,7 +179,7 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
             }
         };
     }
-    
+
     private MacContentHypermediaResponse GenerateMacContent(GooeyInterface gooeyInterface)
     {
         var options = new JsonSerializerOptions
@@ -189,17 +189,17 @@ public class HypermediaController(ApplicationDbContext dbContext): Controller
             // Ensure case insensitivity matches your likely needs
             PropertyNameCaseInsensitive = true
         };
-        
+
         var content = gooeyInterface.Config.Deserialize<MacContentJsonDataModel>(options);
         var viewContent = JsonSerializer.SerializeToNode(content?.Items ?? []) as JsonArray;
-        
+
         return new MacContentHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
             Content = viewContent
         };
     }
-    
+
     private MacOutlineHypermediaResponse GenerateMacOutline(GooeyInterface gooeyInterface)
     {
         var options = new JsonSerializerOptions

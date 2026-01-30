@@ -16,9 +16,9 @@ namespace FastGooey.Controllers.Interfaces;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/interfaces/mac/outline")]
 public class MacOutlineController(
-    ILogger<MacOutlineController> logger, 
+    ILogger<MacOutlineController> logger,
     IKeyValueService keyValueService,
-    ApplicationDbContext dbContext): 
+    ApplicationDbContext dbContext) :
     BaseStudioController(keyValueService, dbContext)
 {
     private async Task<MacOutlineWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
@@ -26,7 +26,7 @@ public class MacOutlineController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var viewModel = new MacOutlineWorkspaceViewModel
         {
             ContentNode = contentNode,
@@ -35,7 +35,7 @@ public class MacOutlineController(
 
         return viewModel;
     }
-    
+
     [HttpPost("create-interface")]
     public async Task<IActionResult> CreateInterface()
     {
@@ -51,7 +51,7 @@ public class MacOutlineController(
             Name = "Root",
             Children = []
         };
-        
+
         var contentNode = new GooeyInterface
         {
             WorkspaceId = workspace.Id,
@@ -73,12 +73,12 @@ public class MacOutlineController(
                 Data = data
             }
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
-        
+
         return PartialView("~/Views/MacOutline/Index.cshtml", viewModel);
     }
-    
+
     [HttpGet("{interfaceId:guid}")]
     public async Task<IActionResult> Index(Guid interfaceId)
     {
@@ -87,37 +87,37 @@ public class MacOutlineController(
         {
             Workspace = workspaceViewModel
         };
-        
+
         return View(viewModel);
     }
-    
+
     [HttpGet("workspace/{interfaceId:guid}")]
     public async Task<IActionResult> Workspace(Guid interfaceId)
     {
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/MacOutline/Workspace.cshtml", viewModel);
     }
-    
+
     [HttpGet("{interfaceId:guid}/editor-panel/{itemId:guid}")]
     public async Task<IActionResult> EditorPanel(Guid interfaceId, Guid itemId)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var data = contentNode.Config.Deserialize<MacOutlineJsonDataModel>();
         var item = data.FindById(itemId);
-        
+
         var viewModel = new MacOutlineEditorPanelViewModel
         {
             WorkspaceId = WorkspaceId,
             InterfaceId = interfaceId,
-            Name =  item.Name,
-            Identifier =  item.Identifier,
+            Name = item.Name,
+            Identifier = item.Identifier,
             Url = item.Url,
         };
-        
+
         return PartialView("~/Views/MacOutline/Partials/OutlineViewItemEditorPanel.cshtml", viewModel);
     }
 
@@ -127,10 +127,10 @@ public class MacOutlineController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var data = contentNode.Config.Deserialize<MacOutlineJsonDataModel>();
         var parentItem = data.FindById(parentId);
-        
+
         var viewModel = new MacOutlineEditorPanelViewModel
         {
             WorkspaceId = WorkspaceId,
@@ -138,10 +138,10 @@ public class MacOutlineController(
             ParentId = parentItem.Identifier.ToString(),
             ParentName = parentItem.Name,
         };
-        
+
         return PartialView("~/Views/MacOutline/Partials/OutlineViewItemEditorPanel.cshtml", viewModel);
     }
-    
+
     [HttpPost("{interfaceId:guid}/editor-panel/{itemId:guid?}")]
     public async Task<IActionResult> SaveEditorPanel(
         Guid interfaceId,

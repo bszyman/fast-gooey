@@ -13,7 +13,7 @@ public class Auth(
     UserManager<ApplicationUser> userManager,
     ApplicationDbContext dbContext,
     ITurnstileValidatorService turnstileValidator,
-    EmailerService emailSender): 
+    EmailerService emailSender) :
     Controller
 {
     [HttpGet]
@@ -28,23 +28,23 @@ public class Auth(
     public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
-        
+
         if (!ModelState.IsValid)
             return View(model);
 
         if (!await turnstileValidator.ValidateFormRequest(model.TurnstileToken))
         {
             ModelState.AddModelError(
-                "Request validation failed.", 
+                "Request validation failed.",
                 "Request validation failed. Refresh the page and try logging in again."
                 );
             return View(model);
         }
 
         var result = await signInManager.PasswordSignInAsync(
-            model.Email, 
-            model.Password, 
-            model.RememberMe, 
+            model.Email,
+            model.Password,
+            model.RememberMe,
             lockoutOnFailure: false // TODO: Revist
         );
 
@@ -54,18 +54,18 @@ public class Auth(
             {
                 return LocalRedirect(returnUrl);
             }
-            
+
             // render workspace succeeded partial
             HttpContext.Response.Headers["HX-Redirect"] = "/workspaces";
             return PartialView("~/Views/Auth/LoginSucceeded.cshtml");
         }
-            
+
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
         // render form partial
         return View(model);
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SendEmailValidation()
@@ -81,7 +81,7 @@ public class Auth(
                 new { userId = currentUser.Id, token },
                 Request.Scheme
             );
-            
+
             await emailSender.SendVerificationEmail(currentUser, confirmationLink);
 
             return Ok("<p class='mt-4'>A new verification email has been sent.</p>");
@@ -91,16 +91,16 @@ public class Auth(
             return BadRequest($"<p class='mt-4'>${e}</p>");
         }
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> ConfirmEmail(string userId, string token)
     {
         if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
             return RedirectToAction("Index", "Home");
-    
+
         var user = await userManager.FindByIdAsync(userId);
         if (user is null) return NotFound();
-    
+
         var result = await userManager.ConfirmEmailAsync(user, token);
         return result.Succeeded ? RedirectToAction("Index", "WorkspaceSelector") : View("Error");
     }
@@ -158,16 +158,16 @@ public class Auth(
     public IActionResult ExternalLogin(string provider, string? returnUrl = null)
     {
         var redirectUrl = Url.Action(
-            nameof(ExternalLoginCallback), 
-            "Auth", 
+            nameof(ExternalLoginCallback),
+            "Auth",
             new { returnUrl }
         );
-        
+
         var properties = signInManager.ConfigureExternalAuthenticationProperties(
-            provider, 
+            provider,
             redirectUrl
         );
-        
+
         return Challenge(properties, provider);
     }
 
@@ -184,7 +184,7 @@ public class Auth(
         if (info is null)
             return RedirectToAction(nameof(Login));
 
-        var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, 
+        var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider,
             info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
 
         if (result.Succeeded)
@@ -197,7 +197,7 @@ public class Auth(
             return RedirectToAction(nameof(Login));
 
         var user = await userManager.FindByEmailAsync(email);
-            
+
         if (user is null)
         {
             user = new ApplicationUser
@@ -211,7 +211,7 @@ public class Auth(
 
         await userManager.AddLoginAsync(user, info);
         await signInManager.SignInAsync(user, isPersistent: false);
-            
+
         return LocalRedirect(returnUrl ?? "/");
     }
 }

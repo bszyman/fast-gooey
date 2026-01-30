@@ -14,12 +14,12 @@ public class StripeWebHook(
     IConfiguration configuration,
     UserManager<ApplicationUser> userManager,
     EmailerService emailerService,
-    ILogger<StripeWebHook> logger): 
+    ILogger<StripeWebHook> logger) :
     Controller
 {
-    private readonly StripeConfigurationModel? _config = configuration.GetSection("Stripe").Get<StripeConfigurationModel>() 
+    private readonly StripeConfigurationModel? _config = configuration.GetSection("Stripe").Get<StripeConfigurationModel>()
                                                          ?? throw new InvalidOperationException("Stripe configuration is missing");
-    
+
     [HttpPost]
     public async Task<IActionResult> Index()
     {
@@ -80,7 +80,7 @@ public class StripeWebHook(
             return StatusCode(500, "Internal server error");
         }
     }
-    
+
     private async Task HandleStripeEventAsync(Event stripeEvent, Subscription subscription)
     {
         var user = await FindOrCreateUserAsync(subscription);
@@ -107,7 +107,7 @@ public class StripeWebHook(
                 break;
         }
     }
-    
+
     private async Task<ApplicationUser?> FindOrCreateUserAsync(Subscription subscription)
     {
         var customerId = subscription.CustomerId;
@@ -164,7 +164,7 @@ public class StripeWebHook(
 
         return newUser;
     }
-    
+
     private async Task<Customer?> GetCustomerAsync(Subscription subscription)
     {
         if (subscription.Customer is Customer customerObj)
@@ -192,20 +192,20 @@ public class StripeWebHook(
         user.UpdatedAt = SystemClock.Instance.GetCurrentInstant();
         await userManager.UpdateAsync(user);
     }
-    
+
     private SubscriptionLevel MapPlanToLevel(string priceId)
     {
         if (_config!.Prices is null)
         {
             throw new InvalidOperationException("Stripe price configuration is missing");
         }
-        
+
         var levelName = _config!
             .Prices
             .FirstOrDefault(kvp => kvp.Value == priceId).Key;
-        
-        return Enum.TryParse<SubscriptionLevel>(levelName, out var level) ? 
-            level : 
+
+        return Enum.TryParse<SubscriptionLevel>(levelName, out var level) ?
+            level :
             SubscriptionLevel.Explorer;
     }
 

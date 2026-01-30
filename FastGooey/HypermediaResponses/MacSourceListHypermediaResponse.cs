@@ -2,12 +2,12 @@ using FastGooey.Models.JsonDataModels.Mac;
 
 namespace FastGooey.HypermediaResponses;
 
-public class MacSourceListHypermediaResponse: IHypermediaResponse
+public class MacSourceListHypermediaResponse : IHypermediaResponse
 {
     public Guid InterfaceId { get; set; } = Guid.Empty;
     public string Platform { get; set; } = "Mac";
     public string View { get; set; } = "SourceList";
-    
+
     public MacSourceListContent Content { get; set; } = new();
 }
 
@@ -21,7 +21,7 @@ public class MacSourceListGroupResponse
     public Guid Identifier { get; set; } = Guid.Empty;
     public string GroupName { get; set; } = string.Empty;
     public List<MacSourceListGroupItemResponse> GroupItems { get; set; } = [];
-    
+
     public MacSourceListGroupResponse()
     {
     }
@@ -39,7 +39,7 @@ public class MacSourceListGroupItemResponse
     public Guid Identifier { get; set; } = Guid.Empty;
     public string Title { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
-    
+
     public MacSourceListGroupItemResponse()
     {
     }

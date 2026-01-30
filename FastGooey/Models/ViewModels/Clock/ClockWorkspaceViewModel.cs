@@ -8,7 +8,7 @@ public class ClockWorkspaceViewModel
     public GooeyInterface? ContentNode { get; set; }
     public ClockJsonDataModel? Data { get; set; }
     public LocationDateTimeSetModel? CurrentTime { get; set; }
-    
+
     public string WorkspaceId()
     {
         return ContentNode!.Workspace.PublicId.ToString();

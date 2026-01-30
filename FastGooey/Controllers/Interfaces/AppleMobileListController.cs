@@ -16,9 +16,9 @@ namespace FastGooey.Controllers.Interfaces;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/AppleMobile/List")]
 public class AppleMobileListController(
-    ILogger<AppleMobileListController> logger, 
+    ILogger<AppleMobileListController> logger,
     IKeyValueService keyValueService,
-    ApplicationDbContext dbContext): 
+    ApplicationDbContext dbContext) :
     BaseStudioController(keyValueService, dbContext)
 {
     private async Task<AppleMobileInterfaceListWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
@@ -26,7 +26,7 @@ public class AppleMobileListController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var viewModel = new AppleMobileInterfaceListWorkspaceViewModel
         {
             ContentNode = contentNode,
@@ -35,7 +35,7 @@ public class AppleMobileListController(
 
         return viewModel;
     }
-    
+
     [HttpGet("{interfaceId:guid}")]
     public async Task<IActionResult> Index(Guid interfaceId)
     {
@@ -44,18 +44,18 @@ public class AppleMobileListController(
         {
             WorkspaceViewModel = workspaceViewModel
         };
-        
+
         return View(viewModel);
     }
-    
+
     [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task <IActionResult> ListWorkspace(Guid interfaceId)
+    public async Task<IActionResult> ListWorkspace(Guid interfaceId)
     {
         var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        
+
         return PartialView("~/Views/AppleMobileList/Workspace.cshtml", viewModel);
     }
-    
+
     [HttpPost("create-interface")]
     public async Task<IActionResult> CreateInterface()
     {
@@ -66,7 +66,7 @@ public class AppleMobileListController(
 
         var workspace = GetWorkspace();
         var data = new AppleMobileListJsonDataModel();
-        
+
         var contentNode = new GooeyInterface
         {
             WorkspaceId = workspace.Id,
@@ -88,9 +88,9 @@ public class AppleMobileListController(
                 Data = data
             }
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
-        
+
         return PartialView("~/Views/AppleMobileList/Index.cshtml", viewModel);
     }
 
@@ -104,33 +104,33 @@ public class AppleMobileListController(
             var contentNode = dbContext.GooeyInterfaces
                 .First(x => x.DocId.Equals(interfaceId));
             var data = contentNode.Config.Deserialize<AppleMobileListJsonDataModel>();
-            
+
             var item = data.Items
                 .FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
-            
+
             if (item != null)
             {
                 editorItem = item;
             }
         }
-        
+
         var viewModel = new AppleMobileInterfaceListEditorViewModel
         {
             WorkspaceId = WorkspaceId,
             InterfaceId = interfaceId,
             Item = editorItem
         };
-        
+
         return PartialView("~/Views/AppleMobileList/Partials/ListItemEditorPanel.cshtml", viewModel);
     }
-    
+
     [HttpPost("{interfaceId:guid}/item-editor-panel/item/{itemId:guid?}")]
     public async Task<IActionResult> ListItemEditorPanelWithItem(Guid interfaceId, Guid? itemId, [FromForm] AppleMobileListEditorPanelFormModel formModel)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var data = contentNode.Config.Deserialize<AppleMobileListJsonDataModel>();
 
         AppleMobileListItemJsonDataModel? item = null;
@@ -148,37 +148,37 @@ public class AppleMobileListController(
                 {
                     Identifier = Guid.NewGuid()
                 };
-            
+
                 data.Items = data.Items.Append(item).ToList();
             }
-            
+
             item.Title = formModel.Title;
             item.Subtitle = formModel.Subtitle;
             item.Url = formModel.Url;
-        
+
             contentNode.Config = JsonSerializer.SerializeToDocument(data);
             await dbContext.SaveChangesAsync();
-            
+
             Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
         }
-        
+
         var viewModel = new AppleMobileInterfaceListEditorViewModel
         {
             WorkspaceId = WorkspaceId,
             InterfaceId = interfaceId,
             Item = item
         };
-        
+
         return PartialView("~/Views/AppleMobileList/Partials/ListItemEditorPanel.cshtml", viewModel);
     }
-    
+
     [HttpDelete("{interfaceId:guid}/item/{itemId:guid}")]
     public async Task<IActionResult> DeleteItem(Guid interfaceId, Guid itemId)
     {
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceId));
-        
+
         var data = contentNode.Config.Deserialize<AppleMobileListJsonDataModel>();
         var item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId));
 
@@ -190,18 +190,18 @@ public class AppleMobileListController(
         data.Items = data.Items
             .Where(x => !x.Identifier.Equals(itemId))
             .ToList();
-        
+
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
-        
+
         var viewModel = new AppleMobileInterfaceListWorkspaceViewModel
         {
             ContentNode = contentNode,
             Data = data
         };
-        
+
         Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
-        
+
         return PartialView("~/Views/AppleMobileList/Workspace.cshtml", viewModel);
     }
 }

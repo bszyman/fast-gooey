@@ -22,29 +22,29 @@ public abstract class MacContentItemJsonDataModel
     public Guid Identifier { get; set; } = Guid.Empty;
 }
 
-public class HeadlineContentItem: MacContentItemJsonDataModel
+public class HeadlineContentItem : MacContentItemJsonDataModel
 {
     public string Headline { get; set; } = string.Empty;
 }
 
-public class LinkContentItem: MacContentItemJsonDataModel
+public class LinkContentItem : MacContentItemJsonDataModel
 {
     public string Url { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
 }
 
-public class TextContentItem: MacContentItemJsonDataModel
+public class TextContentItem : MacContentItemJsonDataModel
 {
     public string Text { get; set; } = string.Empty;
 }
 
-public class ImageContentItem: MacContentItemJsonDataModel
+public class ImageContentItem : MacContentItemJsonDataModel
 {
     public string Url { get; set; } = string.Empty;
     public string AltText { get; set; } = string.Empty;
 }
 
-public class VideoContentItem: MacContentItemJsonDataModel
+public class VideoContentItem : MacContentItemJsonDataModel
 {
     public string Url { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;

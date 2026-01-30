@@ -9,10 +9,10 @@ public interface ITurnstileValidatorService
 }
 
 public class TurnstileValidatorService(
-    IConfiguration configuration, 
-    IHttpContextAccessorService httpContextAccessorService, 
+    IConfiguration configuration,
+    IHttpContextAccessorService httpContextAccessorService,
     IWebHostEnvironment environment,
-    ILogger<TurnstileValidatorService> logger): 
+    ILogger<TurnstileValidatorService> logger) :
     ITurnstileValidatorService
 {
     public async Task<bool> ValidateFormRequest(string? token)
@@ -21,7 +21,7 @@ public class TurnstileValidatorService(
         {
             return true;
         }
-        
+
         var cloudflareEnabled = configuration.GetValue<bool?>("CloudFlare:enabled");
 
         if (!cloudflareEnabled.HasValue)

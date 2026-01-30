@@ -8,11 +8,11 @@ namespace FastGooey.Controllers;
 
 [Route("Workspaces/{workspaceId:guid}/Widgets")]
 public class WidgetsController(
-    ILogger<WidgetsController> logger, 
+    ILogger<WidgetsController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager
-    ): BaseStudioController(keyValueService, dbContext)
+    UserManager<ApplicationUser> userManager): 
+    BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet("NewWidgetPanel")]
     public IActionResult NewWidgetPartialView()

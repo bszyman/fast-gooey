@@ -16,7 +16,7 @@ public class RegisterViewModel
 
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-    
-    [BindProperty(Name="cf-turnstile-response")]
+
+    [BindProperty(Name = "cf-turnstile-response")]
     public string? TurnstileToken { get; set; }
 }
