@@ -61,4 +61,32 @@ public class EmailerService: IEmailSender
             messageContents
         );
     }
+
+    public async Task SendStripeWelcomeEmail(ApplicationUser user, string temporaryPassword)
+    {
+        var name = $"{user.FirstName} {user.LastName}".Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = user.Email ?? "there";
+        }
+
+        const string filePath = "Views/EmailNotifications/stripeWelcome.handlebars";
+        var fileContents = await System.IO.File.ReadAllTextAsync(filePath);
+
+        var template = Handlebars.Compile(fileContents);
+
+        var data = new
+        {
+            name,
+            temporaryPassword
+        };
+
+        var messageContents = template(data);
+
+        await SendEmailAsync(
+            user.Email,
+            "Welcome to FastGooey! Your account is ready.",
+            messageContents
+        );
+    }
 }

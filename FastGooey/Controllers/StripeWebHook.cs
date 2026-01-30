@@ -1,16 +1,19 @@
 using FastGooey.Models;
 using FastGooey.Models.Configuration;
+using FastGooey.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using Stripe;
+using System.Security.Cryptography;
 
 namespace FastGooey.Controllers;
 
 public class StripeWebHook(
     IConfiguration configuration,
     UserManager<ApplicationUser> userManager,
+    EmailerService emailerService,
     ILogger<StripeWebHook> logger): 
     Controller
 {
@@ -113,30 +116,64 @@ public class StripeWebHook(
         var user = await userManager.Users.FirstOrDefaultAsync(u => u.StripeCustomerId == customerId);
         if (user is not null) return user;
 
-        // Fallback to email lookup
-        string customerEmail = await GetCustomerEmailAsync(subscription);
-        if (string.IsNullOrEmpty(customerEmail)) return null;
+        var customer = await GetCustomerAsync(subscription);
+        if (customer is null || string.IsNullOrWhiteSpace(customer.Email))
+        {
+            return null;
+        }
 
-        user = await userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == customerEmail.ToUpperInvariant());
+        var normalizedEmail = userManager.NormalizeEmail(customer.Email);
+        user = await userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (user is not null)
         {
             user.StripeCustomerId = customerId;
             await userManager.UpdateAsync(user);
+            return user;
         }
 
-        return user;
+        var (firstName, lastName) = SplitName(customer.Name, customer.Email);
+        var password = GenerateRandomPassword();
+
+        var newUser = new ApplicationUser
+        {
+            UserName = customer.Email,
+            Email = customer.Email,
+            FirstName = firstName,
+            LastName = lastName,
+            StripeCustomerId = customerId,
+            StripeSubscriptionId = subscription.Id,
+            SubscriptionLevel = MapPlanToLevel(subscription.Items.Data[0].Price.Id)
+        };
+
+        var result = await userManager.CreateAsync(newUser, password);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            logger.LogError("Failed to create user from Stripe webhook: {Errors}", errors);
+            return null;
+        }
+
+        try
+        {
+            await emailerService.SendStripeWelcomeEmail(newUser, password);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send Stripe welcome email for user {UserId}", newUser.Id);
+        }
+
+        return newUser;
     }
     
-    private async Task<string> GetCustomerEmailAsync(Subscription subscription)
+    private async Task<Customer?> GetCustomerAsync(Subscription subscription)
     {
         if (subscription.Customer is Customer customerObj)
         {
-            return customerObj.Email;
+            return customerObj;
         }
 
         var customerService = new CustomerService();
-        var customer = await customerService.GetAsync(subscription.CustomerId);
-        return customer.Email;
+        return await customerService.GetAsync(subscription.CustomerId);
     }
 
     private async Task UpdateUserSubscriptionAsync(ApplicationUser user, Subscription subscription)
@@ -170,5 +207,60 @@ public class StripeWebHook(
         return Enum.TryParse<SubscriptionLevel>(levelName, out var level) ? 
             level : 
             SubscriptionLevel.Explorer;
+    }
+
+    private static (string FirstName, string LastName) SplitName(string? fullName, string email)
+    {
+        var trimmed = (fullName ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+        {
+            var prefix = email.Split('@')[0];
+            return (prefix, string.Empty);
+        }
+
+        var parts = trimmed.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1)
+        {
+            return (parts[0], string.Empty);
+        }
+
+        return (parts[0], string.Join(' ', parts.Skip(1)));
+    }
+
+    private static string GenerateRandomPassword(int length = 12)
+    {
+        const string upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+        const string lower = "abcdefghijkmnopqrstuvwxyz";
+        const string digits = "23456789";
+        const string all = upper + lower + digits;
+
+        var chars = new List<char>
+        {
+            GetRandomChar(upper),
+            GetRandomChar(lower),
+            GetRandomChar(digits)
+        };
+
+        for (var i = chars.Count; i < length; i++)
+        {
+            chars.Add(GetRandomChar(all));
+        }
+
+        Shuffle(chars);
+        return new string(chars.ToArray());
+    }
+
+    private static char GetRandomChar(string allowedChars)
+    {
+        return allowedChars[RandomNumberGenerator.GetInt32(allowedChars.Length)];
+    }
+
+    private static void Shuffle(IList<char> chars)
+    {
+        for (var i = chars.Count - 1; i > 0; i--)
+        {
+            var j = RandomNumberGenerator.GetInt32(i + 1);
+            (chars[i], chars[j]) = (chars[j], chars[i]);
+        }
     }
 }
