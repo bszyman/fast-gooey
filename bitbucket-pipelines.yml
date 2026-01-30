@@ -4,6 +4,11 @@ pipelines:
   branches:
     master:
       - step:
+          name: "Restore and test"
+          script:
+            - dotnet restore
+            - dotnet test FastGooey.Tests/FastGooey.Tests.csproj
+      - step:
           name: "Restore and publish"
           script:
             - dotnet restore

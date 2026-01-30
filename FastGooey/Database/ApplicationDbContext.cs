@@ -16,6 +16,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         base.OnModelCreating(modelBuilder);
 
+        if (Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+        {
+            // InMemory provider does not support JsonDocument mapping.
+            modelBuilder.Entity<GooeyInterface>()
+                .Ignore(g => g.Config);
+        }
+
         // Configure relationships
         modelBuilder.Entity<ApplicationUser>()
             .HasOne(u => u.Workspace)
