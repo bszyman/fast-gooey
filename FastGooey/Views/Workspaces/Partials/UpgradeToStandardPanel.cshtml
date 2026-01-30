@@ -1,0 +1,23 @@
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Upgrade Required</p>
+    </div>
+</div>
+
+<div class="py-6 px-6">
+    <p class="font-medium mb-2">You've reached the Explorer plan limit.</p>
+    <p class="text-xs font-medium text-grayMid mb-6">
+        Upgrade to the Standard plan to add more content nodes.
+    </p>
+    <a href="https://buy.stripe.com/bJebJ3dqFfOtbgz47q2Ry02"
+       class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+        Upgrade to Standard
+    </a>
+</div>
+
+<div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+    <div class="flex items-center w-1/2"></div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+    </div>
+</div>

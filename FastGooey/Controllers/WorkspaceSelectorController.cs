@@ -42,8 +42,21 @@ public class WorkspaceSelectorController(
     }
 
     [HttpGet("create")]
-    public IActionResult CreateWorkspace(Guid workspaceId)
+    public async Task<IActionResult> CreateWorkspace(Guid workspaceId)
     {
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser is null)
+        {
+            return Unauthorized();
+        }
+
+        if (currentUser.SubscriptionLevel is SubscriptionLevel.Explorer or SubscriptionLevel.Standard)
+        {
+            var hasWorkspace = await dbContext.Workspaces
+                .AnyAsync(workspace => workspace.Users.Any(user => user.Id == currentUser.Id));
+            ViewData["WorkspaceLimitReached"] = hasWorkspace;
+        }
+
         return View(new CreateWorkspace());
     }
 
@@ -65,6 +78,18 @@ public class WorkspaceSelectorController(
         if (!currentUser.EmailConfirmed)
         {
             return RedirectToAction("Index", "WorkspaceSelector");
+        }
+        
+        if (currentUser.SubscriptionLevel is SubscriptionLevel.Explorer or SubscriptionLevel.Standard)
+        {
+            var hasWorkspace = await dbContext.Workspaces
+                .AnyAsync(workspace => workspace.Users.Any(user => user.Id == currentUser.Id));
+            if (hasWorkspace)
+            {
+                ViewData["WorkspaceLimitReached"] = true;
+                ModelState.AddModelError(string.Empty, "Your current plan allows only one workspace.");
+                return View(form);
+            }
         }
 
         var helper = new SlugHelper();

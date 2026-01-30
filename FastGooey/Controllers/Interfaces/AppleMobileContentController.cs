@@ -77,6 +77,11 @@ public class AppleMobileContentController(
     [HttpPost("create-interface")]
     public async Task<IActionResult> CreateInterface()
     {
+        if (await InterfaceLimitReachedAsync())
+        {
+            return Forbid();
+        }
+
         var workspace = GetWorkspace();
         var data = new AppleMobileContentJsonDataModel();
         

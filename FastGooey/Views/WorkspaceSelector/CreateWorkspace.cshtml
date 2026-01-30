@@ -5,6 +5,7 @@
     ViewData["Title"] = "Create Workspace";
     Layout = "~/Views/Shared/PublicLayout.cshtml";
     var currentUser = await UserManager.GetUserAsync(User);
+    var workspaceLimitReached = ViewData["WorkspaceLimitReached"] as bool? ?? false;
 }
 
 <div class="w-screen h-screen bg-blueDark font-mont">
@@ -20,10 +21,24 @@
             Create Workspace
         </h1>
         
-        @if (currentUser.EmailConfirmed)
+        @if (workspaceLimitReached)
+        {
+            <div class="border border-white shadow-md rounded-xl text-white mb-6">
+                <div class="rounded-xl shadow p-4">
+                    <p class="font-medium mb-1 text-shadow-md">Workspace limit reached.</p>
+                    <p class="text-xs font-medium text-shadow-md mb-1">
+                        Your current plan allows one workspace, and you already have one.
+                    </p>
+                </div>
+            </div>
+        }
+        else if (currentUser.EmailConfirmed)
         {
             <form asp-action="SaveNewWorkspace" asp-controller="WorkspaceSelector" method="post" hx-boost="true">
                 <div class="border border-white shadow-md rounded-xl text-white p-4">
+                    <div class="text-red-600 text-sm font-semibold mb-2">
+                        @Html.ValidationSummary()
+                    </div>
                     <div class="formGroup">
                         <div class="mb-4">
                             <label asp-for="WorkspaceName"></label>

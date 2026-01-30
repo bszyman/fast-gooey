@@ -70,14 +70,24 @@ public class WorkspacesController(
     }
     
     [HttpGet("apple-mobile-interface-selector-panel")]
-    public IActionResult AppleMobileInterfaceSelectorPanel(Guid workspaceId)
+    public async Task<IActionResult> AppleMobileInterfaceSelectorPanel(Guid workspaceId)
     {
+        if (await InterfaceLimitReachedAsync())
+        {
+            return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
+        }
+
         return PartialView("~/Views/Workspaces/Partials/AppleMobileInterfaceSelectorPanel.cshtml", workspaceId);
     }
     
     [HttpGet("mac-interface-selector-panel")]
-    public IActionResult MacInterfaceSelectorPanel(Guid workspaceId)
+    public async Task<IActionResult> MacInterfaceSelectorPanel(Guid workspaceId)
     {
+        if (await InterfaceLimitReachedAsync())
+        {
+            return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
+        }
+
         return PartialView("~/Views/Workspaces/Partials/MacInterfaceSelectorPanel.cshtml", workspaceId);
     }
 }
