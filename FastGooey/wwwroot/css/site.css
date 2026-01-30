@@ -115,6 +115,10 @@ body {
     @apply mb-8;
 }
 
+.formGroupAddBackground {
+    @apply bg-white rounded mb-8 shadow;
+}
+
 .formGroup label {
     @apply font-mont block text-sm font-medium mb-2;
 }
