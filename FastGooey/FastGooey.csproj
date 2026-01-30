@@ -27,6 +27,7 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="9.0.4" />
       <PackageReference Include="Npgsql.NodaTime" Version="9.0.4" />
       <PackageReference Include="Slugify.Core" Version="5.1.1" />
+      <PackageReference Include="Stripe.net" Version="50.2.0" />
       <PackageReference Include="System.ServiceModel.Syndication" Version="9.0.10" />
     </ItemGroup>
 

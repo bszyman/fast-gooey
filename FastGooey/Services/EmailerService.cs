@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Mail;
 using FastGooey.Models;
 using FastGooey.Models.Configuration;
-using Flurl;
 using HandlebarsDotNet;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;

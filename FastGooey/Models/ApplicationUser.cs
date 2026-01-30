@@ -25,6 +25,14 @@ public class ApplicationUser: IdentityUser
     [MaxLength(40)]
     public string LastName { get; set; } = string.Empty;
     
+    [MaxLength(255)]
+    public string? StripeCustomerId { get; set; }
+   
+    [MaxLength(255)]
+    public string? StripeSubscriptionId { get; set; }
+   
+    public SubscriptionLevel SubscriptionLevel { get; set; } = SubscriptionLevel.Explorer;
+    
     public Instant CreatedAt { get; set; }
     public Instant UpdatedAt { get; set; }
 }

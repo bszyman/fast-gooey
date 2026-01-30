@@ -14,7 +14,6 @@ namespace FastGooey.Controllers;
 [Authorize]
 [Route("Workspaces")]
 public class WorkspaceSelectorController(
-    ILogger<WorkspacesController> logger, 
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
     UserManager<ApplicationUser> userManager): 
