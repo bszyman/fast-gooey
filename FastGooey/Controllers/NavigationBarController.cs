@@ -2,6 +2,7 @@ using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Models.ViewModels.NavigationBar;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +51,7 @@ public class NavigationBarController(
                 Id = x.DocId,
                 Name = x.Name,
                 Type = x.ViewType,
-                Route = $"/Workspaces/{workspaceId}/Widgets/{x.ViewType}/{x.DocId}"
+                Route = $"/Workspaces/{workspaceId}/Widgets/{x.ViewType}/{x.DocId.ToBase64Url()}"
             })
             .ToListAsync();
 
@@ -67,7 +68,7 @@ public class NavigationBarController(
                 Id = x.DocId,
                 Name = x.Name,
                 Type = x.ViewType,
-                Route = $"/Workspaces/{workspaceId}/Interfaces/AppleMobile/{x.ViewType}/{x.DocId}"
+                Route = $"/Workspaces/{workspaceId}/Interfaces/AppleMobile/{x.ViewType}/{x.DocId.ToBase64Url()}"
             })
             .ToListAsync();
 
@@ -84,7 +85,7 @@ public class NavigationBarController(
                 Id = x.DocId,
                 Name = x.Name,
                 Type = x.ViewType,
-                Route = $"/Workspaces/{workspaceId}/interfaces/mac/{x.ViewType}/{x.DocId}"
+                Route = $"/Workspaces/{workspaceId}/interfaces/mac/{x.ViewType}/{x.DocId.ToBase64Url()}"
             })
             .ToListAsync();
 

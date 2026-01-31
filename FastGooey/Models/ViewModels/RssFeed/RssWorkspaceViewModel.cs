@@ -1,3 +1,4 @@
+using FastGooey.Utils;
 using FastGooey.Models.JsonDataModels;
 
 namespace FastGooey.Models.ViewModels.RssFeed;
@@ -14,6 +15,6 @@ public class RssWorkspaceViewModel
 
     public string InterfaceId()
     {
-        return ContentNode!.DocId.ToString();
+        return ContentNode!.DocId.ToBase64Url();
     }
 }

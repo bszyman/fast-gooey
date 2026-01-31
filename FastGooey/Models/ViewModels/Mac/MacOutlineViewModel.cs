@@ -1,3 +1,4 @@
+using FastGooey.Utils;
 namespace FastGooey.Models.ViewModels.Mac;
 
 public class MacOutlineViewModel
@@ -11,6 +12,6 @@ public class MacOutlineViewModel
 
     public string InterfaceId()
     {
-        return Workspace!.ContentNode!.DocId.ToString();
+        return Workspace!.ContentNode!.DocId.ToBase64Url();
     }
 }

@@ -1,6 +1,6 @@
 @model FastGooey.Models.ViewModels.Mac.MacContentVideoConfigurationPanelViewModel
 @{
-    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId}/video-item";
+    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId?.ToBase64Url()}/video-item";
     url = Model.Content.Identifier.Equals(Guid.Empty) ? url : $"{url}/{Model.Content.Identifier}";
 }
 
@@ -32,7 +32,12 @@
                     <label for="videoModeRadio" style="margin-bottom: 0;">Upload Video</label>
                 </div>
                 <div class="mt-1 flex gap-2">
-                    <button type="button" class="text-sm w-full rounded bg-zinc-100 text-zinc-700 font-semibold px-6 py-3 cursor-pointer" onclick="document.getElementById('video').click()">Choose Video</button>
+                    <button
+                        type="button"
+                        class="text-sm w-full rounded bg-zinc-100 text-zinc-700 font-semibold px-6 py-3 cursor-pointer"
+                        onclick="document.getElementById('video').click()">
+                        Choose Video
+                    </button>
                     <input type="file" id="video" name="video" accept="video/H264" class="hidden"/>
                 </div>
             </div>

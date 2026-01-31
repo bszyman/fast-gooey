@@ -48,10 +48,15 @@ public class ClockController(
         return viewModel;
     }
 
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Index(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Index(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
         var viewModel = new ClockViewModel
         {
             WorkspaceViewModel = workspaceViewModel
@@ -60,10 +65,15 @@ public class ClockController(
         return View(viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> Workspace(Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}")]
+    public async Task<IActionResult> Workspace(string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/Clock/Workspace.cshtml", viewModel);
     }
@@ -98,12 +108,17 @@ public class ClockController(
         return PartialView("~/Views/Clock/Index.cshtml", viewModel);
     }
 
-    [HttpPost("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] ClockFormModel formModel)
+    [HttpPost("workspace/{interfaceId}")]
+    public async Task<IActionResult> SaveWorkspace(string interfaceId, [FromForm] ClockFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<ClockJsonDataModel>();
         data.Location = formModel.Location;
@@ -116,7 +131,7 @@ public class ClockController(
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
 
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/Clock/Workspace.cshtml", viewModel);
     }
@@ -146,10 +161,15 @@ public class ClockController(
         return PartialView("~/Views/Clock/Partials/SearchPanel.cshtml", viewModel);
     }
 
-    [HttpGet("preview-panel/{interfaceId:guid}")]
-    public async Task<IActionResult> PreviewPanel(Guid interfaceId)
+    [HttpGet("preview-panel/{interfaceId}")]
+    public async Task<IActionResult> PreviewPanel(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
         var viewModel = new ClockPreviewPanelViewModel
         {
             PreviewAvailable = !string.IsNullOrEmpty(workspaceViewModel.Data.Timezone),

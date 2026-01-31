@@ -6,6 +6,7 @@ using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Models.ViewModels.Mac;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -74,10 +75,15 @@ public class MacSourceListController(
         return PartialView("~/Views/MacSourceList/Index.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Index(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Index(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
         var viewModel = new MacInterfaceSourceListViewModel
         {
             Workspace = workspaceViewModel
@@ -86,20 +92,30 @@ public class MacSourceListController(
         return View(viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> Workspace(Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}")]
+    public async Task<IActionResult> Workspace(string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/MacSourceList/Workspace.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/group-editor-panel/{groupId:guid?}")]
-    public async Task<IActionResult> GroupEditorPanel(Guid interfaceId, Guid? groupId)
+    [HttpGet("{interfaceId}/group-editor-panel/{groupId:guid?}")]
+    public async Task<IActionResult> GroupEditorPanel(string interfaceId, Guid? groupId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
 
@@ -118,12 +134,17 @@ public class MacSourceListController(
         return PartialView("~/Views/MacSourceList/Partials/SourceListEditorPanel.cshtml", viewModel);
     }
 
-    [HttpPost("{interfaceId:guid}/group-editor-panel/{groupId:guid?}")]
-    public async Task<IActionResult> SaveGroupEditorPanel(Guid interfaceId, Guid? groupId, [FromForm] MacSourceListGroupPanelFormModel formModel)
+    [HttpPost("{interfaceId}/group-editor-panel/{groupId:guid?}")]
+    public async Task<IActionResult> SaveGroupEditorPanel(string interfaceId, Guid? groupId, [FromForm] MacSourceListGroupPanelFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
 
@@ -158,12 +179,17 @@ public class MacSourceListController(
         return PartialView("~/Views/MacSourceList/Partials/SourceListEditorPanel.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/item-editor-panel/group/{groupId:guid}/item/{itemId:guid?}")]
-    public async Task<IActionResult> ItemEditorPanel(Guid interfaceId, Guid groupId, Guid? itemId)
+    [HttpGet("{interfaceId}/item-editor-panel/group/{groupId:guid}/item/{itemId:guid?}")]
+    public async Task<IActionResult> ItemEditorPanel(string interfaceId, Guid groupId, Guid? itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
         var group = data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId));
@@ -188,13 +214,18 @@ public class MacSourceListController(
         return PartialView("~/Views/MacSourceList/Partials/SourceListItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpPost("{interfaceId:guid}/item-editor-panel/group/{groupId:guid}/item/{itemId:guid?}")]
-    public async Task<IActionResult> SaveItemEditorPanel(Guid interfaceId, Guid groupId, Guid? itemId,
+    [HttpPost("{interfaceId}/item-editor-panel/group/{groupId:guid}/item/{itemId:guid?}")]
+    public async Task<IActionResult> SaveItemEditorPanel(string interfaceId, Guid groupId, Guid? itemId,
         [FromForm] MacSourceListGroupItemPanelFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
         var group = data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId));
@@ -236,12 +267,17 @@ public class MacSourceListController(
         return PartialView("~/Views/MacSourceList/Partials/SourceListItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpDelete("{interfaceId:guid}/group-editor-panel/group/{groupId:guid}")]
-    public async Task<IActionResult> DeleteItem(Guid interfaceId, Guid groupId)
+    [HttpDelete("{interfaceId}/group-editor-panel/group/{groupId:guid}")]
+    public async Task<IActionResult> DeleteItem(string interfaceId, Guid groupId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
         var group = data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId));
@@ -258,12 +294,17 @@ public class MacSourceListController(
         return Ok();
     }
 
-    [HttpDelete("{interfaceId:guid}/item-editor-panel/group/{groupId:guid}/item/{itemId:guid?}")]
-    public async Task<IActionResult> DeleteItem(Guid interfaceId, Guid groupId, Guid? itemId)
+    [HttpDelete("{interfaceId}/item-editor-panel/group/{groupId:guid}/item/{itemId:guid?}")]
+    public async Task<IActionResult> DeleteItem(string interfaceId, Guid groupId, Guid? itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
         var group = data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId));

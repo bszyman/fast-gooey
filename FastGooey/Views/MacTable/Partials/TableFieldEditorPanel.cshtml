@@ -33,7 +33,7 @@
 </div>
 
 <form method="post"
-      hx-post="/Workspaces/@Model.WorkspaceId/interfaces/mac/table/@Model.InterfaceId/field-editor-panel/item/@Model.FieldAlias"
+      hx-post="/Workspaces/@Model.WorkspaceId/interfaces/mac/table/@Model.InterfaceId.ToBase64Url()/field-editor-panel/item/@Model.FieldAlias"
       hx-target="#editorPanel">
     <div class="py-4 px-4">
         <div class="formGroup formGroupAddBackground mb-4">
@@ -91,7 +91,7 @@
             <div class="py-4 px-4">
                 <button
                     type="button"
-                    hx-get="/Workspaces/@Model.WorkspaceId/interfaces/mac/table/@Model.InterfaceId/field-editor-panel/item/new-dropdown"
+                    hx-get="/Workspaces/@Model.WorkspaceId/interfaces/mac/table/@Model.InterfaceId.ToBase64Url()/field-editor-panel/item/new-dropdown"
                     hx-target="#dropdownItemsContainer"
                     hx-params="none"
                     hx-swap="beforeend"
@@ -109,7 +109,7 @@
             {
                 @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new DeleteButtonViewModel
                 {
-                    Url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/table/{Model.InterfaceId}/field-editor-panel/item/{Model.FieldAlias}",
+                    Url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/table/{Model.InterfaceId.ToBase64Url()}/field-editor-panel/item/{Model.FieldAlias}",
                     Target = "#editorPanel"
                 })
             }

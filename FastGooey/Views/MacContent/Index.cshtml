@@ -10,7 +10,7 @@
         })
     </div>
     <button 
-        hx-get="/Workspaces/@Model.Workspace.ContentNode.Workspace.PublicId/interfaces/mac/content/workspace/@Model.Workspace.ContentNode.DocId"
+        hx-get="/Workspaces/@Model.Workspace.ContentNode.Workspace.PublicId/interfaces/mac/content/workspace/@Model.Workspace.ContentNode.DocId.ToBase64Url()"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton" onclick="changeSection(this)">

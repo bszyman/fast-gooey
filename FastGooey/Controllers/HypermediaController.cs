@@ -5,6 +5,7 @@ using FastGooey.HypermediaResponses;
 using FastGooey.Models;
 using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.JsonDataModels.Mac;
+using FastGooey.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,12 +14,17 @@ namespace FastGooey.Controllers;
 [Route("hypermedia")]
 public class HypermediaController(ApplicationDbContext dbContext) : Controller
 {
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Get(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Get(string interfaceId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstOrDefaultAsync(x => x.DocId.Equals(interfaceId));
+            .FirstOrDefaultAsync(x => x.DocId.Equals(interfaceGuid));
 
         if (contentNode is null) return NotFound();
 

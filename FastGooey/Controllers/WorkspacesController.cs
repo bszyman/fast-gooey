@@ -3,6 +3,7 @@ using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +26,16 @@ public class WorkspacesController(
         return View();
     }
 
-    [HttpGet("Info/{interfaceId:guid}")]
-    public IActionResult Info(Guid workspaceId, Guid interfaceId)
+    [HttpGet("Info/{interfaceId}")]
+    public IActionResult Info(Guid workspaceId, string interfaceId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var interfaceNode = dbContext.GooeyInterfaces
-            .First(x => x.DocId.Equals(interfaceId));
+            .First(x => x.DocId.Equals(interfaceGuid));
 
         var workspace = dbContext.Workspaces
             .First(x => x.PublicId == workspaceId);
@@ -55,11 +61,16 @@ public class WorkspacesController(
         return View();
     }
 
-    [HttpPost("UpdateTitle/{interfaceId:guid}")]
-    public async Task<IActionResult> UpdateTitle(Guid interfaceId, [FromForm] string title)
+    [HttpPost("UpdateTitle/{interfaceId}")]
+    public async Task<IActionResult> UpdateTitle(string interfaceId, [FromForm] string title)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var interfaceNode = dbContext.GooeyInterfaces
-            .First(x => x.DocId.Equals(interfaceId));
+            .First(x => x.DocId.Equals(interfaceGuid));
 
         interfaceNode.Name = title;
         await dbContext.SaveChangesAsync();

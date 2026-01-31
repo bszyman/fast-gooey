@@ -1,6 +1,6 @@
 @model FastGooey.Models.ViewModels.Mac.MacContentImageConfigurationPanelViewModel
 @{
-    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId}/image-item";
+    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId?.ToBase64Url()}/image-item";
     url = Model.Content.Identifier.Equals(Guid.Empty) ? url : $"{url}/{Model.Content.Identifier}";
 }
 

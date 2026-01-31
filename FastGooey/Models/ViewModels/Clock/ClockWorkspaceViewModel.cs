@@ -1,3 +1,4 @@
+using FastGooey.Utils;
 using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.UtilModels;
 
@@ -16,6 +17,6 @@ public class ClockWorkspaceViewModel
 
     public string InterfaceId()
     {
-        return ContentNode!.DocId.ToString();
+        return ContentNode!.DocId.ToBase64Url();
     }
 }

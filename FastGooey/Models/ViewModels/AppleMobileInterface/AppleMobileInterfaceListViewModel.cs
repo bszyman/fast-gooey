@@ -1,3 +1,4 @@
+using FastGooey.Utils;
 namespace FastGooey.Models.ViewModels.AppleMobileInterface;
 
 public class AppleMobileInterfaceListViewModel
@@ -11,6 +12,6 @@ public class AppleMobileInterfaceListViewModel
 
     public string InterfaceId()
     {
-        return WorkspaceViewModel!.ContentNode!.DocId.ToString();
+        return WorkspaceViewModel!.ContentNode!.DocId.ToBase64Url();
     }
 }

@@ -7,6 +7,7 @@ using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Models.ViewModels.Mac;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -53,10 +54,15 @@ public class MacTableController(
         return viewModel;
     }
 
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Index(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Index(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
         var viewModel = new MacInterfaceTableViewModel
         {
             Workspace = workspaceViewModel
@@ -65,10 +71,15 @@ public class MacTableController(
         return View(viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> TableWorkspace(Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}")]
+    public async Task<IActionResult> TableWorkspace(string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/MacTable/Workspace.cshtml", viewModel);
     }
@@ -111,20 +122,30 @@ public class MacTableController(
         return PartialView("~/Views/MacTable/Index.cshtml", viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId:guid}/structure")]
-    public async Task<IActionResult> TableStructureWorkspace(Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}/structure")]
+    public async Task<IActionResult> TableStructureWorkspace(string interfaceId)
     {
-        var viewModel = await WorkspaceStructureViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceStructureViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/MacTable/StructureWorkspace.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/header-option-row")]
-    public async Task<IActionResult> TableHeaderOptionRow(Guid interfaceId, [FromQuery] int? nextHeaderCounter)
+    [HttpGet("{interfaceId}/header-option-row")]
+    public async Task<IActionResult> TableHeaderOptionRow(string interfaceId, [FromQuery] int? nextHeaderCounter)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
 
@@ -137,12 +158,17 @@ public class MacTableController(
         return PartialView("~/Views/MacTable/Partials/TableHeaderOptionRow.cshtml", viewModel);
     }
 
-    [HttpPost("{interfaceId:guid}/save-structure-workspace")]
-    public async Task<IActionResult> SaveStructureWorkspace(Guid interfaceId, [FromForm] MacTableStructureWorkspaceFormModel formModel)
+    [HttpPost("{interfaceId}/save-structure-workspace")]
+    public async Task<IActionResult> SaveStructureWorkspace(string interfaceId, [FromForm] MacTableStructureWorkspaceFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
 
@@ -155,17 +181,22 @@ public class MacTableController(
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
 
-        var viewModel = await WorkspaceStructureViewModelForInterfaceId(interfaceId);
+        var viewModel = await WorkspaceStructureViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/MacTable/StructureWorkspace.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/field-editor-panel/{fieldAlias?}")]
-    public async Task<IActionResult> TableFieldEditorPanel(Guid interfaceId, string? fieldAlias)
+    [HttpGet("{interfaceId}/field-editor-panel/{fieldAlias?}")]
+    public async Task<IActionResult> TableFieldEditorPanel(string interfaceId, string? fieldAlias)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
 
@@ -185,12 +216,17 @@ public class MacTableController(
         return PartialView("~/Views/MacTable/Partials/TableFieldEditorPanel.cshtml", viewModel);
     }
 
-    [HttpPost("{interfaceId:guid}/field-editor-panel/item/{fieldAlias?}")]
-    public async Task<IActionResult> SaveTableFieldEditorPanel(Guid interfaceId, string? fieldAlias, [FromForm] MacTableFieldConfigPanelFormModel form)
+    [HttpPost("{interfaceId}/field-editor-panel/item/{fieldAlias?}")]
+    public async Task<IActionResult> SaveTableFieldEditorPanel(string interfaceId, string? fieldAlias, [FromForm] MacTableFieldConfigPanelFormModel form)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         if (ModelState.IsValid)
         {
@@ -236,12 +272,17 @@ public class MacTableController(
         return PartialView("~/Views/MacTable/Partials/TableFieldEditorPanel.cshtml", viewModel);
     }
 
-    [HttpDelete("{interfaceId:guid}/field-editor-panel/item/{fieldAlias}")]
-    public async Task<IActionResult> DeleteFieldType(Guid interfaceId, string fieldAlias)
+    [HttpDelete("{interfaceId}/field-editor-panel/item/{fieldAlias}")]
+    public async Task<IActionResult> DeleteFieldType(string interfaceId, string fieldAlias)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
         var item = data.Structure
@@ -264,18 +305,28 @@ public class MacTableController(
         return Ok();
     }
 
-    [HttpGet("{interfaceId:guid}/field-editor-panel/item/new-dropdown")]
-    public IActionResult TableFieldEditorNewDropdownPanel(Guid interfaceId)
+    [HttpGet("{interfaceId}/field-editor-panel/item/new-dropdown")]
+    public IActionResult TableFieldEditorNewDropdownPanel(string interfaceId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out _))
+        {
+            return NotFound();
+        }
+
         return PartialView("~/Views/MacTable/Partials/TableItemOptionRow.cshtml", "");
     }
 
-    [HttpGet("{interfaceId:guid}/item-editor-panel/{itemId:guid?}")]
-    public async Task<IActionResult> TableItemEditorPanel(Guid interfaceId, Guid? itemId)
+    [HttpGet("{interfaceId}/item-editor-panel/{itemId:guid?}")]
+    public async Task<IActionResult> TableItemEditorPanel(string interfaceId, Guid? itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
 
@@ -294,15 +345,20 @@ public class MacTableController(
         return PartialView("~/Views/MacTable/Partials/TableItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpPost("{interfaceId:guid}/item-editor-panel/{itemId:guid?}")]
+    [HttpPost("{interfaceId}/item-editor-panel/{itemId:guid?}")]
     public async Task<IActionResult> SaveTableItemEditorPanel(
-        Guid interfaceId,
+        string interfaceId,
         Guid? itemId,
         [FromForm] IFormCollection form)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
 
@@ -398,12 +454,17 @@ public class MacTableController(
         return PartialView("~/Views/MacTable/Partials/TableItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpDelete("workspace/{interfaceId:guid}/item/{itemId:guid}")]
-    public async Task<IActionResult> DeleteTableItem(Guid interfaceId, Guid itemId)
+    [HttpDelete("workspace/{interfaceId}/item/{itemId:guid}")]
+    public async Task<IActionResult> DeleteTableItem(string interfaceId, Guid itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
 

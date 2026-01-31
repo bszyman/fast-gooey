@@ -1,6 +1,6 @@
 @model FastGooey.Models.ViewModels.Mac.MacInterfaceTableItemEditorPanelViewModel
 @{
-    var formUrl = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/table/{Model.InterfaceId}/item-editor-panel";
+    var formUrl = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/table/{Model.InterfaceId?.ToBase64Url()}/item-editor-panel";
 
     if (!Model.Content.Identifier.Equals(Guid.Empty))
     {

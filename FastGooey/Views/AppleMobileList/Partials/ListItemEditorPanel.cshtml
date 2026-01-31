@@ -8,7 +8,7 @@
 </div>
 
 <form method="post"
-      hx-post="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/List/@Model.InterfaceId/item-editor-panel/item/@Model.Item.Identifier"
+      hx-post="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/List/@Model.InterfaceId.ToBase64Url()/item-editor-panel/item/@Model.Item.Identifier"
       hx-target="#editorPanel">
     @Html.AntiForgeryToken()
     <div class="py-4 px-4">
@@ -56,7 +56,7 @@
             {
                 @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new DeleteButtonViewModel
                 {
-                    Url = $"/Workspaces/{Model.WorkspaceId}/Interfaces/AppleMobile/List/{Model.InterfaceId}/item/{Model.Item.Identifier}"
+                    Url = $"/Workspaces/{Model.WorkspaceId}/Interfaces/AppleMobile/List/{Model.InterfaceId.ToBase64Url()}/item/{Model.Item.Identifier}"
                 })
             }
         </div>

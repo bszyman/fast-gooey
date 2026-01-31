@@ -1,3 +1,4 @@
+using FastGooey.Utils;
 namespace FastGooey.Models.ViewModels.Mac;
 
 public class MacInterfaceTableViewModel
@@ -11,6 +12,6 @@ public class MacInterfaceTableViewModel
 
     public string InterfaceId()
     {
-        return Workspace!.ContentNode!.DocId.ToString();
+        return Workspace!.ContentNode!.DocId.ToBase64Url();
     }
 }

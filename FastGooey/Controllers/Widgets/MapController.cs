@@ -6,6 +6,7 @@ using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.ViewModels.Map;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Flurl.Http;
 using MapKit.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -53,10 +54,15 @@ public class MapController(
     }
 
     // Full page view
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Index(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Index(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         var viewModel = new MapViewModel
         {
@@ -67,20 +73,30 @@ public class MapController(
     }
 
     // Workspace view
-    [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> Workspace(Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}")]
+    public async Task<IActionResult> Workspace(string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView(viewModel);
     }
 
-    [HttpPost("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] MapWorkspaceFormModel formModel)
+    [HttpPost("workspace/{interfaceId}")]
+    public async Task<IActionResult> SaveWorkspace(string interfaceId, [FromForm] MapWorkspaceFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MapJsonDataModel>();
 
@@ -97,7 +113,7 @@ public class MapController(
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
 
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/Map/Workspace.cshtml", viewModel);
     }

@@ -6,6 +6,7 @@ using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.ViewModels.Weather;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Flurl.Http;
 using MapKit.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -41,10 +42,15 @@ public class WeatherController(
     }
 
     // Full page view
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Weather(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Weather(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         var viewModel = new WeatherViewModel
         {
@@ -55,10 +61,15 @@ public class WeatherController(
     }
 
     // Workspace partial for HTMX
-    [HttpGet("Workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> WeatherWorkspace(Guid interfaceId)
+    [HttpGet("Workspace/{interfaceId}")]
+    public async Task<IActionResult> WeatherWorkspace(string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/Weather/Workspace.cshtml", viewModel);
     }
@@ -93,9 +104,14 @@ public class WeatherController(
         return PartialView("~/Views/Weather/Weather.cshtml", viewModel);
     }
 
-    [HttpPost("Workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> SaveWeatherWorkspace(Guid interfaceId, [FromForm] WeatherWorkspaceFormModel formModel)
+    [HttpPost("Workspace/{interfaceId}")]
+    public async Task<IActionResult> SaveWeatherWorkspace(string interfaceId, [FromForm] WeatherWorkspaceFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var currentUser = await userManager.GetUserAsync(User);
         if (currentUser == null)
         {
@@ -104,7 +120,7 @@ public class WeatherController(
 
         var gooeyInterface = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var docData = gooeyInterface.Config.Deserialize<WeatherJsonDataModel>();
         docData.Location = formModel.Location;
@@ -116,7 +132,7 @@ public class WeatherController(
 
         await dbContext.SaveChangesAsync();
 
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/Weather/Workspace.cshtml", viewModel);
     }
@@ -139,11 +155,16 @@ public class WeatherController(
         return PartialView("~/Views/Weather/Partials/WeatherSearchPanel.cshtml", viewModel);
     }
 
-    [HttpGet("preview-panel/{interfaceId:guid}")]
-    public async Task<IActionResult> WeatherPreviewPanel(Guid interfaceId)
+    [HttpGet("preview-panel/{interfaceId}")]
+    public async Task<IActionResult> WeatherPreviewPanel(string interfaceId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var gooeyInterface = await dbContext.GooeyInterfaces
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         // var config = gooeyInterface.Config.Deserialize<WeatherJsonDataModel>();
         // var weatherKitKey = keyValueService.GetValueForKey("");

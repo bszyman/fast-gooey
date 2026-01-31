@@ -1,6 +1,6 @@
 @model FastGooey.Models.ViewModels.Mac.MacOutlineEditorPanelViewModel
 @{
-    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/outline/{Model.InterfaceId}/editor-panel";
+    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/outline/{Model.InterfaceId.ToBase64Url()}/editor-panel";
 
     if (!Model.Identifier.Equals(Guid.Empty))
     {

@@ -1,6 +1,6 @@
 @model FastGooey.Models.ViewModels.Mac.MacContentLinkConfigurationPanelViewModel
 @{
-    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId}/link-item";
+    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId?.ToBase64Url()}/link-item";
     url = Model.Content.Identifier.Equals(Guid.Empty) ? url : $"{url}/{Model.Content.Identifier}";
 }
 

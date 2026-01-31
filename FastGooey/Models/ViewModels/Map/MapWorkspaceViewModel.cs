@@ -1,3 +1,4 @@
+using FastGooey.Utils;
 namespace FastGooey.Models.ViewModels.Map;
 
 public class MapWorkspaceViewModel
@@ -12,6 +13,6 @@ public class MapWorkspaceViewModel
 
     public string InterfaceId()
     {
-        return ContentNode!.DocId.ToString();
+        return ContentNode!.DocId.ToBase64Url();
     }
 }

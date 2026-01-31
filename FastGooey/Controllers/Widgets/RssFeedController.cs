@@ -9,6 +9,7 @@ using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.Response;
 using FastGooey.Models.ViewModels.RssFeed;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Flurl.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -42,10 +43,15 @@ public class RssFeedController(
         return viewModel;
     }
 
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Index(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Index(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
         var viewModel = new RssViewModel
         {
             WorkspaceViewModel = workspaceViewModel
@@ -54,10 +60,15 @@ public class RssFeedController(
         return View(viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> Workspace(Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}")]
+    public async Task<IActionResult> Workspace(string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/RssFeed/Workspace.cshtml", viewModel);
     }
@@ -92,12 +103,17 @@ public class RssFeedController(
         return PartialView("~/Views/RssFeed/Index.cshtml", viewModel);
     }
 
-    [HttpPost("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] RssFeedFormModel formModel)
+    [HttpPost("workspace/{interfaceId}")]
+    public async Task<IActionResult> SaveWorkspace(string interfaceId, [FromForm] RssFeedFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<RssFeedJsonDataModel>();
         data.FeedUrl = formModel.FeedUrl;
@@ -105,13 +121,13 @@ public class RssFeedController(
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
 
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/RssFeed/Workspace.cshtml", viewModel);
     }
 
     [HttpGet("preview-panel/from-url")]
-    public async Task<IActionResult> RssPreviewPanel([FromQuery] string feedUrl)
+    public async Task<IActionResult> RssPreviewPanelFromUrl([FromQuery] string feedUrl)
     {
         if (string.IsNullOrWhiteSpace(feedUrl))
         {
@@ -167,10 +183,15 @@ public class RssFeedController(
         }
     }
 
-    [HttpGet("preview-panel/from-interface/{interfaceId:guid}")]
-    public async Task<IActionResult> RssPreviewPanel(Guid interfaceId)
+    [HttpGet("preview-panel/from-interface/{interfaceId}")]
+    public async Task<IActionResult> RssPreviewPanel(string interfaceId)
     {
-        var contentNode = dbContext.GooeyInterfaces.First(x => x.DocId.Equals(interfaceId));
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var contentNode = dbContext.GooeyInterfaces.First(x => x.DocId.Equals(interfaceGuid));
         var data = contentNode.Config.Deserialize<RssFeedJsonDataModel>();
 
         if (string.IsNullOrWhiteSpace(data.FeedUrl))

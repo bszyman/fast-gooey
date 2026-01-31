@@ -6,6 +6,7 @@ using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Models.ViewModels.Mac;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -79,10 +80,15 @@ public class MacOutlineController(
         return PartialView("~/Views/MacOutline/Index.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Index(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Index(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
         var viewModel = new MacOutlineViewModel
         {
             Workspace = workspaceViewModel
@@ -91,20 +97,30 @@ public class MacOutlineController(
         return View(viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> Workspace(Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}")]
+    public async Task<IActionResult> Workspace(string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/MacOutline/Workspace.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/editor-panel/{itemId:guid}")]
-    public async Task<IActionResult> EditorPanel(Guid interfaceId, Guid itemId)
+    [HttpGet("{interfaceId}/editor-panel/{itemId:guid}")]
+    public async Task<IActionResult> EditorPanel(string interfaceId, Guid itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacOutlineJsonDataModel>();
         var item = data.FindById(itemId);
@@ -112,7 +128,7 @@ public class MacOutlineController(
         var viewModel = new MacOutlineEditorPanelViewModel
         {
             WorkspaceId = WorkspaceId,
-            InterfaceId = interfaceId,
+            InterfaceId = interfaceGuid,
             Name = item.Name,
             Identifier = item.Identifier,
             Url = item.Url,
@@ -121,12 +137,17 @@ public class MacOutlineController(
         return PartialView("~/Views/MacOutline/Partials/OutlineViewItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/editor-panel/{parentId:guid}/new")]
-    public async Task<IActionResult> CreateEditorPanel(Guid interfaceId, Guid parentId)
+    [HttpGet("{interfaceId}/editor-panel/{parentId:guid}/new")]
+    public async Task<IActionResult> CreateEditorPanel(string interfaceId, Guid parentId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacOutlineJsonDataModel>();
         var parentItem = data.FindById(parentId);
@@ -134,7 +155,7 @@ public class MacOutlineController(
         var viewModel = new MacOutlineEditorPanelViewModel
         {
             WorkspaceId = WorkspaceId,
-            InterfaceId = interfaceId,
+            InterfaceId = interfaceGuid,
             ParentId = parentItem.Identifier.ToString(),
             ParentName = parentItem.Name,
         };
@@ -142,15 +163,20 @@ public class MacOutlineController(
         return PartialView("~/Views/MacOutline/Partials/OutlineViewItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpPost("{interfaceId:guid}/editor-panel/{itemId:guid?}")]
+    [HttpPost("{interfaceId}/editor-panel/{itemId:guid?}")]
     public async Task<IActionResult> SaveEditorPanel(
-        Guid interfaceId,
+        string interfaceId,
         Guid? itemId,
         [FromForm] MacOutlineEditorPanelFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacOutlineJsonDataModel>();
 
@@ -209,17 +235,22 @@ public class MacOutlineController(
         return PartialView("~/Views/MacOutline/Partials/OutlineViewItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpDelete("{interfaceId:guid}/editor-panel/{itemId:guid?}")]
-    public async Task<IActionResult> DeleteItem(Guid interfaceId, Guid? itemId)
+    [HttpDelete("{interfaceId}/editor-panel/{itemId:guid?}")]
+    public async Task<IActionResult> DeleteItem(string interfaceId, Guid? itemId)
     {
         if (!itemId.HasValue)
         {
             return BadRequest("itemId is required.");
         }
 
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacOutlineJsonDataModel>();
         if (data == null)

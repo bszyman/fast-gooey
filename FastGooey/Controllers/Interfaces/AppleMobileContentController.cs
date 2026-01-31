@@ -7,6 +7,7 @@ using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.ViewModels.AppleMobileInterface;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,10 +38,15 @@ public class AppleMobileContentController(
         return viewModel;
     }
 
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Index(Guid workspaceId, Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Index(Guid workspaceId, string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         var viewModel = new AppleMobileContentViewModel
         {
@@ -50,18 +56,28 @@ public class AppleMobileContentController(
         return View(viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> Workspace(Guid workspaceId, Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}")]
+    public async Task<IActionResult> Workspace(Guid workspaceId, string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
     }
 
-    [HttpPost("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> SaveWorkspace(Guid interfaceId, [FromForm] AppleMobileContentWorkspaceFormModel formModel)
+    [HttpPost("workspace/{interfaceId}")]
+    public async Task<IActionResult> SaveWorkspace(string interfaceId, [FromForm] AppleMobileContentWorkspaceFormModel formModel)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
         var data = viewModel.Data;
 
         data.HeaderTitle = formModel.HeaderTitle;
@@ -112,16 +128,21 @@ public class AppleMobileContentController(
         return PartialView("~/Views/AppleMobileContent/Index.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/content-type-selector-panel")]
-    public IActionResult ContentTypeSelectorPanel(Guid workspaceId, Guid interfaceId)
+    [HttpGet("{interfaceId}/content-type-selector-panel")]
+    public IActionResult ContentTypeSelectorPanel(Guid workspaceId, string interfaceId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         // TODO: probably set up a AppleMobileContentJsonDataModel just to initialize before attempting to add child
         // content items, probably should do this in CreateInterface()
 
         var viewModel = new AppleMobileContentTypeSelectorPanelViewModel
         {
             WorkspaceId = workspaceId,
-            InterfaceId = interfaceId
+            InterfaceId = interfaceGuid
         };
 
         return PartialView("~/Views/AppleMobileContent/Partials/AppleMobileContentTypeSelectorPanel.cshtml", viewModel);
@@ -201,27 +222,37 @@ public class AppleMobileContentController(
         return PartialView(viewPath, viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/headline-config-panel/{itemId:guid?}")]
-    public async Task<IActionResult> HeadlineConfigurationPanel(Guid interfaceId, Guid? itemId)
+    [HttpGet("{interfaceId}/headline-config-panel/{itemId:guid?}")]
+    public async Task<IActionResult> HeadlineConfigurationPanel(string interfaceId, Guid? itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         return await LoadConfigurationPanel<HeadlineContentItem, AppleMobileContentHeadlineConfigurationPanelViewModel>(
-            interfaceId,
+            interfaceGuid,
             itemId,
             "~/Views/AppleMobileContent/Partials/ContentHeadlineConfigurationPanel.cshtml",
             () => new AppleMobileContentHeadlineConfigurationPanelViewModel
             {
                 WorkspaceId = WorkspaceId,
-                InterfaceId = interfaceId
+                InterfaceId = interfaceGuid
             },
             (vm, content) => vm.Content = content
         );
     }
 
-    [HttpPost("{interfaceId:guid}/headline-item/{itemId:guid?}")]
-    public async Task<IActionResult> SaveHeadline(Guid workspaceId, Guid interfaceId, Guid? itemId, HeadlineContentFormModel form)
+    [HttpPost("{interfaceId}/headline-item/{itemId:guid?}")]
+    public async Task<IActionResult> SaveHeadline(Guid workspaceId, string interfaceId, Guid? itemId, HeadlineContentFormModel form)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         return await SaveContentItem<HeadlineContentItem, HeadlineContentFormModel>(
-            interfaceId,
+            interfaceGuid,
             itemId,
             form,
             "headline",
@@ -229,27 +260,37 @@ public class AppleMobileContentController(
         );
     }
 
-    [HttpGet("{interfaceId:guid}/link-config-panel/{itemId:guid?}")]
-    public async Task<IActionResult> LinkConfigurationPanel(Guid interfaceId, Guid? itemId)
+    [HttpGet("{interfaceId}/link-config-panel/{itemId:guid?}")]
+    public async Task<IActionResult> LinkConfigurationPanel(string interfaceId, Guid? itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         return await LoadConfigurationPanel<LinkContentItem, AppleMobileLinkConfigurationPanelViewModel>(
-            interfaceId,
+            interfaceGuid,
             itemId,
             "~/Views/AppleMobileContent/Partials/ContentLinkConfigurationPanel.cshtml",
             () => new AppleMobileLinkConfigurationPanelViewModel
             {
                 WorkspaceId = WorkspaceId,
-                InterfaceId = interfaceId
+                InterfaceId = interfaceGuid
             },
             (vm, content) => vm.Content = content
         );
     }
 
-    [HttpPost("{interfaceId:guid}/link-item/{itemId:guid?}")]
-    public async Task<IActionResult> SaveLink(Guid workspaceId, Guid interfaceId, Guid? itemId, LinkContentFormModel form)
+    [HttpPost("{interfaceId}/link-item/{itemId:guid?}")]
+    public async Task<IActionResult> SaveLink(Guid workspaceId, string interfaceId, Guid? itemId, LinkContentFormModel form)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         return await SaveContentItem<LinkContentItem, LinkContentFormModel>(
-            interfaceId,
+            interfaceGuid,
             itemId,
             form,
             "link",
@@ -261,27 +302,37 @@ public class AppleMobileContentController(
         );
     }
 
-    [HttpGet("{interfaceId:guid}/text-config-panel/{itemId:guid?}")]
-    public async Task<IActionResult> TextConfigurationPanel(Guid interfaceId, Guid? itemId)
+    [HttpGet("{interfaceId}/text-config-panel/{itemId:guid?}")]
+    public async Task<IActionResult> TextConfigurationPanel(string interfaceId, Guid? itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         return await LoadConfigurationPanel<TextContentItem, AppleMobileTextConfigurationPanelViewModel>(
-            interfaceId,
+            interfaceGuid,
             itemId,
             "~/Views/AppleMobileContent/Partials/ContentTextConfigurationPanel.cshtml",
             () => new AppleMobileTextConfigurationPanelViewModel
             {
                 WorkspaceId = WorkspaceId,
-                InterfaceId = interfaceId,
+                InterfaceId = interfaceGuid,
             },
             (vm, content) => vm.Content = content
         );
     }
 
-    [HttpPost("{interfaceId:guid}/text-item/{itemId:guid?}")]
-    public async Task<IActionResult> SaveText(Guid workspaceId, Guid interfaceId, Guid? itemId, TextContentFormModel form)
+    [HttpPost("{interfaceId}/text-item/{itemId:guid?}")]
+    public async Task<IActionResult> SaveText(Guid workspaceId, string interfaceId, Guid? itemId, TextContentFormModel form)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         return await SaveContentItem<TextContentItem, TextContentFormModel>(
-            interfaceId,
+            interfaceGuid,
             itemId,
             form,
             "text",
@@ -289,27 +340,37 @@ public class AppleMobileContentController(
         );
     }
 
-    [HttpGet("{interfaceId:guid}/image-config-panel/{itemId:guid?}")]
-    public async Task<IActionResult> ImageConfigurationPanel(Guid interfaceId, Guid? itemId)
+    [HttpGet("{interfaceId}/image-config-panel/{itemId:guid?}")]
+    public async Task<IActionResult> ImageConfigurationPanel(string interfaceId, Guid? itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         return await LoadConfigurationPanel<ImageContentItem, AppleMobileImageConfigurationPanelViewModel>(
-            interfaceId,
+            interfaceGuid,
             itemId,
             "~/Views/AppleMobileContent/Partials/ContentImageConfigurationPanel.cshtml",
             () => new AppleMobileImageConfigurationPanelViewModel
             {
                 WorkspaceId = WorkspaceId,
-                InterfaceId = interfaceId,
+                InterfaceId = interfaceGuid,
             },
             (vm, content) => vm.Content = content
         );
     }
 
-    [HttpPost("{interfaceId:guid}/image-item/{itemId:guid?}")]
-    public async Task<IActionResult> SaveImage(Guid workspaceId, Guid interfaceId, Guid? itemId, ImageContentFormModel form)
+    [HttpPost("{interfaceId}/image-item/{itemId:guid?}")]
+    public async Task<IActionResult> SaveImage(Guid workspaceId, string interfaceId, Guid? itemId, ImageContentFormModel form)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         return await SaveContentItem<ImageContentItem, ImageContentFormModel>(
-            interfaceId,
+            interfaceGuid,
             itemId,
             form,
             "image",
@@ -321,12 +382,17 @@ public class AppleMobileContentController(
         );
     }
 
-    [HttpDelete("{interfaceId:guid}/item/{itemId:guid}")]
-    public async Task<IActionResult> DeleteItem(Guid workspaceId, Guid interfaceId, Guid itemId)
+    [HttpDelete("{interfaceId}/item/{itemId:guid}")]
+    public async Task<IActionResult> DeleteItem(Guid workspaceId, string interfaceId, Guid itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
         var item = data.Items
@@ -353,7 +419,7 @@ public class AppleMobileContentController(
         return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
     }
 
-    // [HttpGet("{interfaceId:guid}/video-config-panel/{itemId:guid?}")]
+    // [HttpGet("{interfaceId}/video-config-panel/{itemId:guid?}")]
     // public async Task<IActionResult> VideoConfigurationPanel(Guid interfaceId, Guid? itemId)
     // {
     //     return await LoadConfigurationPanel<VideoContentItem, AppleMobileVideoConfigurationPanelViewModel>(
@@ -369,7 +435,7 @@ public class AppleMobileContentController(
     //     );
     // }
     //
-    // [HttpPost("{interfaceId:guid}/video-item/{itemId:guid?}")]
+    // [HttpPost("{interfaceId}/video-item/{itemId:guid?}")]
     // public async Task<IActionResult> SaveVideo(Guid workspaceId, Guid interfaceId, Guid? itemId, VideoContentFormModel form)
     // {
     //     return await SaveContentItem<VideoContentItem, VideoContentFormModel>(

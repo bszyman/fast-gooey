@@ -6,6 +6,7 @@ using FastGooey.Models.FormModels;
 using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.ViewModels.AppleMobileInterface;
 using FastGooey.Services;
+using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,10 +37,15 @@ public class AppleMobileListController(
         return viewModel;
     }
 
-    [HttpGet("{interfaceId:guid}")]
-    public async Task<IActionResult> Index(Guid interfaceId)
+    [HttpGet("{interfaceId}")]
+    public async Task<IActionResult> Index(string interfaceId)
     {
-        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var workspaceViewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
         var viewModel = new AppleMobileInterfaceListViewModel
         {
             WorkspaceViewModel = workspaceViewModel
@@ -48,10 +54,15 @@ public class AppleMobileListController(
         return View(viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId:guid}")]
-    public async Task<IActionResult> ListWorkspace(Guid interfaceId)
+    [HttpGet("workspace/{interfaceId}")]
+    public async Task<IActionResult> ListWorkspace(string interfaceId)
     {
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
 
         return PartialView("~/Views/AppleMobileList/Workspace.cshtml", viewModel);
     }
@@ -94,15 +105,20 @@ public class AppleMobileListController(
         return PartialView("~/Views/AppleMobileList/Index.cshtml", viewModel);
     }
 
-    [HttpGet("{interfaceId:guid}/item-editor-panel/item/{itemId:guid?}")]
-    public IActionResult ListItemEditorPanel(Guid interfaceId, Guid? itemId)
+    [HttpGet("{interfaceId}/item-editor-panel/item/{itemId:guid?}")]
+    public IActionResult ListItemEditorPanel(string interfaceId, Guid? itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var editorItem = new AppleMobileListItemJsonDataModel();
 
         if (itemId.HasValue)
         {
             var contentNode = dbContext.GooeyInterfaces
-                .First(x => x.DocId.Equals(interfaceId));
+                .First(x => x.DocId.Equals(interfaceGuid));
             var data = contentNode.Config.Deserialize<AppleMobileListJsonDataModel>();
 
             var item = data.Items
@@ -117,19 +133,24 @@ public class AppleMobileListController(
         var viewModel = new AppleMobileInterfaceListEditorViewModel
         {
             WorkspaceId = WorkspaceId,
-            InterfaceId = interfaceId,
+            InterfaceId = interfaceGuid,
             Item = editorItem
         };
 
         return PartialView("~/Views/AppleMobileList/Partials/ListItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpPost("{interfaceId:guid}/item-editor-panel/item/{itemId:guid?}")]
-    public async Task<IActionResult> ListItemEditorPanelWithItem(Guid interfaceId, Guid? itemId, [FromForm] AppleMobileListEditorPanelFormModel formModel)
+    [HttpPost("{interfaceId}/item-editor-panel/item/{itemId:guid?}")]
+    public async Task<IActionResult> ListItemEditorPanelWithItem(string interfaceId, Guid? itemId, [FromForm] AppleMobileListEditorPanelFormModel formModel)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<AppleMobileListJsonDataModel>();
 
@@ -165,19 +186,24 @@ public class AppleMobileListController(
         var viewModel = new AppleMobileInterfaceListEditorViewModel
         {
             WorkspaceId = WorkspaceId,
-            InterfaceId = interfaceId,
+            InterfaceId = interfaceGuid,
             Item = item
         };
 
         return PartialView("~/Views/AppleMobileList/Partials/ListItemEditorPanel.cshtml", viewModel);
     }
 
-    [HttpDelete("{interfaceId:guid}/item/{itemId:guid}")]
-    public async Task<IActionResult> DeleteItem(Guid interfaceId, Guid itemId)
+    [HttpDelete("{interfaceId}/item/{itemId:guid}")]
+    public async Task<IActionResult> DeleteItem(string interfaceId, Guid itemId)
     {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<AppleMobileListJsonDataModel>();
         var item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId));

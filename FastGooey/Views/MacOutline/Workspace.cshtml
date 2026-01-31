@@ -1,5 +1,7 @@
 @model FastGooey.Models.ViewModels.Mac.MacOutlineWorkspaceViewModel
 @{
+    ViewBag.WorkspaceId = Model.WorkspaceId();
+    ViewBag.InterfaceId = Model.InterfaceId();
     var url = $"/Workspaces/{ViewBag.WorkspaceId}/interfaces/mac/outline/{ViewBag.InterfaceId}/editor-panel/{Model.Data.Identifier}/new";
 }
 
