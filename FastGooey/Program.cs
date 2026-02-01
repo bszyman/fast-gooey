@@ -6,9 +6,11 @@ using FastGooey.Services;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 using NodaTime;
+using Fido2NetLib;
+using Fido2NetLib.Serialization;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,12 +23,14 @@ builder.Services.AddControllersWithViews()
     {
         x.JsonSerializerOptions.AllowOutOfOrderMetadataProperties = true;
         x.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        x.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, FidoModelSerializerContext.Default);
     });
 
 builder.Services.AddCoreServices();
 builder.Services.AddCloudflareTurnstileServices();
 builder.Services.AddAppleMapKitServices();
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
             builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -34,6 +38,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     .UseSnakeCaseNamingConvention());
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.Configure<SmtpConfigurationModel>(builder.Configuration.GetSection("Smtp"));
+builder.Services.Configure<Fido2Configuration>(builder.Configuration.GetSection("Fido2"));
+builder.Services.AddSingleton<Fido2>(sp =>
+{
+    var config = sp.GetRequiredService<IOptions<Fido2Configuration>>().Value;
+    return new Fido2(config);
+});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
+      <PackageReference Include="Fido2" Version="4.0.0" />
       <PackageReference Include="Flurl.Http" Version="4.0.2" />
       <PackageReference Include="GeoTimeZone" Version="6.0.0" />
       <PackageReference Include="Handlebars.Net" Version="2.1.6" />

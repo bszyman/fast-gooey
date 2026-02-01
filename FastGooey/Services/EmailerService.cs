@@ -89,4 +89,32 @@ public class EmailerService : IEmailSender
             messageContents
         );
     }
+
+    public async Task SendMagicLinkEmail(ApplicationUser user, string magicLink)
+    {
+        var name = $"{user.FirstName} {user.LastName}".Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = user.Email ?? "there";
+        }
+
+        const string filePath = "Views/EmailNotifications/magicLink.handlebars";
+        var fileContents = await System.IO.File.ReadAllTextAsync(filePath);
+
+        var template = Handlebars.Compile(fileContents);
+
+        var data = new
+        {
+            name,
+            magicLink
+        };
+
+        var messageContents = template(data);
+
+        await SendEmailAsync(
+            user.Email,
+            "Your FastGooey sign-in link",
+            messageContents
+        );
+    }
 }

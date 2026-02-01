@@ -18,24 +18,67 @@
         
         <div id="mainPanel" class="flex flex-row gap-4 mx-auto my-4">
             <div id="loginPanel">
-                <form asp-action="Login" asp-controller="Home" method="post">
-                    <p class="mb-2 text-white font-semibold text-shadow-md">Sign in with your email address and password.</p>
-        
+                <div class="mb-4" id="passkeyLoginPanel">
+                    <p class="mb-2 text-white font-semibold text-shadow-md">Existing users, sign in using your passkey.</p>
+                    
                     <div class="flex flex-row gap-4 w-2xl">
-                        <input asp-for="Email" type="email" placeholder="app@fastgooey.com" aria-label="Email Address" class="flex-6" />
-                        <input asp-for="Password" type="password" placeholder="Password" aria-label="Password" class="flex-6" />
-                        <button type="submit" class="flex-2 bg-gradient-to-b from-nuclearGreenLighter to-nuclearGreenDarker border border-white/10 shadow-md">Log In</button>
+                        <input asp-for="Email" type="email" placeholder="app@fastgooey.com" aria-label="Email Address" class="flex-6" autocomplete="email webauthn" />
+                        <button type="button"
+                                class="font-mont text-white font-semibold py-2 px-4 rounded-lg cursor-pointer bg-gradient-to-b from-nuclearGreenLighter to-nuclearGreenDarker border border-white/10 shadow-md flex gap-2 items-center justify-center"
+                                data-passkey-login-url="@Url.Action("BeginPasskeyLogin", "Auth")"
+                                data-passkey-login-complete-url="@Url.Action("CompletePasskeyLogin", "Auth")"
+                                data-passkey-email-input-id="Email">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+                            </svg>
+                            Use a passkey
+                        </button>
                     </div>
-        
-                    <partial name="~/Views/Partials/cloudflareTurnstileFormEmbed.cshtml" />
-                </form>
+                    
+                    <p class="text-white text-sm mt-2 text-center">
+                        If you don't have access to your passkey, you can still 
+                        <button
+                            onclick="document.getElementById('magicLinkLoginPanel').classList.remove('hidden'); document.getElementById('passkeyLoginPanel').classList.add('hidden');"
+                            type="button" class="underline cursor-pointer">
+                            log in with a magic link
+                        </button>.
+                    </p>
+                </div>
+
+                <div id="magicLinkLoginPanel" class="mb-4 hidden">
+                    <form asp-action="RequestMagicLink" asp-controller="Auth" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="redirectTo" value="@Url.Action("Index", "Home")"/>
+                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]"/>
+                        <p class="mb-2 text-white font-semibold text-shadow-md">Log in with a single-use magic link.</p>
+                        <div class="flex flex-row gap-4 w-2xl">
+                            <input name="Email" type="email" placeholder="Email address" aria-label="Email Address" class="flex-6" />
+                            <button type="submit" class="font-mont text-white font-semibold py-2 px-4 rounded-lg cursor-pointer flex-2 bg-gradient-to-b from-nuclearGreenLighter to-nuclearGreenDarker border border-white/10 shadow-md flex gap-2 items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                </svg>
+                                Email link
+                            </button>
+                        </div>
+                    
+                        <p class="text-white text-sm mt-2 text-center">
+                            If you have a passkey set up, you can log in without needing to open your email. 
+                            <button
+                                onclick="document.getElementById('passkeyLoginPanel').classList.remove('hidden'); document.getElementById('magicLinkLoginPanel').classList.add('hidden');"
+                                type="button" class="underline cursor-pointer">
+                                Login with Passkey
+                            </button>
+                        </p>
+                        <partial name="~/Views/Partials/cloudflareTurnstileFormEmbed.cshtml" />
+                    </form>
+                </div>
             </div>
         </div>
         
         <div class="mx-auto w-2xl bg-stone-100/35 border border-stone-100/40 text-white p-4 rounded-lg shadow-md bg-blend-color-dodge">
             <h2 class="font-mont font-semibold text-lg mb-2">New to FastGooey?</h2>
             <p>
-                Create an account and discover the power of hypermedia.
+                Create an account and start integrating hypermedia into your applications.
                 <a href="/SignUp">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 inline-block align-middle">
                         <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clip-rule="evenodd" />
@@ -52,4 +95,24 @@
         <h3 class="mb-2 font-semibold">We ran into the following errors while attempting to log you in:</h3>
         <div asp-validation-summary="All"></div>
     </div>
+}
+
+@if (TempData["MagicLinkSent"] is not null)
+{
+    <div class="rounded-2xl fixed bottom-0 m-6 p-6 bg-emerald-200 shadow max-w-lg text-blueDark">
+        <h3 class="mb-2 font-semibold">Check your email</h3>
+        <p>If an account exists for that address, a sign-in link is on the way.</p>
+    </div>
+}
+
+@if (TempData["MagicLinkInvalid"] is not null)
+{
+    <div class="rounded-2xl fixed bottom-0 m-6 p-6 bg-rose-400 shadow max-w-lg">
+        <h3 class="mb-2 font-semibold">That link is no longer valid</h3>
+        <p>Please request a new magic link and try again.</p>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/passkeys.js"></script>
 }

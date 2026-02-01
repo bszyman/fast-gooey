@@ -36,9 +36,55 @@
                 <p class="font-semibold">Authentication</p>
             </div>
             <div class="py-2 px-4">
-                <div class="mb-4">
-                    <p class="block text-sm font-medium text-gray-700">Authentication Method</p>
-                    <p>Email</p>
+                <div class="mb-6">
+                    <p class="block text-sm font-medium text-gray-700">Passkeys</p>
+                    <p class="text-sm text-gray-500">Use a passkey for quick, phishing-resistant sign-ins.</p>
+                    <div class="mt-3 flex gap-2">
+                        <input id="passkeyDisplayName"
+                               type="text"
+                               placeholder="e.g. MacBook Pro"
+                               autocomplete="webauthn"
+                               class="flex-1"/>
+                        <button type="button"
+                                class="bg-blueMid text-white font-semibold rounded px-4 py-2 text-sm"
+                                data-passkey-register-url="@Url.Action("BeginPasskeyRegistration", "Auth")"
+                                data-passkey-register-complete-url="@Url.Action("CompletePasskeyRegistration", "Auth")"
+                                data-passkey-display-name-id="passkeyDisplayName">
+                            Add passkey
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    @if (Model.Passkeys.Count == 0)
+                    {
+                        <p class="text-sm text-gray-500">
+                            No passkeys registered yet.
+                        </p>
+                    }
+                    else
+                    {
+                        foreach (var passkey in Model.Passkeys)
+                        {
+                            <div class="flex items-center justify-between rounded border border-zinc-200 px-3 py-2">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-700">
+                                        @(string.IsNullOrWhiteSpace(passkey.DisplayName) ? "Passkey" : passkey.DisplayName)
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        Added @passkey.CreatedAt.InUtc().ToString("MMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                                    </p>
+                                </div>
+                                <button type="button"
+                                        hx-delete="@Url.Action("DeletePasskey", "AccountManagement", new { workspaceId = ViewData["WorkspaceId"], passkeyId = passkey.Id })"
+                                        hx-confirm="Are you sure you want to remove this passkey?"
+                                        hx-target="#workspaceEditor"
+                                        class="text-sm text-red-600">
+                                    Remove
+                                </button>
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div>

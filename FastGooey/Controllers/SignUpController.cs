@@ -1,14 +1,18 @@
+using FastGooey.Database;
 using FastGooey.Models;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers;
 
 public class SignUpController(
     SignInManager<ApplicationUser> signInManager,
     UserManager<ApplicationUser> userManager,
+    ApplicationDbContext dbContext,
     ITurnstileValidatorService turnstileValidator,
     EmailerService emailSender) :
     Controller
@@ -43,10 +47,11 @@ public class SignUpController(
             UserName = model.Email,
             Email = model.Email,
             FirstName = model.FirstName,
-            LastName = model.LastName
+            LastName = model.LastName,
+            PasskeyRequired = true
         };
 
-        var result = await userManager.CreateAsync(user, model.Password);
+        var result = await userManager.CreateAsync(user);
 
         if (result.Succeeded)
         {
@@ -62,14 +67,56 @@ public class SignUpController(
 
             await emailSender.SendVerificationEmail(user, confirmationLink);
 
-            return string.IsNullOrWhiteSpace(returnUrl) ?
-                RedirectToAction("Index", "WorkspaceSelector") :
-                LocalRedirect(returnUrl);
+            return RedirectToAction(nameof(Complete), new { returnUrl });
         }
 
         foreach (var error in result.Errors)
             ModelState.AddModelError(string.Empty, error.Description);
 
         return View(model);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SkipPasskey(string? returnUrl = null)
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser is null)
+            return RedirectToAction(nameof(Index));
+
+        currentUser.PasskeyRequired = false;
+        await userManager.UpdateAsync(currentUser);
+
+        return string.IsNullOrWhiteSpace(returnUrl) ?
+            RedirectToAction("Index", "WorkspaceSelector") :
+            LocalRedirect(returnUrl);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> Complete(string? returnUrl = null)
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser is null)
+            return RedirectToAction(nameof(Index));
+
+        var hasPasskey = await dbContext.PasskeyCredentials
+            .AnyAsync(p => p.UserId == currentUser.Id);
+
+        if (hasPasskey)
+        {
+            return string.IsNullOrWhiteSpace(returnUrl) ?
+                RedirectToAction("Index", "WorkspaceSelector") :
+                LocalRedirect(returnUrl);
+        }
+
+        var viewModel = new SignUpCompleteViewModel
+        {
+            Email = currentUser.Email ?? string.Empty,
+            ReturnUrl = returnUrl ?? string.Empty
+        };
+
+        return View(viewModel);
     }
 }

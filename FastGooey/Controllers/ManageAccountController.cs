@@ -7,6 +7,7 @@ using FastGooey.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers;
 
@@ -68,11 +69,35 @@ public class AccountManagementController(
         return PartialView("~/Views/AccountManagement/Workspaces/AccountManagement.cshtml", viewModel);
     }
 
+    [HttpPost("Passkeys/{passkeyId:guid}/Delete")]
+    public async Task<IActionResult> DeletePasskey(Guid passkeyId)
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser is null)
+            return Unauthorized();
+
+        var passkey = await dbContext.PasskeyCredentials
+            .FirstOrDefaultAsync(p => p.Id == passkeyId && p.UserId == currentUser.Id);
+
+        if (passkey is null)
+            return NotFound();
+
+        dbContext.PasskeyCredentials.Remove(passkey);
+        await dbContext.SaveChangesAsync();
+
+        var viewModel = CreateViewModel(currentUser);
+        return PartialView("~/Views/AccountManagement/Workspaces/AccountManagement.cshtml", viewModel);
+    }
+
     private ManageAccountViewModel CreateViewModel(ApplicationUser user)
     {
         return new ManageAccountViewModel
         {
             User = user,
+            Passkeys = dbContext.PasskeyCredentials
+                .Where(p => p.UserId == user.Id)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToList(),
             FormModel = new AccountManagementFormModel
             {
                 FirstName = user.FirstName,

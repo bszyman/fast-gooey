@@ -6,4 +6,5 @@ public class ManageAccountViewModel
 {
     public ApplicationUser? User { get; set; }
     public AccountManagementFormModel? FormModel { get; set; }
+    public IReadOnlyList<PasskeyCredential> Passkeys { get; set; } = Array.Empty<PasskeyCredential>();
 }

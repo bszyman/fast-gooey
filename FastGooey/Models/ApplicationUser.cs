@@ -33,6 +33,11 @@ public class ApplicationUser : IdentityUser
 
     public SubscriptionLevel SubscriptionLevel { get; set; } = SubscriptionLevel.Explorer;
 
+    public ICollection<PasskeyCredential> PasskeyCredentials { get; set; } = new List<PasskeyCredential>();
+    public ICollection<MagicLinkToken> MagicLinkTokens { get; set; } = new List<MagicLinkToken>();
+
+    public bool PasskeyRequired { get; set; }
+
     public Instant CreatedAt { get; set; }
     public Instant UpdatedAt { get; set; }
 }

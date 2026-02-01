@@ -28,6 +28,20 @@ public class WorkspaceSelectorController(
             return Unauthorized();
         }
 
+        if (currentUser.PasskeyRequired)
+        {
+            var hasPasskey = await dbContext.PasskeyCredentials
+                .AnyAsync(p => p.UserId == currentUser.Id);
+            if (!hasPasskey)
+            {
+                return RedirectToAction(
+                    "Complete",
+                    "SignUp",
+                    new { returnUrl = Url.Action("Index", "WorkspaceSelector") }
+                );
+            }
+        }
+
         var workspaces = dbContext.Workspaces
             .Where(x => x.Users.Contains(currentUser))
             .ToList();

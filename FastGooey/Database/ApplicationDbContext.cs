@@ -11,6 +11,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Workspace> Workspaces { get; set; } = null!;
     public DbSet<GooeyInterface> GooeyInterfaces { get; set; } = null!;
     public DbSet<KeyValueStore> KeyValueStores { get; set; } = null!;
+    public DbSet<PasskeyCredential> PasskeyCredentials { get; set; } = null!;
+    public DbSet<MagicLinkToken> MagicLinkTokens { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,6 +31,26 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .WithMany(w => w.Users)
             .HasForeignKey(u => u.WorkspaceId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PasskeyCredential>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.PasskeyCredentials)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PasskeyCredential>()
+            .HasIndex(p => p.DescriptorId)
+            .IsUnique();
+
+        modelBuilder.Entity<MagicLinkToken>()
+            .HasOne(t => t.User)
+            .WithMany(u => u.MagicLinkTokens)
+            .HasForeignKey(t => t.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MagicLinkToken>()
+            .HasIndex(t => t.TokenHash)
+            .IsUnique();
 
         modelBuilder.Entity<GooeyInterface>()
             .HasOne(g => g.Workspace)
