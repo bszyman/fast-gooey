@@ -20,21 +20,11 @@ public class MacOutlineController(
     ILogger<MacOutlineController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
-    BaseStudioController(keyValueService, dbContext)
+    BaseInterfaceController(keyValueService, dbContext)
 {
     private async Task<MacOutlineWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
-        var contentNode = await dbContext.GooeyInterfaces
-            .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
-
-        var viewModel = new MacOutlineWorkspaceViewModel
-        {
-            ContentNode = contentNode,
-            Data = contentNode.Config.Deserialize<MacOutlineJsonDataModel>()
-        };
-
-        return viewModel;
+        return await GetInterfaceViewModelAsync<MacOutlineWorkspaceViewModel, MacOutlineJsonDataModel>(interfaceId);
     }
 
     [HttpPost("create-interface")]

@@ -21,21 +21,11 @@ public class MacTableController(
     ILogger<MacTableController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
-    BaseStudioController(keyValueService, dbContext)
+    BaseInterfaceController(keyValueService, dbContext)
 {
     private async Task<MacInterfaceTableWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
-        var contentNode = await dbContext.GooeyInterfaces
-            .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
-
-        var viewModel = new MacInterfaceTableWorkspaceViewModel
-        {
-            ContentNode = contentNode,
-            Data = contentNode.Config.Deserialize<MacTableJsonDataModel>()
-        };
-
-        return viewModel;
+        return await GetInterfaceViewModelAsync<MacInterfaceTableWorkspaceViewModel, MacTableJsonDataModel>(interfaceId);
     }
 
     private async Task<MacInterfaceTableStructureWorkspaceViewModel> WorkspaceStructureViewModelForInterfaceId(

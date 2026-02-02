@@ -6,11 +6,11 @@
         @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
         {
             Url = $"/Workspaces/{Model.WorkspaceId()}/UpdateTitle/{Model.InterfaceId()}",
-            Title = Model.Workspace!.ContentNode!.Name
+            Title = Model.WorkspaceViewModel!.ContentNode!.Name
         })
     </div>
     <button 
-        hx-get="/Workspaces/@Model.Workspace.ContentNode.Workspace.PublicId/interfaces/mac/content/workspace/@Model.Workspace.ContentNode.DocId.ToBase64Url()"
+        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/interfaces/mac/content/workspace/@Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url()"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton" onclick="changeSection(this)">
@@ -26,5 +26,5 @@
 </div>
 
 <div id="workspaceEditor" class="mt-30 mb-24">
-    @await Html.PartialAsync("Workspace.cshtml", Model.Workspace)
+    @await Html.PartialAsync("Workspace.cshtml", Model.WorkspaceViewModel)
 </div>

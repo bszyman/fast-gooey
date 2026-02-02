@@ -21,22 +21,11 @@ public class AppleMobileContentController(
     ILogger<AppleMobileContentController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
-    BaseStudioController(keyValueService, dbContext)
+    ContentInterfaceControllerBase<AppleMobileContentJsonDataModel, AppleMobileContentItemJsonDataModel, AppleMobileContentWorkspaceViewModel, AppleMobileContentWorkspaceFormModel>(keyValueService, dbContext)
 {
-    private async Task<AppleMobileContentWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
-    {
-        var contentNode = await dbContext.GooeyInterfaces
-            .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
-
-        var viewModel = new AppleMobileContentWorkspaceViewModel
-        {
-            ContentNode = contentNode,
-            Data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>()
-        };
-
-        return viewModel;
-    }
+    protected override string Platform => "AppleMobile";
+    protected override string ViewType => "Content";
+    protected override string BaseViewPath => "~/Views/AppleMobileContent";
 
     [HttpGet("{interfaceId}")]
     public async Task<IActionResult> Index(Guid workspaceId, string interfaceId)
@@ -56,40 +45,6 @@ public class AppleMobileContentController(
         return View(viewModel);
     }
 
-    [HttpGet("workspace/{interfaceId}")]
-    public async Task<IActionResult> Workspace(Guid workspaceId, string interfaceId)
-    {
-        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
-        {
-            return NotFound();
-        }
-
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
-
-        return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
-    }
-
-    [HttpPost("workspace/{interfaceId}")]
-    public async Task<IActionResult> SaveWorkspace(string interfaceId, [FromForm] AppleMobileContentWorkspaceFormModel formModel)
-    {
-        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
-        {
-            return NotFound();
-        }
-
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
-        var data = viewModel.Data;
-
-        data.HeaderTitle = formModel.HeaderTitle;
-        data.HeaderBackgroundImage = formModel.HeaderBackgroundImage;
-
-        viewModel.ContentNode.Config = JsonSerializer.SerializeToDocument(data);
-
-        await dbContext.SaveChangesAsync();
-
-        return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
-    }
-
     [HttpPost("create-interface")]
     public async Task<IActionResult> CreateInterface()
     {
@@ -105,9 +60,9 @@ public class AppleMobileContentController(
         {
             WorkspaceId = workspace.Id,
             Workspace = workspace,
-            Platform = "AppleMobile",
-            ViewType = "Content",
-            Name = "New Content Interface",
+            Platform = Platform,
+            ViewType = ViewType,
+            Name = $"New {ViewType} Interface",
             Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions)
         };
 
@@ -125,7 +80,7 @@ public class AppleMobileContentController(
 
         Response.Headers.Append("HX-Trigger", "refreshNavigation");
 
-        return PartialView("~/Views/AppleMobileContent/Index.cshtml", viewModel);
+        return PartialView($"{BaseViewPath}/Index.cshtml", viewModel);
     }
 
     [HttpGet("{interfaceId}/content-type-selector-panel")]
@@ -136,90 +91,13 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        // TODO: probably set up a AppleMobileContentJsonDataModel just to initialize before attempting to add child
-        // content items, probably should do this in CreateInterface()
-
         var viewModel = new AppleMobileContentTypeSelectorPanelViewModel
         {
             WorkspaceId = workspaceId,
             InterfaceId = interfaceGuid
         };
 
-        return PartialView("~/Views/AppleMobileContent/Partials/AppleMobileContentTypeSelectorPanel.cshtml", viewModel);
-    }
-
-    private async Task<IActionResult> SaveContentItem<TItem, TForm>(
-        Guid interfaceId,
-        Guid? itemId,
-        TForm form,
-        string contentType,
-        Action<TItem, TForm> updateItem)
-        where TItem : AppleMobileContentItemJsonDataModel, new()
-    {
-        var contentNode = await dbContext.GooeyInterfaces
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
-
-        var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
-
-        if (ModelState.IsValid)
-        {
-            TItem? item = null;
-
-            if (itemId.HasValue)
-            {
-                item = data.Items
-                    .OfType<TItem>()
-                    .FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
-            }
-
-            if (item == null)
-            {
-                item = new TItem
-                {
-                    ContentType = contentType,
-                    Identifier = Guid.NewGuid()
-                };
-                data.Items = data.Items.Append(item).ToList();
-            }
-
-            updateItem(item, form);
-
-            contentNode.Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions);
-            await dbContext.SaveChangesAsync();
-
-            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
-        }
-
-        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceId);
-        return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
-    }
-
-    private async Task<IActionResult> LoadConfigurationPanel<TItem, TViewModel>(
-        Guid interfaceId,
-        Guid? itemId,
-        string viewPath,
-        Func<TViewModel> createViewModel,
-        Action<TViewModel, TItem> setContent)
-        where TItem : AppleMobileContentItemJsonDataModel, new()
-        where TViewModel : class
-    {
-        var contentItem = new TItem();
-
-        if (itemId.HasValue)
-        {
-            var contentNode = await dbContext.GooeyInterfaces
-                .FirstAsync(x => x.DocId.Equals(interfaceId));
-
-            var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
-            contentItem = data.Items
-                .OfType<TItem>()
-                .FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
-        }
-
-        var viewModel = createViewModel();
-        setContent(viewModel, contentItem);
-
-        return PartialView(viewPath, viewModel);
+        return PartialView($"{BaseViewPath}/Partials/AppleMobileContentTypeSelectorPanel.cshtml", viewModel);
     }
 
     [HttpGet("{interfaceId}/headline-config-panel/{itemId:guid?}")]
@@ -230,10 +108,10 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        return await LoadConfigurationPanel<HeadlineContentItem, AppleMobileContentHeadlineConfigurationPanelViewModel>(
+        return await LoadConfigurationPanelInternal<HeadlineContentItem, AppleMobileContentHeadlineConfigurationPanelViewModel>(
             interfaceGuid,
             itemId,
-            "~/Views/AppleMobileContent/Partials/ContentHeadlineConfigurationPanel.cshtml",
+            $"{BaseViewPath}/Partials/ContentHeadlineConfigurationPanel.cshtml",
             () => new AppleMobileContentHeadlineConfigurationPanelViewModel
             {
                 WorkspaceId = WorkspaceId,
@@ -251,7 +129,7 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        return await SaveContentItem<HeadlineContentItem, HeadlineContentFormModel>(
+        return await SaveContentItemInternal<HeadlineContentItem, HeadlineContentFormModel>(
             interfaceGuid,
             itemId,
             form,
@@ -268,10 +146,10 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        return await LoadConfigurationPanel<LinkContentItem, AppleMobileLinkConfigurationPanelViewModel>(
+        return await LoadConfigurationPanelInternal<LinkContentItem, AppleMobileLinkConfigurationPanelViewModel>(
             interfaceGuid,
             itemId,
-            "~/Views/AppleMobileContent/Partials/ContentLinkConfigurationPanel.cshtml",
+            $"{BaseViewPath}/Partials/ContentLinkConfigurationPanel.cshtml",
             () => new AppleMobileLinkConfigurationPanelViewModel
             {
                 WorkspaceId = WorkspaceId,
@@ -289,7 +167,7 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        return await SaveContentItem<LinkContentItem, LinkContentFormModel>(
+        return await SaveContentItemInternal<LinkContentItem, LinkContentFormModel>(
             interfaceGuid,
             itemId,
             form,
@@ -310,10 +188,10 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        return await LoadConfigurationPanel<TextContentItem, AppleMobileTextConfigurationPanelViewModel>(
+        return await LoadConfigurationPanelInternal<TextContentItem, AppleMobileTextConfigurationPanelViewModel>(
             interfaceGuid,
             itemId,
-            "~/Views/AppleMobileContent/Partials/ContentTextConfigurationPanel.cshtml",
+            $"{BaseViewPath}/Partials/ContentTextConfigurationPanel.cshtml",
             () => new AppleMobileTextConfigurationPanelViewModel
             {
                 WorkspaceId = WorkspaceId,
@@ -331,7 +209,7 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        return await SaveContentItem<TextContentItem, TextContentFormModel>(
+        return await SaveContentItemInternal<TextContentItem, TextContentFormModel>(
             interfaceGuid,
             itemId,
             form,
@@ -348,10 +226,10 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        return await LoadConfigurationPanel<ImageContentItem, AppleMobileImageConfigurationPanelViewModel>(
+        return await LoadConfigurationPanelInternal<ImageContentItem, AppleMobileImageConfigurationPanelViewModel>(
             interfaceGuid,
             itemId,
-            "~/Views/AppleMobileContent/Partials/ContentImageConfigurationPanel.cshtml",
+            $"{BaseViewPath}/Partials/ContentImageConfigurationPanel.cshtml",
             () => new AppleMobileImageConfigurationPanelViewModel
             {
                 WorkspaceId = WorkspaceId,
@@ -369,7 +247,7 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
-        return await SaveContentItem<ImageContentItem, ImageContentFormModel>(
+        return await SaveContentItemInternal<ImageContentItem, ImageContentFormModel>(
             interfaceGuid,
             itemId,
             form,
@@ -382,76 +260,45 @@ public class AppleMobileContentController(
         );
     }
 
-    [HttpDelete("{interfaceId}/item/{itemId:guid}")]
-    public async Task<IActionResult> DeleteItem(Guid workspaceId, string interfaceId, Guid itemId)
+    [HttpGet("{interfaceId}/video-config-panel/{itemId:guid?}")]
+    public async Task<IActionResult> VideoConfigurationPanel(string interfaceId, Guid? itemId)
     {
         if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
         {
             return NotFound();
         }
 
-        var contentNode = await dbContext.GooeyInterfaces
-            .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
+        return await LoadConfigurationPanelInternal<VideoContentItem, AppleMobileVideoConfigurationPanelViewModel>(
+            interfaceGuid,
+            itemId,
+            $"{BaseViewPath}/Partials/ContentVideoConfigurationPanel.cshtml",
+            () => new AppleMobileVideoConfigurationPanelViewModel
+            {
+                WorkspaceId = WorkspaceId,
+                InterfaceId = interfaceGuid,
+            },
+            (vm, content) => vm.Content = content
+        );
+    }
 
-        var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
-        var item = data.Items
-            .FirstOrDefault(x => x.Identifier.Equals(itemId));
-
-        if (item == null)
+    [HttpPost("{interfaceId}/video-item/{itemId:guid?}")]
+    public async Task<IActionResult> SaveVideo(Guid workspaceId, string interfaceId, Guid? itemId, VideoContentFormModel form)
+    {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
         {
             return NotFound();
         }
 
-        data.Items.Remove(item);
-
-        contentNode.Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions);
-        await dbContext.SaveChangesAsync();
-
-        var viewModel = new AppleMobileContentWorkspaceViewModel
-        {
-            ContentNode = contentNode,
-            Data = data
-        };
-
-        Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
-
-        return PartialView("~/Views/AppleMobileContent/Workspace.cshtml", viewModel);
+        return await SaveContentItemInternal<VideoContentItem, VideoContentFormModel>(
+            interfaceGuid,
+            itemId,
+            form,
+            "video",
+            (item, f) =>
+            {
+                item.Url = f.Url;
+                item.ThumbnailUrl = f.ThumbnailUrl;
+            }
+        );
     }
-
-    // [HttpGet("{interfaceId}/video-config-panel/{itemId:guid?}")]
-    // public async Task<IActionResult> VideoConfigurationPanel(Guid interfaceId, Guid? itemId)
-    // {
-    //     return await LoadConfigurationPanel<VideoContentItem, AppleMobileVideoConfigurationPanelViewModel>(
-    //         interfaceId,
-    //         itemId,
-    //         "~/Views/AppleMobileContent/Partials/ContentVideoConfigurationPanel.cshtml",
-    //         () => new AppleMobileVideoConfigurationPanelViewModel
-    //         {
-    //             WorkspaceId = WorkspaceId,
-    //             InterfaceId = interfaceId,
-    //         },
-    //         (vm, content) => vm.Content = content
-    //     );
-    // }
-    //
-    // [HttpPost("{interfaceId}/video-item/{itemId:guid?}")]
-    // public async Task<IActionResult> SaveVideo(Guid workspaceId, Guid interfaceId, Guid? itemId, VideoContentFormModel form)
-    // {
-    //     return await SaveContentItem<VideoContentItem, VideoContentFormModel>(
-    //         interfaceId,
-    //         itemId,
-    //         form,
-    //         "video",
-    //         (item, f) =>
-    //         {
-    //             item.Url = f.Url;
-    //             item.ThumbnailUrl = f.ThumbnailUrl;
-    //         }
-    //     );
-    // }
-
-    // unfurl url
-    // inline list
-    // any widget
 }

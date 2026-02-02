@@ -1,17 +1,17 @@
+using FastGooey.Models.Common;
 using FastGooey.Utils;
+
 namespace FastGooey.Models.ViewModels.Mac;
 
-public class MacContentViewModel
+public class MacContentViewModel : ContentViewModelBase<MacContentWorkspaceViewModel>
 {
-    public MacContentWorkspaceViewModel? Workspace { get; set; }
-
-    public string WorkspaceId()
+    public override string WorkspaceId()
     {
-        return Workspace!.ContentNode!.Workspace.PublicId.ToString();
+        return WorkspaceViewModel!.ContentNode!.Workspace.PublicId.ToString();
     }
 
-    public string InterfaceId()
+    public override string InterfaceId()
     {
-        return Workspace!.ContentNode!.DocId.ToBase64Url();
+        return WorkspaceViewModel!.ContentNode!.DocId.ToBase64Url();
     }
 }

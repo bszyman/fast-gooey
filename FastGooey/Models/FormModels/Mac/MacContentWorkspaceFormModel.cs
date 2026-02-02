@@ -1,7 +1,7 @@
+using FastGooey.Models.Common;
+
 namespace FastGooey.Models.FormModels.Mac;
 
-public class MacContentWorkspaceFormModel
+public class MacContentWorkspaceFormModel : ContentWorkspaceFormModelBase
 {
-    public string HeaderTitle { get; set; } = string.Empty;
-    public string HeaderBackgroundImage { get; set; } = string.Empty;
 }

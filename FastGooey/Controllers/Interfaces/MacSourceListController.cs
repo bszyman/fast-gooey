@@ -20,21 +20,11 @@ public class MacSourceListController(
     ILogger<MacSourceListController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
-    BaseStudioController(keyValueService, dbContext)
+    BaseInterfaceController(keyValueService, dbContext)
 {
     private async Task<MacInterfaceSourceListWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
-        var contentNode = await dbContext.GooeyInterfaces
-            .Include(x => x.Workspace)
-            .FirstAsync(x => x.DocId.Equals(interfaceId));
-
-        var viewModel = new MacInterfaceSourceListWorkspaceViewModel
-        {
-            ContentNode = contentNode,
-            Data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>()
-        };
-
-        return viewModel;
+        return await GetInterfaceViewModelAsync<MacInterfaceSourceListWorkspaceViewModel, MacSourceListJsonDataModel>(interfaceId);
     }
 
     [HttpPost("create-interface")]

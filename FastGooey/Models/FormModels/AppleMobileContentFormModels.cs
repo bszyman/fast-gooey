@@ -1,39 +1,31 @@
+using FastGooey.Models.Common;
+
 namespace FastGooey.Models.FormModels;
 
-public class HeadlineContentFormModel
+public class HeadlineContentFormModel : ContentItemBase
 {
-    public string ContentType { get; set; } = string.Empty;
-    public Guid Identifier { get; set; } = Guid.Empty;
     public string Headline { get; set; } = string.Empty;
 }
 
-public class LinkContentFormModel
+public class LinkContentFormModel : ContentItemBase
 {
-    public string ContentType { get; set; } = string.Empty;
-    public Guid Identifier { get; set; } = Guid.Empty;
     public string Url { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
 }
 
-public class TextContentFormModel
+public class TextContentFormModel : ContentItemBase
 {
-    public string ContentType { get; set; } = string.Empty;
-    public Guid Identifier { get; set; } = Guid.Empty;
     public string Text { get; set; } = string.Empty;
 }
 
-public class ImageContentFormModel
+public class ImageContentFormModel : ContentItemBase
 {
-    public string ContentType { get; set; } = string.Empty;
-    public Guid Identifier { get; set; } = Guid.Empty;
     public string Url { get; set; } = string.Empty;
     public string AltText { get; set; } = string.Empty;
 }
 
-public class VideoContentFormModel
+public class VideoContentFormModel : ContentItemBase
 {
-    public string ContentType { get; set; } = string.Empty;
-    public Guid Identifier { get; set; } = Guid.Empty;
     public string Url { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
 }

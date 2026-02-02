@@ -1,9 +1,10 @@
 
 using System.Text.Json.Serialization;
+using FastGooey.Models.Common;
 
 namespace FastGooey.Models.JsonDataModels.Mac;
 
-public class MacContentJsonDataModel
+public class MacContentJsonDataModel : IContentDataModel<MacContentItemJsonDataModel>
 {
     public string HeaderTitle { get; set; } = string.Empty;
     public string HeaderBackgroundImage { get; set; } = string.Empty;
@@ -16,10 +17,8 @@ public class MacContentJsonDataModel
 [JsonDerivedType(typeof(TextContentItem), "text")]
 [JsonDerivedType(typeof(ImageContentItem), "image")]
 [JsonDerivedType(typeof(VideoContentItem), "video")]
-public abstract class MacContentItemJsonDataModel
+public class MacContentItemJsonDataModel : ContentItemBase
 {
-    public string ContentType { get; set; } = string.Empty;
-    public Guid Identifier { get; set; } = Guid.Empty;
 }
 
 public class HeadlineContentItem : MacContentItemJsonDataModel

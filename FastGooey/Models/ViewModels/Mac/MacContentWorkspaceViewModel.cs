@@ -1,20 +1,8 @@
-using FastGooey.Utils;
+using FastGooey.Models.Common;
 using FastGooey.Models.JsonDataModels.Mac;
 
 namespace FastGooey.Models.ViewModels.Mac;
 
-public class MacContentWorkspaceViewModel
+public class MacContentWorkspaceViewModel : ContentWorkspaceViewModelBase<MacContentJsonDataModel>
 {
-    public GooeyInterface? ContentNode { get; set; }
-    public MacContentJsonDataModel Data { get; set; } = new();
-
-    public string WorkspaceId()
-    {
-        return ContentNode!.Workspace.PublicId.ToString();
-    }
-
-    public string InterfaceId()
-    {
-        return ContentNode!.DocId.ToBase64Url();
-    }
 }
