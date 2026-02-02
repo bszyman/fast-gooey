@@ -57,4 +57,14 @@ public class GuidShortIdTests
 
         Assert.Equal(string.Empty, shortId);
     }
+
+    [Theory]
+    [InlineData("!!!!")] // Invalid Base64 characters
+    [InlineData("abc")]  // Invalid length for Base64Url (must be multiple of 4 or 2/3 with padding)
+    public void TryParse_HandlesInvalidBase64(string invalid)
+    {
+        var result = GuidShortId.TryParse(invalid, out var parsed);
+        Assert.False(result);
+        Assert.Equal(Guid.Empty, parsed);
+    }
 }

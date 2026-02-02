@@ -85,4 +85,23 @@ public class ApplicationDbContextTests
         Assert.Equal(clock.CurrentInstant, gooeyInterface.CreatedAt);
         Assert.Equal(clock.CurrentInstant, gooeyInterface.UpdatedAt);
     }
+
+    [Fact]
+    public void UpdateTimestamps_IgnoresUnsupportedEntities()
+    {
+        var clock = new TestClock(Instant.FromUtc(2024, 2, 1, 8, 15));
+        using var context = TestDbContextFactory.Create(clock);
+
+        var keyValue = new KeyValueStore
+        {
+            Key = "TestKey",
+            Value = "TestValue"
+        };
+
+        context.KeyValueStores.Add(keyValue);
+        
+        // This should not throw even though KeyValueStore doesn't have timestamps
+        var exception = Record.Exception(() => context.SaveChanges());
+        Assert.Null(exception);
+    }
 }
