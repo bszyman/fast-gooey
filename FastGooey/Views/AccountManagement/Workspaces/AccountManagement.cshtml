@@ -1,13 +1,14 @@
 @model FastGooey.Models.ViewModels.ManageAccountViewModel
 
 <form method="post"
-    hx-post="/Workspaces/@ViewData["WorkspaceId"]/AccountManagement/Workspace/Save"
-    hx-target="#workspaceEditor">
+      hx-post="/Workspaces/@ViewData["WorkspaceId"]/AccountManagement/Workspace/Save"
+      hx-trigger="blur from:#FormModel_FirstName, keyup[key=='Enter'] changed delay:500ms from:#FormModel_FirstName, blur from:#FormModel_LastName, keyup[key=='Enter'] changed delay:500ms from:#FormModel_LastName"
+      hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()
-    <div id="editor" class="mx-auto max-w-3xl">
+    <div id="editor" class="mx-auto max-w-3xl mt-8">
         <div class="formGroup formGroupAddBackground mb-8">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
-                <p class="font-semibold">My Details</p>
+                <p class="font-semibold text-sm">My Details</p>
             </div>
             <div class="py-2 px-4">
                 <div class="mb-4">
@@ -33,7 +34,7 @@
             
         <div class="formGroup formGroupAddBackground mb-8">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4 mb-2">
-                <p class="font-semibold">Authentication</p>
+                <p class="font-semibold text-sm">Authentication</p>
             </div>
             <div class="py-2 px-4">
                 <div class="mb-6">
@@ -91,7 +92,7 @@
                 
         <div class="formGroup formGroupAddBackground mb-8">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4 mb-2">
-                <p class="font-semibold">Meta</p>
+                <p class="font-semibold text-sm">Meta</p>
             </div>
             <div class="py-2 px-4">
                 <div class="mb-4">
@@ -99,13 +100,6 @@
                     <p>@Model.User.CreatedAt.InUtc().ToString("MMMM d, yyyy hh:mm tt", System.Globalization.CultureInfo.InvariantCulture)</p>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
-        <div class="flex items-center w-1/2"></div>
-        <div class="flex items-center justify-end w-1/2 text-right">
-            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
         </div>
     </div>
 </form>

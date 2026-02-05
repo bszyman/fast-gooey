@@ -21,13 +21,23 @@ public class AccountManagementController(
     BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(Guid workspaceId)
     {
         var currentUser = await userManager.GetUserAsync(User);
         if (currentUser is null)
             return Unauthorized();
+        
+        var workspace = await dbContext.Workspaces.FirstOrDefaultAsync(
+            x => x.PublicId == workspaceId
+        );
 
         var viewModel = CreateViewModel(currentUser);
+        viewModel.NavBarViewModel = new MetalNavBarViewModel
+        {
+            WorkspaceName = workspace.Name,
+            WorkspaceId = workspace.PublicId,
+            ActiveTab = "My Account"
+        };
 
         return View(viewModel);
     }
