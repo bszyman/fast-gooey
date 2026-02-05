@@ -1,30 +1,33 @@
 @using FastGooey.Models.ViewModels
 @model FastGooey.Models.ViewModels.Clock.ClockViewModel
 
-<div class="fixed z-40 bg-white flex h-20 border-b border-b-zinc-300 left-[20%] right-0">
-    <div class="flex-1 flex items-center">
-        @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
-        {
-            Url = $"/Workspaces/{Model.WorkspaceId()}/UpdateTitle/{Model.InterfaceId()}",
-            Title = Model.WorkspaceViewModel!.ContentNode!.Name
-        })
+<div class="h-full flex flex-col">
+    <div class="bg-white flex h-20 border-b border-b-zinc-300 rounded-tr-l flex-shrink-0">
+        <div class="flex-1 flex items-center">
+            @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
+            {
+                Url = $"/Workspaces/{Model.WorkspaceId()}/UpdateTitle/{Model.InterfaceId()}",
+                Title = Model.WorkspaceViewModel!.ContentNode!.Name
+            })
+        </div>
+        <button 
+            hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Clock/workspace/@Model.InterfaceId()"
+            hx-target="#workspaceEditor"
+            type="button" 
+            class="sectionButton activeSectionButton" onclick="changeSection(this)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+            </svg>
+            Widget
+        </button>
+        @await Html.PartialAsync(
+            "~/Views/Partials/WorkspaceInfoButton.cshtml", 
+            $"/Workspaces/{Model.WorkspaceId()}/Info/{Model.InterfaceId()}"
+        )
     </div>
-    <button 
-        hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Clock/workspace/@Model.InterfaceId()"
-        hx-target="#workspaceEditor"
-        type="button" 
-        class="sectionButton activeSectionButton" onclick="changeSection(this)">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-        </svg>
-        Widget
-    </button>
-    @await Html.PartialAsync(
-        "~/Views/Partials/WorkspaceInfoButton.cshtml", 
-        $"/Workspaces/{Model.WorkspaceId()}/Info/{Model.InterfaceId()}"
-    )
-</div>
 
-<div id="workspaceEditor" class="mt-30 mb-24">
-    @await Html.PartialAsync("Workspace.cshtml", Model.WorkspaceViewModel)
+    <div id="workspaceEditor" 
+         class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+        @await Html.PartialAsync("Workspace.cshtml", Model.WorkspaceViewModel)
+    </div>
 </div>

@@ -103,7 +103,7 @@ public class ClockController(
             WorkspaceViewModel = workspaceViewModel
         };
 
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
         return PartialView("~/Views/Clock/Index.cshtml", viewModel);
     }

@@ -73,7 +73,7 @@
 @*           </a> *@
 @*         </li> *@
         <li>
-          <a href="#" class="
+          <a href="@Url.Action("Index", "Widgets", new { workspaceId = Model.WorkspaceId })" class="
           segmentedControlItem
           @(Model.ActiveTab == "Widgets" ? "segmentedControlItemActive text-white" : "")
           rounded-r-md

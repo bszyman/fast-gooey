@@ -75,19 +75,8 @@ public class WorkspacesController(
         interfaceNode.Name = title;
         await dbContext.SaveChangesAsync();
 
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
         return Ok();
-    }
-
-    [HttpGet("apple-mobile-interface-selector-panel")]
-    public async Task<IActionResult> AppleMobileInterfaceSelectorPanel(Guid workspaceId)
-    {
-        if (await InterfaceLimitReachedAsync())
-        {
-            return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
-        }
-
-        return PartialView("~/Views/Workspaces/Partials/AppleMobileInterfaceSelectorPanel.cshtml", workspaceId);
     }
 }

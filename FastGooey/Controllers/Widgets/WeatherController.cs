@@ -99,7 +99,7 @@ public class WeatherController(
             WorkspaceViewModel = workspaceViewModel
         };
 
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
         return PartialView("~/Views/Weather/Weather.cshtml", viewModel);
     }

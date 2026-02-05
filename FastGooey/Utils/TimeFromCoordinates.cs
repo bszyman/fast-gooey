@@ -22,8 +22,10 @@ public static class TimeFromCoordinates
 
     public static LocationDateTimeSetModel CalculateDateTimeSet(string latitude, string longitude)
     {
-        var latitudeDouble = double.Parse(latitude);
-        var longitudeDouble = double.Parse(longitude);
+        var latitudeDouble = string.IsNullOrWhiteSpace(latitude) ? 
+            double.Parse("30.4077") : double.Parse(latitude);
+        var longitudeDouble = string.IsNullOrWhiteSpace(longitude) ? 
+            double.Parse("-87.2190") : double.Parse(longitude);
 
         var localTime = GetLocalTime(latitudeDouble, longitudeDouble);
         var localDate = GetLocalDate(latitudeDouble, longitudeDouble);

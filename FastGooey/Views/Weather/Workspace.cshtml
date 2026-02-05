@@ -20,14 +20,14 @@
       hx-post="/Workspaces/@Model.WorkspaceId()/Widgets/Weather/Workspace/@Model.InterfaceId()"
       hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()
-    <div id="editor" class="mx-auto max-w-3xl">
+    <div id="editor" class="mx-auto max-w-3xl mt-8">
         <div class="flex justify-center mb-8">
             <div id="mapKit" class="mx-auto relative block" style="width: 800px; height: 500px;"></div>
         </div>
         
         <div class="formGroup formGroupAddBackground mb-8">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
-                <p class="font-semibold">Configuration</p>
+                <p class="font-semibold text-sm">Configuration</p>
             </div>
             <div class="py-2 px-4">
                 <input type="hidden" id="latitude" name="latitude" value="@Model.Data.Latitude"/>
@@ -52,10 +52,13 @@
                             hx-target="#editorPanel"
                             class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">Search...</button>
                     </div>
-                    <div class="my-2">
+                    <div class="mt-2 mb-4">
                         <p id="descriptiveCoords" class="text-xs font-semibold uppercase text-grayMid">
                             @Model.Data.Coordinates
                         </p>
+                    </div>
+                    <div class="mb-2">
+                        @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
                     </div>
                 </div>
             </div>
@@ -63,27 +66,18 @@
         
         <div 
             id="previewPanel" 
-            class="contentGroup"
+            class="contentGroup formGroupAddBackground"
             hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Weather/preview-panel/@Model.InterfaceId()" 
             hx-trigger="load, refreshPreview from:body"
             hx-swap="innerHTML"
             hx-target="#previewPanel"
-            >
+        >
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
                 <p class="font-semibold">Preview</p>
             </div>
             <div class="p-4">
                 <p>Loading...</p>
             </div>
-        </div>
-    </div>
-
-    <div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
-        <div class="flex items-center w-1/2">
-            <p class="text-sm">Widgets :: Weather</p>
-        </div>
-        <div class="flex items-center justify-end w-1/2 text-right">
-            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
         </div>
     </div>
 </form>

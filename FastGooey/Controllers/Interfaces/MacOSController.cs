@@ -22,7 +22,9 @@ public class MacOSController(
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var workspace = await dbContext.Workspaces.FirstAsync(x => x.PublicId.Equals(WorkspaceId));
+        var workspace = await dbContext.Workspaces.FirstAsync(
+            x => x.PublicId.Equals(WorkspaceId)
+        );
         
         var viewModel = new MacOSIndexViewModel
         {

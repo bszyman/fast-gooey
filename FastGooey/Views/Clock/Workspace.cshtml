@@ -19,14 +19,14 @@
 <form method="post"
       hx-post="/Workspaces/@Model.WorkspaceId()/Widgets/Clock/Workspace/@Model.InterfaceId()"
       hx-target="#workspaceEditor">
-    <div id="editor" class="mx-auto mt-30 mb-24 max-w-3xl">
+    <div id="editor" class="mx-auto max-w-3xl mt-8">
         <div class="flex justify-center mb-8">
             <div id="mapKit" class="mx-auto relative block" style="width: 800px; height: 500px;"></div>
         </div>
         
         <div class="formGroup formGroupAddBackground mb-8">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
-                <p class="font-semibold">Configuration</p>
+                <p class="font-semibold text-sm">Configuration</p>
             </div>
             <div class="py-2 px-4">
                 <input type="hidden" id="latitude" name="latitude" value="@Model.Data?.Latitude"/>
@@ -62,6 +62,9 @@
                     </div>
                 </div>
             </div>
+            <div class="pb-4 px-4">
+                @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+            </div>
         </div>
         
         <div hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Clock/preview-panel/@Model.InterfaceId()" 
@@ -69,22 +72,13 @@
              hx-target="#previewPanel"
              hx-swap="outerHTML" 
              id="previewPanel" 
-             class="contentGroup">
+             class="contentGroup formGroupAddBackground">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
-                <p class="font-semibold">Preview</p>
+                <p class="font-semibold text-sm">Preview</p>
             </div>
             <div class="p-4 text-center py-6 bg-zinc-100">
                 <p>Loading...</p>
             </div>
-        </div>
-    </div>
-
-    <div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
-        <div class="flex items-center w-1/2">
-            <p class="text-sm">Widgets :: Clock</p>
-        </div>
-        <div class="flex items-center justify-end w-1/2 text-right">
-            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
         </div>
     </div>
 </form>

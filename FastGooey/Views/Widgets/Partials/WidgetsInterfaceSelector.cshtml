@@ -1,4 +1,4 @@
-@model FastGooey.Models.ViewModels.MacInterfaceSelectorViewModel
+@model FastGooey.Models.ViewModels.WidgetsInterfaceSelectorViewModel
 
 <div class="absolute top-0 w-full my-2 text-blue-900">
     <span class="mx-3 uppercase text-sm font-semibold tracking-tight">Interfaces</span>
@@ -33,7 +33,7 @@
           after:pointer-events-none after:z-[3]">
     <button 
         type="button"
-        hx-get="/Workspaces/@Model.WorkspaceId/Interfaces/MacOS/mac-interface-selector-panel"
+        hx-get="/Workspaces/@Model.WorkspaceId/Widgets/new-interface-panel"
         hx-target="#editorPanel"
         class="w-8 h-8 cursor-pointer text-center border-r border-r-blue-400/50" 
         onclick="toggleEditor()"

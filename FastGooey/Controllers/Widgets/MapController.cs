@@ -143,7 +143,7 @@ public class MapController(
             WorkspaceViewModel = workspaceViewModel
         };
 
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
         return PartialView("~/Views/Map/Index.cshtml", viewModel);
     }
