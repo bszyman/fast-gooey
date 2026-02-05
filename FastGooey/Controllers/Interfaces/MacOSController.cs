@@ -26,10 +26,11 @@ public class MacOSController(
         
         var viewModel = new MacOSIndexViewModel
         {
-            WorkspaceId = WorkspaceId,
-            NavBarViewModel = new MetalNavBarViewModel()
+            Workspace = workspace,
+            NavBarViewModel = new MetalNavBarViewModel
             {
                 WorkspaceName = workspace.Name,
+                WorkspaceId = workspace.PublicId,
                 ActiveTab = "macOS"
             }
         };
