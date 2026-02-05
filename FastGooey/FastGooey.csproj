@@ -97,5 +97,11 @@
       <Content Update="Views\**\*.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
+      <Content Update="Views\AppleMobile\Partials\NewInterfaceSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Views\MacOS\Partials\MacInterfaceSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
     </ItemGroup>
 </Project>
