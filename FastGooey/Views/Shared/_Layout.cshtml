@@ -24,10 +24,7 @@
 </head>
 <body class="bg-blueDark h-full" hx-headers='{"RequestVerificationToken": "@antiForgeryToken"}' hx-on:toggle-editor="toggleEditor()">
 <div class="h-full flex flex-col">
-    <partial name="~/Views/NavigationBar/MetalNavBar.cshtml" />
-    <div class="flex-1 min-h-0 px-2 pb-2">
-        @RenderBody()
-    </div>
+    @RenderBody()
 </div>
 
 

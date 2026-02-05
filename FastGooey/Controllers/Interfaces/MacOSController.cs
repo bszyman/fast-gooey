@@ -22,9 +22,16 @@ public class MacOSController(
     [HttpGet]
     public async Task<IActionResult> Index()
     {
+        var workspace = await dbContext.Workspaces.FirstAsync(x => x.PublicId.Equals(WorkspaceId));
+        
         var viewModel = new MacOSIndexViewModel
         {
-            WorkspaceId = WorkspaceId
+            WorkspaceId = WorkspaceId,
+            NavBarViewModel = new MetalNavBarViewModel()
+            {
+                WorkspaceName = workspace.Name,
+                ActiveTab = "macOS"
+            }
         };
         
         return View(viewModel);

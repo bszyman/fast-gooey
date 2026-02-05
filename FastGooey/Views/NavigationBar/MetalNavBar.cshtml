@@ -1,3 +1,5 @@
+@model FastGooey.Models.ViewModels.MetalNavBarViewModel
+
 <div>
   <div class="m-2 h-16 bg-cover bg-center rounded-lg shadow-xl brushed-metal-nav flex items-center px-3" style="background-image: url('/theme/brushed-metal-nav.png');">
     <a href="@Url.Action("Index", "WorkspaceSelector")" class="
@@ -27,6 +29,7 @@
         <li>
           <a href="#" class="
           segmentedControlItem
+          @(Model.ActiveTab == "iOS" ? "segmentedControlItemActive text-white" : "")
           rounded-l-md
           before:absolute before:inset-0 before:rounded-l-md 
           before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
@@ -42,9 +45,8 @@
         <li>
           <a href="@Url.Action("Index", "MacOS")" class="
           segmentedControlItem
-          segmentedControlItemActive
+          @(Model.ActiveTab == "macOS" ? "segmentedControlItemActive text-white" : "")
           -ml-px
-          text-white
           before:absolute before:inset-0
           before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)]
           before:pointer-events-none before:z-[1]
@@ -58,6 +60,7 @@
         <li>
           <a href="#" class="
           segmentedControlItem
+          @(Model.ActiveTab == "tvOS" ? "segmentedControlItemActive text-white" : "")
           -ml-px
           before:absolute before:inset-0
           before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
@@ -72,6 +75,7 @@
         <li>
           <a href="#" class="
           segmentedControlItem
+          @(Model.ActiveTab == "Widgets" ? "segmentedControlItemActive text-white" : "")
           rounded-r-md
           -ml-px
           before:absolute before:inset-0 before:rounded-r-md 
@@ -89,7 +93,9 @@
     </div>
     
     <div class="flex-1 text-center">
-      <h1 class="text-gray-800 font-medium text-shadow-2xs">Macintosh Collection</h1>
+      <h1 class="text-gray-800 font-medium text-shadow-2xs">
+        @Model.WorkspaceName
+      </h1>
     </div>
 
     <!-- Right Section: Account Links -->
@@ -98,6 +104,7 @@
       <li>
         <a href="#" class="
           segmentedControlItem
+          @(Model.ActiveTab == "My Account" ? "segmentedControlItemActive text-white" : "")
           rounded-l-md
           before:absolute before:inset-0 before:rounded-l-md 
           before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
@@ -113,6 +120,7 @@
       <li>
         <a href="#" class="
           segmentedControlItem
+          @(Model.ActiveTab == "Workspace Settings" ? "segmentedControlItemActive text-white" : "")
           rounded-r-md
           -ml-px
           before:absolute before:inset-0 before:rounded-r-md 
