@@ -90,15 +90,4 @@ public class WorkspacesController(
 
         return PartialView("~/Views/Workspaces/Partials/AppleMobileInterfaceSelectorPanel.cshtml", workspaceId);
     }
-
-    [HttpGet("mac-interface-selector-panel")]
-    public async Task<IActionResult> MacInterfaceSelectorPanel(Guid workspaceId)
-    {
-        if (await InterfaceLimitReachedAsync())
-        {
-            return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
-        }
-
-        return PartialView("~/Views/Workspaces/Partials/MacInterfaceSelectorPanel.cshtml", workspaceId);
-    }
 }

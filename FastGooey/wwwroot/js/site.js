@@ -52,3 +52,10 @@ function changeSection(sender) {
 
     sender.classList.add('activeSectionButton');
 }
+
+function changeInterfaceListSelection(sender) {
+    const list = document.getElementById('interfaceList');
+    list.querySelectorAll('.selectedInterfaceListItem').forEach(item => item.classList.remove('selectedInterfaceListItem'));
+
+    sender.classList.add('selectedInterfaceListItem');
+}

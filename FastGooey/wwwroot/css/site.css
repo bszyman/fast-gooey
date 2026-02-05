@@ -22,6 +22,7 @@
     --color-nuclearGreen: #70FF68;
     --color-nuclearGreenLighter: #20FF11;
     --color-nuclearGreenDarker: #05AD21;
+    --color-macAqua: rgb(66, 127, 180);
     
     --shadow-panelShadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
 
@@ -104,7 +105,7 @@ body {
 }
 
 .activeSectionButton {
-    @apply bg-blueMid text-white font-semibold;
+    @apply bg-sky-600 text-white font-semibold;
 }
 
 .main-content {
@@ -112,7 +113,7 @@ body {
 }
 
 .formGroup {
-    @apply mb-8;
+    @apply mb-8 rounded-t-lg;
 }
 
 .formGroupAddBackground {
@@ -120,7 +121,7 @@ body {
 }
 
 .formGroup label {
-    @apply font-mont block text-sm font-medium mb-2;
+    @apply block text-sm font-medium mb-2;
 }
 
 .formGroup input[type='text'],
@@ -142,7 +143,7 @@ body {
 }
 
 .contentGroup {
-    @apply bg-white rounded shadow-md text-sm;
+    @apply rounded shadow-md text-sm;
 }
 
 .contentGroup input[type='text'],
@@ -170,3 +171,49 @@ body {
 /*#loginPanel button {*/
 /*    @apply font-mont bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg cursor-pointer;*/
 /*}*/
+
+.brushed-metal-nav {
+    position: relative;
+    /* Inset bevel effect using box-shadow */
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),     /* Top highlight */
+            inset 0 -1px 0 rgba(0, 0, 0, 0.3),          /* Bottom shadow */
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),          /* Outer shadow (kept from your existing shadow-2xl) */
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.brushed-metal-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit; /* Match parent's rounded-lg */
+    /* Radial gradient vignette - darker at edges */
+    /*background: radial-gradient(*/
+    /*        ellipse at center,*/
+    /*        rgba(0, 0, 0, 0) 0%,*/
+    /*        rgba(0, 0, 0, 0) 50%,*/
+    /*        rgba(0, 0, 0, 0.3) 100%*/
+    /*);*/
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.3) 100%);
+    pointer-events: none; /* Allow clicks to pass through */
+}
+
+.segmentedControlItem {
+    @apply inline-flex items-center px-4 py-1.5
+    bg-gradient-to-b from-stone-300/80 to-white/90
+    border border-gray-400/60
+    shadow-sm
+    text-gray-900 text-sm font-medium
+    relative overflow-hidden;
+}
+
+.segmentedControlItemActive {
+    @apply from-macAqua to-cyan-500 border-cyan-500/60 text-white;
+}
+
+.selectedInterfaceListItem {
+    @apply bg-gradient-to-b from-blue-400 to-blue-500 border-y border-y-cyan-300/60 shadow-sm text-white font-medium relative overflow-hidden;
+}

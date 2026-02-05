@@ -22,43 +22,51 @@
             data-libraries="services,full-map,geojson"
             data-token="@ViewBag.MapKitToken"></script>
 </head>
-<body hx-headers='{"RequestVerificationToken": "@antiForgeryToken"}' hx-on:toggle-editor="toggleEditor()">
-  <div class="absolute layout-grid text-sm">
-    <nav class="sidebar">
-      <div class="sidebar-content">
-        <h2>FastGooey</h2>
-        @if (hasWorkspace)
-        {
-          <div 
-            hx-get="/Workspaces/@workspaceId/NavigationBar" 
-            hx-trigger="load, refreshNavigation from:body"
-            hx-swap="innerHTML">
-            <div class="p-4 text-gray-500">
-              <p>Loading...</p>
-            </div>
-          </div>
-        }
-        else
-        {
-          <div class="p-4 text-gray-500">
-            <p>No workspace selected</p>
-          </div>
-        }
-      </div>
-    </nav>
-      
-    <main id="workspace" class="main-content relative" role="main">
-      @RenderBody()
-    </main>
-  </div>
+<body class="bg-blueDark h-full" hx-headers='{"RequestVerificationToken": "@antiForgeryToken"}' hx-on:toggle-editor="toggleEditor()">
+<div class="h-full flex flex-col">
+    <partial name="~/Views/NavigationBar/MetalNavBar.cshtml" />
+    <div class="flex-1 min-h-0 px-2 pb-2">
+        @RenderBody()
+    </div>
+</div>
 
-  @await Html.PartialAsync("~/Views/Partials/EditorPanel.cshtml")
 
-  <script src="~/lib/htmx/htmx_207.min.js"></script>
-  <script src="~/js/cupertino-mapkit.js"></script>
-  <script src="~/js/site.js" asp-append-version="true"></script>
-  @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+@* <div class="absolute layout-grid text-sm"> *@
+@*   <nav class="sidebar"> *@
+@*     <div class="sidebar-content"> *@
+@*       <h2>FastGooey</h2> *@
+@*       @if (hasWorkspace) *@
+@*       { *@
+@*         <div *@
+@*           hx-get="/Workspaces/@workspaceId/NavigationBar" *@
+@*           hx-trigger="load, refreshNavigation from:body" *@
+@*           hx-swap="innerHTML"> *@
+@*           <div class="p-4 text-gray-500"> *@
+@*             <p>Loading...</p> *@
+@*           </div> *@
+@*         </div> *@
+@*       } *@
+@*       else *@
+@*       { *@
+@*         <div class="p-4 text-gray-500"> *@
+@*           <p>No workspace selected</p> *@
+@*         </div> *@
+@*       } *@
+@*     </div> *@
+@*   </nav> *@
+@* *@
+@*   <main id="workspace" class="main-content relative" role="main"> *@
+@*     @RenderBody() *@
+@*   </main> *@
+@* </div> *@
 
-  @await RenderSectionAsync("Scripts", required: false)
+@await Html.PartialAsync("~/Views/Partials/EditorPanel.cshtml")
+
+<script src="~/lib/htmx/htmx_207.min.js"></script>
+<script src="~/js/cupertino-mapkit.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

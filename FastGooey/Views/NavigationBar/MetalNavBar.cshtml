@@ -1,0 +1,146 @@
+<div>
+  <div class="m-2 h-16 bg-cover bg-center rounded-lg shadow-xl brushed-metal-nav flex items-center px-3" style="background-image: url('/theme/brushed-metal-nav.png');">
+    <a href="@Url.Action("Index", "WorkspaceSelector")" class="
+      mr-4
+      segmentedControlItem 
+      rounded-md
+      before:absolute before:inset-0 before:rounded-md 
+      before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+      before:pointer-events-none before:z-[1]
+      after:absolute after:inset-x-0 after:top-0 after:h-1/2 
+      after:bg-gradient-to-b after:from-white/25 after:to-white/35
+      after:rounded-t-md
+      after:pointer-events-none after:z-[3]
+    ">
+      <span class="relative z-[2] flex items-center gap-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
+          <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z" clip-rule="evenodd" />
+        </svg>
+
+        Workspaces
+      </span>
+    </a>
+    
+    <!-- Left Section: Platform Links -->
+    <div class="">
+      <ul class="flex">
+        <li>
+          <a href="#" class="
+          segmentedControlItem
+          rounded-l-md
+          before:absolute before:inset-0 before:rounded-l-md 
+          before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+          before:pointer-events-none before:z-[1]
+          after:absolute after:inset-x-0 after:top-0 after:h-1/2 
+          after:bg-gradient-to-b after:from-white/25 after:to-white/35
+          after:rounded-tl-md
+          after:pointer-events-none after:z-[3]
+        ">
+            <span class="relative z-[2]">iOS</span>
+          </a>
+        </li>
+        <li>
+          <a href="@Url.Action("Index", "MacOS")" class="
+          segmentedControlItem
+          segmentedControlItemActive
+          -ml-px
+          text-white
+          before:absolute before:inset-0
+          before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)]
+          before:pointer-events-none before:z-[1]
+          after:absolute after:inset-x-0 after:top-0 after:h-1/2 
+          after:bg-gradient-to-b after:from-white/25 after:to-white/35
+          after:pointer-events-none after:z-[3]
+        ">
+            <span class="relative z-[2]">macOS</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="
+          segmentedControlItem
+          -ml-px
+          before:absolute before:inset-0
+          before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+          before:pointer-events-none before:z-[1]
+          after:absolute after:inset-x-0 after:top-0 after:h-1/2 
+          after:bg-gradient-to-b after:from-white/25 after:to-white/35
+          after:pointer-events-none after:z-[3]
+        ">
+            <span class="relative z-[2]">tvOS</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="
+          segmentedControlItem
+          rounded-r-md
+          -ml-px
+          before:absolute before:inset-0 before:rounded-r-md 
+          before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+          before:pointer-events-none before:z-[1]
+          after:absolute after:inset-x-0 after:top-0 after:h-1/2
+          after:bg-gradient-to-b after:from-white/25 after:to-white/35
+          after:rounded-tr-md
+          after:pointer-events-none after:z-[3]
+        ">
+            <span class="relative z-[2]">Widgets</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="flex-1 text-center">
+      <h1 class="text-gray-800 font-medium text-shadow-2xs">Macintosh Collection</h1>
+    </div>
+
+    <!-- Right Section: Account Links -->
+  <div class="flex gap-4">
+    <ul class="flex">
+      <li>
+        <a href="#" class="
+          segmentedControlItem
+          rounded-l-md
+          before:absolute before:inset-0 before:rounded-l-md 
+          before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+          before:pointer-events-none before:z-[1]
+          after:absolute after:inset-x-0 after:top-0 after:h-1/2 
+          after:bg-gradient-to-b after:from-white/25 after:to-white/35
+          after:rounded-tl-md
+          after:pointer-events-none after:z-[3]
+        ">
+          <span class="relative z-[2]">My Account</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="
+          segmentedControlItem
+          rounded-r-md
+          -ml-px
+          before:absolute before:inset-0 before:rounded-r-md 
+          before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+          before:pointer-events-none before:z-[1]
+          after:absolute after:inset-x-0 after:top-0 after:h-1/2 
+          after:bg-gradient-to-b after:from-white/25 after:to-white/35
+          after:rounded-tr-md
+          after:pointer-events-none after:z-[3]
+        ">
+          <span class="relative z-[2]">Workspace Settings</span>
+        </a>
+      </li>
+    </ul>
+
+    <a href="@Url.Action("Logout", "Auth")" class="
+      segmentedControlItem 
+      rounded-md
+      before:absolute before:inset-0 before:rounded-md 
+      before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+      before:pointer-events-none before:z-[1]
+      after:absolute after:inset-x-0 after:top-0 after:h-1/2 
+      after:bg-gradient-to-b after:from-white/25 after:to-white/35
+      after:rounded-t-md
+      after:pointer-events-none after:z-[3]
+    ">
+      <span class="relative z-[2]">Logout</span>
+    </a>
+  </div>
+</div>
+</div>

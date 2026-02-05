@@ -1,0 +1,45 @@
+@model FastGooey.Models.ViewModels.MacInterfaceSelectorViewModel
+
+<div class="absolute top-0 w-full my-2 text-blue-900">
+    <span class="mx-3 uppercase text-sm font-semibold tracking-tight">Interfaces</span>
+</div>
+
+<div class="absolute top-10 bottom-8 overflow-y-scroll">
+    <ul id="interfaceList" class="flex flex-col">
+        @foreach (var workspaceInterface in Model.InterfaceItems)
+        {
+            <li hx-get="@workspaceInterface.Route" 
+                hx-boost="true" 
+                hx-target="#workspace" 
+                hx-push-url="false" 
+                class="py-2 text-blueDark font-medium overflow-ellipsis cursor-pointer" 
+                onclick="changeInterfaceListSelection(this)">
+                <p class="mx-4 inline-block">
+                    @workspaceInterface.Name
+                </p>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class="absolute bottom-0 w-full flex items-center
+          border-t border-t-blue-400/50 
+          before:absolute before:inset-0
+          bg-gradient-to-b from-indigo-200 to-indigo-100
+          before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)]
+          before:pointer-events-none before:z-[1]
+          after:absolute after:inset-x-0 after:top-0 after:h-1/2 
+          after:bg-gradient-to-b after:from-white/25 after:to-white/35
+          after:pointer-events-none after:z-[3]">
+    <button 
+        type="button"
+        hx-get="/Workspaces/@Model.WorkspaceId/Interfaces/MacOS/mac-interface-selector-panel"
+        hx-target="#editorPanel"
+        class="w-8 h-8 cursor-pointer text-center border-r border-r-blue-400/50" 
+        onclick="toggleEditor()"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mx-auto">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+    </button>
+</div>
