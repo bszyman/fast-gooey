@@ -55,7 +55,6 @@ public class AppleMobileController(
     [HttpGet("new-interface-panel")]
     public async Task<IActionResult> MacInterfaceSelectorPanel(Guid workspaceId)
     {
-        // TODO: move views to appropriate paths 
         if (await InterfaceLimitReachedAsync())
         {
             return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
