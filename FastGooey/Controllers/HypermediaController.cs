@@ -223,8 +223,12 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         else if (gooeyInterface.Config.RootElement.ValueKind is JsonValueKind.Object)
         {
             var singleRoot = gooeyInterface.Config.Deserialize<MacOutlineJsonDataModel>(options);
-            if (singleRoot is not null)
-                rootItems.Add(singleRoot);
+            if (singleRoot is not null) rootItems.Add(singleRoot);
+        }
+
+        if (rootItems.Count == 1 && string.Equals(rootItems[0].Name, "Root", StringComparison.OrdinalIgnoreCase))
+        {
+            rootItems = rootItems[0].Children ?? [];
         }
 
         // Start recursion at Depth 1, limit to 12
