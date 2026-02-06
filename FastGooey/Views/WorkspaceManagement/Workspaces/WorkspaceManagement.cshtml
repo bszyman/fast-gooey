@@ -1,10 +1,16 @@
+@using Microsoft.AspNetCore.Identity
 @model FastGooey.Models.ViewModels.ManageWorkspaceViewModel
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+}
 
 <form method="post"
-    hx-post="/Workspaces/@Model.Workspace.PublicId/WorkspaceManagement/workspace/save"
+      hx-post="/Workspaces/@Model.Workspace.PublicId/WorkspaceManagement/workspace/save"
+      hx-trigger="blur from:#FormModel_WorkspaceName, keyup[key=='Enter'] changed delay:500ms from:#FormModel_WorkspaceName"
     hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()
-    <div id="editor" class="mx-auto max-w-3xl">
+    <div id="editor" class="mx-auto max-w-3xl mt-8">
         <div class="formGroup formGroupAddBackground mb-8">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
                 <p class="font-semibold">Workspace Details</p>
@@ -19,7 +25,19 @@
                 </div>
                 <div class="mb-4">
                     <p class="block text-sm font-medium text-gray-700">Service Tier</p>
-                    <p>Pro</p>
+                    @if (currentUser.SubscriptionLevel == SubscriptionLevel.Standard)
+                    {
+                        <p>Standard</p>
+                    } else if (currentUser.SubscriptionLevel == SubscriptionLevel.Pro)
+                    {
+                        <p>Pro</p>
+                    } else if (currentUser.SubscriptionLevel == SubscriptionLevel.Agency)
+                    {
+                        <p>Agency</p>
+                    } else
+                    {
+                        <p>Explorer</p>
+                    }
                 </div>
             </div>
         </div>
@@ -34,13 +52,6 @@
                     <p>@Model.Workspace.CreatedAt.InUtc().ToString("MMMM d, yyyy hh:mm tt", System.Globalization.CultureInfo.InvariantCulture)</p>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="fixed bottom-0 bg-white h-16 border-t border-t-zinc-300 flex justify-between items-center px-6 left-[20%] right-0">
-        <div class="flex items-center w-1/2"></div>
-        <div class="flex items-center justify-end w-1/2 text-right">
-            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
         </div>
     </div>
 </form>

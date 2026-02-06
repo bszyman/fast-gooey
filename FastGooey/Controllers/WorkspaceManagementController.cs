@@ -24,6 +24,12 @@ public class WorkspaceManagementController(
             .First(x => x.PublicId == WorkspaceId);
 
         var viewModel = CreateViewModel(workspace);
+        viewModel.NavBarViewModel = new MetalNavBarViewModel
+        {
+            WorkspaceName = workspace.Name,
+            WorkspaceId = workspace.PublicId,
+            ActiveTab = "Workspace Settings"
+        };
 
         return View(viewModel);
     }

@@ -7,6 +7,7 @@ using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FastGooey.Controllers;
 
@@ -21,9 +22,22 @@ public class WorkspacesController(
     BaseStudioController(keyValueService, dbContext)
 {
     [HttpGet("Home")]
-    public IActionResult Home(Guid workspaceId)
+    public async Task<IActionResult> Home(Guid workspaceId)
     {
-        return View();
+        var workspace = await dbContext
+            .Workspaces
+            .FirstOrDefaultAsync(x => x.PublicId == workspaceId);
+        
+        var viewModel = new WorkspaceHomeViewModel
+        {
+            NavBarViewModel = new MetalNavBarViewModel
+            {
+                WorkspaceId = workspace.PublicId,
+                WorkspaceName = workspace.Name,
+            }
+        };
+        
+        return View(viewModel);
     }
 
     [HttpGet("Info/{interfaceId}")]
