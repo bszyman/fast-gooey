@@ -20,7 +20,7 @@
                     <label asp-for="FormModel.WorkspaceName"></label>
                     <input asp-for="FormModel.WorkspaceName"
                            type="text"
-                           class="w-full"/>
+                           class="w-full @(Model.FormModel.IsSaved ? "saved" : "")"/>
                     <span asp-validation-for="FormModel.WorkspaceName" class="text-red-600 text-sm mt-1 block"></span>
                 </div>
                 <div class="mb-4">

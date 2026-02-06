@@ -135,11 +135,20 @@ body {
 .formGroup input[type='password'],
 .formGroup input[type='search'],
 .formGroup textarea {
-    @apply border border-blueMid rounded py-2 px-3 w-full text-sm;
+    @apply border border-zinc-300 rounded py-2 px-3 w-full text-sm transition-colors duration-200;
+}
+
+.formGroup input.saved,
+.formGroup textarea.saved,
+.formGroup select.saved,
+input.saved,
+textarea.saved,
+select.saved {
+    @apply border-green-400 !important;
 }
 
 .formGroup select {
-    @apply border border-zinc-300 rounded py-1 px-2 w-full text-sm bg-white;
+    @apply border border-zinc-300 rounded py-1 px-2 w-full text-sm bg-white transition-colors duration-200;
 }
 
 .contentGroup {

@@ -15,14 +15,14 @@
                     <label asp-for="FormModel.FirstName"></label>
                     <input asp-for="FormModel.FirstName"
                            type="text"
-                           class="w-full"/>
+                           class="w-full @(Model.FormModel.IsSaved ? "saved" : "")"/>
                     <span asp-validation-for="FormModel.FirstName" class="text-red-600 text-sm mt-1 block"></span>
                 </div>
                 <div class="mb-4">
                     <label asp-for="FormModel.LastName"></label>
                     <input asp-for="FormModel.LastName"
                            type="text"
-                           class="w-full"/>
+                           class="w-full @(Model.FormModel.IsSaved ? "saved" : "")"/>
                     <span asp-validation-for="FormModel.LastName" class="text-red-600 text-sm mt-1 block"></span>
                 </div>
                 <div class="mb-4">

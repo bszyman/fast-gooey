@@ -75,6 +75,7 @@ public class AccountManagementController(
         }
 
         var viewModel = CreateViewModel(currentUser);
+        viewModel.FormModel.IsSaved = true;
 
         return PartialView("~/Views/AccountManagement/Workspaces/AccountManagement.cshtml", viewModel);
     }

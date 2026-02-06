@@ -59,3 +59,57 @@ function changeInterfaceListSelection(sender) {
 
     sender.classList.add('selectedInterfaceListItem');
 }
+
+document.addEventListener('htmx:afterRequest', function(event) {
+    if (event.detail.successful) {
+        let elt = event.detail.elt;
+        // If the element that triggered the request is a form, use it.
+        // If it's inside a form, find the closest form.
+        let form = elt.closest('form');
+
+        // Check the request configuration. HTMX detail.elt might be the element that triggered the event,
+        // but hx-post might be on the form. HTMX also provides requestConfig.
+        const requestConfig = event.detail.requestConfig;
+        const isHtmxRequest = requestConfig && (requestConfig.verb === 'post' || requestConfig.verb === 'put' || requestConfig.verb === 'patch');
+
+        // Only apply to forms that are likely auto-saving or using htmx explicitly
+        if (form && isHtmxRequest) {
+            // Exclude specific forms if needed by checking their ID or parent
+            if (form.id === 'loginPanel' || form.closest('#loginPanel')) return;
+
+            // In some cases (like WorkspaceManagement.cshtml), the form might be swapped out and replaced.
+            // htmx:afterRequest fires after the swap, so the 'form' variable might point to a detached element.
+            // We should try to find the inputs in the new content (event.detail.target).
+            
+            let target = event.detail.target;
+            let inputs = [];
+            
+            if (target && target.querySelectorAll) {
+                // If the target itself is an input/select/textarea, include it
+                if (target.matches('input, textarea, select')) {
+                    inputs.push(target);
+                }
+                // Also find all inputs within the target
+                inputs = inputs.concat(Array.from(target.querySelectorAll('input, textarea, select')));
+            }
+
+            // Fallback to form if target didn't yield inputs (and form is still in DOM or we want to try anyway)
+            if (inputs.length === 0 && form) {
+                inputs = form.querySelectorAll('input, textarea, select');
+            }
+            
+            inputs.forEach(input => {
+                input.classList.add('saved');
+            });
+        }
+    }
+});
+
+document.addEventListener('input', function(event) {
+    const target = event.target;
+    if (target.matches('input, textarea, select')) {
+        if (target.classList.contains('saved')) {
+            target.classList.remove('saved');
+        }
+    }
+});

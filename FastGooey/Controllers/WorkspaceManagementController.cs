@@ -55,6 +55,7 @@ public class WorkspaceManagementController(
         dbContext.SaveChanges();
 
         var viewModel = CreateViewModel(workspace);
+        viewModel.FormModel.IsSaved = true;
 
         return PartialView("~/Views/WorkspaceManagement/Workspaces/WorkspaceManagement.cshtml", viewModel);
     }
