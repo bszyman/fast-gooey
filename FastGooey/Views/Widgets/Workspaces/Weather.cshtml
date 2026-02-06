@@ -4,7 +4,7 @@
     <div class="flex-1 flex items-center">
         <form 
             method="post"
-            hx-post="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/UpdateTitle/@Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url()"
+            hx-post="@Url.Action("UpdateTitle", "Workspaces", new { workspaceId = Model.WorkspaceViewModel.ContentNode.Workspace.PublicId, interfaceId = Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url() })"
             hx-trigger="blur from:#titleInput, keyup[key=='Enter'] from:#titleInput"
             hx-swap="none"
             onsubmit="return false;"
@@ -21,7 +21,7 @@
         </form>
     </div>
     <button 
-        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Widgets/Weather/Workspace/@Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url()"
+        hx-get="@Url.Action("WeatherWorkspace", "Weather", new { workspaceId = Model.WorkspaceViewModel.ContentNode.Workspace.PublicId, interfaceId = Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url() })"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton" onclick="changeSection(this)">
@@ -31,7 +31,7 @@
         Widget
     </button>
     <button 
-        hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/Info/@Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url()"
+        hx-get="@Url.Action("Info", "Workspaces", new { workspaceId = Model.WorkspaceViewModel.ContentNode.Workspace.PublicId, interfaceId = Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url() })"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton" onclick="changeSection(this)">

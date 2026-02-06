@@ -6,11 +6,11 @@
 
 <div class="w-screen h-screen bg-blueDark font-mont">
     <div class="p-6 flex gap-6 items-baseline">
-        <a href="/workspaces">
+        <a href="@Url.Action("Index", "WorkspaceSelector")">
             <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md">FastGooey</h1>
         </a>
         <p class="text-white font-mont text-shadow-md font-medium flex-1">@User.Identity.Name</p>
-        <a href="/auth/logout" class="text-white font-mont text-shadow-md font-medium">Logout</a>
+        <a href="@Url.Action("Logout", "Auth")" class="text-white font-mont text-shadow-md font-medium">Logout</a>
     </div>
     <div class="max-w-xl mx-auto pt-24">
         <h1 class="text-white font-exo text-5xl md:text-7xl font-bold italic tracking-tighter text-shadow-md mb-6">Workspaces</h1>
@@ -22,7 +22,7 @@
                 {
                     var borderStyles = workspace.Equals(Model.Workspaces.Last()) ? "border-b-0" : "border-b";
                     
-                    <a href="/Workspaces/@workspace.PublicId/Home">
+                    <a href="@Url.Action("Home", "Workspaces", new { workspaceId = workspace.PublicId })">
                         <div class="p-4 @borderStyles border-white hover:underline">
                             <p class="font-medium mb-1 text-shadow-md">@workspace.Name</p>
                             <p class="text-xs font-medium mb-1 text-shadow-md">
@@ -59,7 +59,7 @@
                         </p>
                         
                         <button 
-                            hx-post="/Auth/SendEmailValidation"
+                            hx-post="@Url.Action("SendEmailValidation", "Auth")"
                             hx-target="#validationRequestResult"
                             type="button" 
                             class="text-white text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer border-3 border-nuclearGreenLighter shadow-md">

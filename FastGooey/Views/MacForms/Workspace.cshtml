@@ -44,7 +44,7 @@
     </div>
     <div class="flex items-center justify-end w-1/2 text-right">
         <button
-            hx-get="/Interfaces/MacOS/FormFieldSelectorPanel"
+            hx-get="@Url.Action("FormFieldSelectorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
             hx-target="#editorPanel"
             onclick="toggleEditor()"
             type="button"

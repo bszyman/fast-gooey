@@ -1,11 +1,8 @@
 @model FastGooey.Models.ViewModels.Mac.MacInterfaceTableItemEditorPanelViewModel
 @{
-    var formUrl = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/table/{Model.InterfaceId?.ToBase64Url()}/item-editor-panel";
-
-    if (!Model.Content.Identifier.Equals(Guid.Empty))
-    {
-        formUrl += $"/{Model.Content.Identifier}";
-    }
+    var formUrl = Model.Content.Identifier.Equals(Guid.Empty)
+        ? Url.Action("SaveTableItemEditorPanel", "MacTable", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
+        : Url.Action("SaveTableItemEditorPanel", "MacTable", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier });
 }
 
 <form method="post"

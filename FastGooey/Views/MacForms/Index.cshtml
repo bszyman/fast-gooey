@@ -3,7 +3,7 @@
         <input type="text" value="Surf Spot Submission" class="border border-zinc-300 rounded p-2 mx-6 w-full" />
     </div>
     <button 
-        hx-get="/Interfaces/MacOS/FormWorkspace"
+        hx-get="@Url.Action("Workspace", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton activeSectionButton" onclick="changeSection(this)">
@@ -13,7 +13,7 @@
         Form
     </button>
     <button 
-        hx-get="/Interfaces/MacOS/FormEntriesWorkspace"
+        hx-get="@Url.Action("FormEntriesWorkspace", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton" onclick="changeSection(this)">
@@ -23,7 +23,7 @@
         Entries
     </button>
     <button 
-        hx-get="/Workspaces/Info"
+        hx-get="@Url.Action("Info", "Workspaces", new { workspaceId = ViewContext.RouteData.Values["workspaceId"], interfaceId = ViewContext.RouteData.Values["interfaceId"] })"
         hx-target="#workspaceEditor"
         type="button" 
         class="sectionButton" onclick="changeSection(this)">

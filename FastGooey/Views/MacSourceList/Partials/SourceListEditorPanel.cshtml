@@ -7,7 +7,7 @@
 </div>
 
 <form method="post"
-      hx-post="/Workspaces/@Model.WorkspaceId/interfaces/mac/sourcelist/@Model.InterfaceId.ToBase64Url()/group-editor-panel/@Model.GroupId"
+      hx-post="@Url.Action("SaveGroupEditorPanel", "MacSourceList", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), groupId = Model.GroupId })"
       hx-target="#editorPanel"
       >
     <div class="py-4 px-4">
@@ -29,7 +29,7 @@
             @if (!Model.GroupId.Equals(Guid.Empty))
             {
                 <button
-                    hx-delete="/Workspaces/@Model.WorkspaceId/interfaces/mac/sourcelist/@Model.InterfaceId.ToBase64Url()/group-editor-panel/group/@Model.GroupId"
+                    hx-delete="@Url.Action("DeleteItem", "MacSourceList", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), groupId = Model.GroupId })"
                     hx-target="#workspaceEditor"
                     hx-params="none"
                     type="button"

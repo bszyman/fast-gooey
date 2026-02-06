@@ -6,7 +6,7 @@
 }
 
 <form method="post"
-      hx-post="/Workspaces/@Model.Workspace.PublicId/WorkspaceManagement/workspace/save"
+      hx-post="@Url.Action("EditWorkspace", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId })"
       hx-trigger="blur from:#FormModel_WorkspaceName, keyup[key=='Enter'] changed delay:500ms from:#FormModel_WorkspaceName"
     hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()

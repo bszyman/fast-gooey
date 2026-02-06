@@ -8,7 +8,7 @@
 
 <div id="interfaceOptions" class="py-4 px-4">
     <div
-        hx-get="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/Content/@Model.InterfaceId?.ToBase64Url()/headline-config-panel"
+        hx-get="@Url.Action("HeadlineConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Headline</p>
@@ -17,7 +17,7 @@
         </p>
     </div>
     <div
-        hx-get="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/Content/@Model.InterfaceId?.ToBase64Url()/text-config-panel"
+        hx-get="@Url.Action("TextConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Text</p>
@@ -26,7 +26,7 @@
         </p>
     </div>
     <div
-        hx-get="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/Content/@Model.InterfaceId?.ToBase64Url()/link-config-panel"
+        hx-get="@Url.Action("LinkConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Link</p>
@@ -35,7 +35,7 @@
         </p>
     </div>
     <div
-        hx-get="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/Content/@Model.InterfaceId?.ToBase64Url()/image-config-panel"
+        hx-get="@Url.Action("ImageConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Image</p>

@@ -21,7 +21,7 @@
                 data-coords="@location.Coordinate.CoordinateDisplay()"
                 data-identifier="@location.Id"
                 onclick="selectLocation(this)"
-                hx-post="/Workspaces/@Model.WorkspaceId/Widgets/Map/add-location"
+                hx-post="@Url.Action("AddLocationEntry", "Map", new { workspaceId = Model.WorkspaceId })"
                 hx-include="closest form"
                 hx-target="#collection"
                 hx-swap="beforeend"

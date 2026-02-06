@@ -1,7 +1,8 @@
 @model FastGooey.Models.ViewModels.Mac.MacContentLinkConfigurationPanelViewModel
 @{
-    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/content/{Model.InterfaceId?.ToBase64Url()}/link-item";
-    url = Model.Content.Identifier.Equals(Guid.Empty) ? url : $"{url}/{Model.Content.Identifier}";
+    var url = Model.Content.Identifier.Equals(Guid.Empty)
+        ? Url.Action("SaveLink", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
+        : Url.Action("SaveLink", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier });
 }
 
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">

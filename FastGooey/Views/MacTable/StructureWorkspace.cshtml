@@ -2,7 +2,7 @@
 @model FastGooey.Models.ViewModels.Mac.MacInterfaceTableStructureWorkspaceViewModel
 
 <div
-    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/workspace/@Model.InterfaceId()/structure"
+    hx-get="@Url.Action("TableStructureWorkspace", "MacTable", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
     hx-trigger="refreshStructureWorkspace from:body">
     <div id="editor" class="mx-auto max-w-4xl mt-8">
         <div class="contentGroup formGroupAddBackground mb-8">
@@ -29,7 +29,7 @@
             </form>
             <div class="py-4 px-4">
                 <button
-                    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/@Model.InterfaceId()/header-option-row"
+                    hx-get="@Url.Action("TableHeaderOptionRow", "MacTable", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
                     hx-target="#headerStructure"
                     hx-swap="beforeend"
                     type="button"
@@ -38,7 +38,7 @@
                 </button>
                 
                 <button
-                    hx-post="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/@Model.InterfaceId()/save-structure-workspace"
+                    hx-post="@Url.Action("SaveStructureWorkspace", "MacTable", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
                     hx-target="#workspaceEditor"
                     hx-include="#headerStructureForm"
                     type="button"
@@ -65,7 +65,7 @@
                     <div class="border-b border-b-zinc-300 py-2 flex items-center align-middle gap-4">
                         <div class="flex-1">
                             <button 
-                                hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/@Model.InterfaceId()/field-editor-panel/@fieldConfig.FieldAlias"
+                                hx-get="@Url.Action("TableFieldEditorPanel", "MacTable", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), fieldAlias = fieldConfig.FieldAlias })"
                                 hx-target="#editorPanel"
                                 onclick="toggleEditor()"
                                 type="button" 
@@ -80,7 +80,7 @@
             </div>
             <div class="py-4 px-4">
                 <button
-                    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/table/@Model.InterfaceId()/field-editor-panel"
+                    hx-get="@Url.Action("TableFieldEditorPanel", "MacTable", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
                     hx-target="#editorPanel"
                     type="button"
                     onclick="toggleEditor()"

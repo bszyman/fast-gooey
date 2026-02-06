@@ -6,12 +6,16 @@
         <div class="flex-1 flex items-center">
             @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
             {
-                Url = $"/Workspaces/{Model.WorkspaceId()}/UpdateTitle/{Model.InterfaceId()}",
+                Url = Url.Action(
+                    "UpdateTitle",
+                    "Workspaces",
+                    new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() }
+                ),
                 Title = Model.WorkspaceViewModel!.ContentNode!.Name
             })
         </div>
         <button 
-            hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Map/Workspace/@Model.InterfaceId()"
+            hx-get="@Url.Action("Workspace", "Map", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
             hx-target="#workspaceEditor"
             type="button" 
             class="sectionButton activeSectionButton" 
@@ -23,7 +27,7 @@
         </button>
         @await Html.PartialAsync(
             "~/Views/Partials/WorkspaceInfoButton.cshtml", 
-            $"/Workspaces/{Model.WorkspaceId()}/Info/{Model.InterfaceId()}"
+            Url.Action("Info", "Workspaces", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })
         )
     </div>
 

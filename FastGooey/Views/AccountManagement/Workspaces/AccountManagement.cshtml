@@ -1,7 +1,7 @@
 @model FastGooey.Models.ViewModels.ManageAccountViewModel
 
 <form method="post"
-      hx-post="/Workspaces/@ViewData["WorkspaceId"]/AccountManagement/Workspace/Save"
+      hx-post="@Url.Action("SaveAccountWorkspace", "AccountManagement", new { workspaceId = ViewData["WorkspaceId"] })"
       hx-trigger="blur from:#FormModel_FirstName, keyup[key=='Enter'] changed delay:500ms from:#FormModel_FirstName, blur from:#FormModel_LastName, keyup[key=='Enter'] changed delay:500ms from:#FormModel_LastName"
       hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()

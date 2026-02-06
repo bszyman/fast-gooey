@@ -8,7 +8,7 @@
 
 <div id="selectorPanel" class="py-4 px-4">
     <div
-        hx-post="/Workspaces/@Model/Widgets/Clock/create-widget"
+        hx-post="@Url.Action("CreateWidget", "Clock", new { workspaceId = Model })"
         hx-target="#workspace"
         data-widget-type="clock"
         hx-on::after-request="toggleEditor()"
@@ -19,7 +19,7 @@
         </p>
     </div>
     <div
-        hx-post="/Workspaces/@Model/Widgets/Map/create-widget"
+        hx-post="@Url.Action("CreateWidget", "Map", new { workspaceId = Model })"
         hx-target="#workspace"
         data-widget-type="map"
         hx-on::after-request="toggleEditor()"
@@ -30,7 +30,7 @@
         </p>
     </div>
     <div
-        hx-post="/Workspaces/@Model/Widgets/RssFeed/create-widget"
+        hx-post="@Url.Action("CreateWidget", "RssFeed", new { workspaceId = Model })"
         hx-target="#workspace"
         data-widget-type="rss"
         hx-on::after-request="toggleEditor()"
@@ -41,7 +41,7 @@
         </p>
     </div>
     <div
-        hx-post="/Workspaces/@Model/Widgets/Weather/create-widget"
+        hx-post="@Url.Action("CreateWidget", "Weather", new { workspaceId = Model })"
         hx-target="#workspace"
         data-widget-type="weather"
         hx-on::after-request="toggleEditor()"

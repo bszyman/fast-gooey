@@ -6,56 +6,56 @@
 
 <div id="interfaceOptions" class="py-4 px-4">
     <div
-        hx-get="/Interfaces/AppleMobile/FormFieldTextEditorPanel"
+        hx-get="@Url.Action("FormFieldTextEditorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Text</p>
     </div>
     
     <div
-        hx-get="/Interfaces/AppleMobile/FormFieldLongTextEditorPanel"
+        hx-get="@Url.Action("FormFieldLongTextEditorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Long Text</p>
     </div>
     
     <div
-        hx-get="/Interfaces/AppleMobile/FormFieldCheckboxEditorPanel"
+        hx-get="@Url.Action("FormFieldCheckboxEditorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Checkbox</p>
     </div>
     
     <div
-        hx-get="/Interfaces/AppleMobile/FormFieldDateEditorPanel"
+        hx-get="@Url.Action("FormFieldDateEditorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Date</p>
     </div>
     
     <div
-        hx-get="/Interfaces/AppleMobile/FormFieldTimeEditorPanel"
+        hx-get="@Url.Action("FormFieldTimeEditorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Time</p>
     </div>
     
     <div
-        hx-get="/Interfaces/AppleMobile/FormFieldDropDownEditorPanel"
+        hx-get="@Url.Action("FormFieldDropDownEditorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Dropdown</p>
     </div>
     
     <div
-        hx-get="/Interfaces/AppleMobile/FormFieldMultiSelectEditorPanel"
+        hx-get="@Url.Action("FormFieldMultiSelectEditorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">Multi-Select</p>
     </div>
     
     <div
-        hx-get="/Interfaces/AppleMobile/FormFieldFileEditorPanel"
+        hx-get="@Url.Action("FormFieldFileEditorPanel", "AppleMobileForm", new { workspaceId = ViewContext.RouteData.Values["workspaceId"] })"
         hx-target="#editorPanel"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
         <p class="font-medium mb-1">File</p>

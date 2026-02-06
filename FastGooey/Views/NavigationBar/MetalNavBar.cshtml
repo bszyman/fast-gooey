@@ -102,7 +102,7 @@
   <div class="flex gap-4">
     <ul class="flex">
       <li>
-        <a href="/Workspaces/@Model.WorkspaceId/AccountManagement" class="
+        <a href="@Url.Action("Index", "AccountManagement", new { workspaceId = Model.WorkspaceId })" class="
           segmentedControlItem
           @(Model.ActiveTab == "My Account" ? "segmentedControlItemActive text-white" : "")
           rounded-l-md
@@ -118,7 +118,7 @@
         </a>
       </li>
       <li>
-        <a href="/Workspaces/@Model.WorkspaceId/WorkspaceManagement" class="
+        <a href="@Url.Action("Index", "WorkspaceManagement", new { workspaceId = Model.WorkspaceId })" class="
           segmentedControlItem
           @(Model.ActiveTab == "Workspace Settings" ? "segmentedControlItemActive text-white" : "")
           rounded-r-md

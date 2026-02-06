@@ -2,7 +2,11 @@
 @{
     ViewBag.WorkspaceId = Model.WorkspaceId();
     ViewBag.InterfaceId = Model.InterfaceId();
-    var url = $"/Workspaces/{ViewBag.WorkspaceId}/interfaces/mac/outline/{ViewBag.InterfaceId}/editor-panel/{Model.Data.Identifier}/new";
+    var url = Url.Action(
+        "CreateEditorPanel",
+        "MacOutline",
+        new { workspaceId = ViewBag.WorkspaceId, interfaceId = ViewBag.InterfaceId, parentId = Model.Data.Identifier }
+    );
 }
 
 <div id="editor" class="mx-auto max-w-3xl mt-8">

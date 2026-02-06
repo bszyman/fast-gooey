@@ -8,7 +8,7 @@
 
 <div id="interfaceOptions" class="py-4 px-4">
     <div
-        hx-post="/Workspaces/@Model/interfaces/mac/table/create-interface"
+        hx-post="@Url.Action("CreateInterface", "MacTable", new { workspaceId = Model })"
         hx-target="#workspace"
         hx-on::after-request="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
@@ -19,7 +19,7 @@
     </div>
     
     <div
-        hx-post="/Workspaces/@Model/interfaces/mac/content/create-interface"
+        hx-post="@Url.Action("CreateInterface", "MacContent", new { workspaceId = Model })"
         hx-target="#workspace"
         hx-on::after-request="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
@@ -41,7 +41,7 @@
     @* </div> *@
     
     <div
-        hx-post="/Workspaces/@Model/interfaces/mac/sourcelist/create-interface"
+        hx-post="@Url.Action("CreateInterface", "MacSourceList", new { workspaceId = Model })"
         hx-target="#workspace"
         hx-on::after-request="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
@@ -52,7 +52,7 @@
     </div>
     
     <div
-        hx-post="/Workspaces/@Model/interfaces/mac/outline/create-interface"
+        hx-post="@Url.Action("CreateInterface", "MacOutline", new { workspaceId = Model })"
         hx-target="#workspace"
         hx-on::after-request="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">

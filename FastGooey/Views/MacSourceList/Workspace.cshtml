@@ -9,7 +9,7 @@
         {
             <div class="pb-4">
                 <button
-                    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/sourcelist/@Model.InterfaceId()/group-editor-panel/@group.Identifier"
+                    hx-get="@Url.Action("GroupEditorPanel", "MacSourceList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), groupId = group.Identifier })"
                     hx-target="#editorPanel"
                     onclick="toggleEditor()"
                     type="button"
@@ -24,7 +24,7 @@
                                 <button
                                     type="button"
                                     onclick="toggleEditor()" 
-                                    hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/sourcelist/@Model.InterfaceId()/item-editor-panel/group/@group.Identifier/item/@item.Identifier" 
+                                    hx-get="@Url.Action("ItemEditorPanel", "MacSourceList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), groupId = group.Identifier, itemId = item.Identifier })" 
                                     hx-target="#editorPanel"
                                     class="cursor-pointer w-full text-left">
                                     @item.Title
@@ -36,7 +36,7 @@
                         type="button"
                         class=" cursor-pointer w-full"
                         onclick="toggleEditor()"
-                        hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/sourcelist/@Model.InterfaceId()/item-editor-panel/group/@group.Identifier/item"
+                        hx-get="@Url.Action("ItemEditorPanel", "MacSourceList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), groupId = group.Identifier })"
                         hx-target="#editorPanel">
                         <div class="bg-zinc-200 font-semibold text-sm text-center text-shadow-zinc-700 py-2 rounded-br rounded-bl flex gap-2 items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-shadow-zinc-700">
@@ -50,7 +50,7 @@
         }
         
         <button
-            hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/sourcelist/@Model.InterfaceId()/group-editor-panel"
+            hx-get="@Url.Action("GroupEditorPanel", "MacSourceList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
             hx-target="#editorPanel"
             onclick="toggleEditor()"
             type="button"

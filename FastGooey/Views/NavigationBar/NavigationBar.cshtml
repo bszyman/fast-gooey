@@ -1,4 +1,43 @@
 @model FastGooey.Models.ViewModels.NavigationBar.NavigationBarViewModel
+@functions {
+    private string AppleMobileInterfaceUrl(FastGooey.Models.ViewModels.NavigationBar.InterfaceNavigationItem item)
+    {
+        var interfaceId = item.Id.ToBase64Url();
+        return item.Type switch
+        {
+            "List" => Url.Action("Index", "AppleMobileList", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Content" => Url.Action("Index", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Form" => Url.Action("Index", "AppleMobileForm", new { workspaceId = Model.WorkspaceId }) ?? "#",
+            _ => "#"
+        };
+    }
+
+    private string MacInterfaceUrl(FastGooey.Models.ViewModels.NavigationBar.InterfaceNavigationItem item)
+    {
+        var interfaceId = item.Id.ToBase64Url();
+        return item.Type switch
+        {
+            "Table" => Url.Action("Index", "MacTable", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Content" => Url.Action("Index", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "SourceList" => Url.Action("Index", "MacSourceList", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Outline" => Url.Action("Index", "MacOutline", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            _ => "#"
+        };
+    }
+
+    private string WidgetUrl(FastGooey.Models.ViewModels.NavigationBar.WidgetNavigationItem item)
+    {
+        var interfaceId = item.Id.ToBase64Url();
+        return item.Type switch
+        {
+            "Clock" => Url.Action("Index", "Clock", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Map" => Url.Action("Index", "Map", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "RssFeed" => Url.Action("Index", "RssFeed", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Weather" => Url.Action("Weather", "Weather", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            _ => "#"
+        };
+    }
+}
 
 <div class="interfaces mb-6">
   <div class="font-bold uppercase mb-1">Interfaces</div>
@@ -10,7 +49,7 @@
         </svg>
         <button type="button" class="flex-1 text-left cursor-pointer" onclick="toggleSubmenu(this)">iOS</button>
         <button 
-          hx-get="/Workspaces/@Model.WorkspaceId/apple-mobile-interface-selector-panel"
+          hx-get="@Url.Action("MacInterfaceSelectorPanel", "AppleMobile", new { workspaceId = Model.WorkspaceId })"
           hx-target="#editorPanel"
           onclick="toggleEditor()"
           type="button" 
@@ -25,7 +64,7 @@
         @foreach (var workspaceInterface in Model.AppleMobileInterfaces)
         {
           <li>
-            <a href="@workspaceInterface.Route" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+            <a href="@AppleMobileInterfaceUrl(workspaceInterface)" hx-boost="true" hx-target="#workspace" hx-push-url="true">
               @workspaceInterface.Name
             </a>
           </li>
@@ -39,7 +78,7 @@
         </svg>
         <button type="button" class="flex-1 text-left cursor-pointer" onclick="toggleSubmenu(this)">macOS</button>
         <button 
-          hx-get="/Workspaces/@Model.WorkspaceId/mac-interface-selector-panel"
+          hx-get="@Url.Action("MacInterfaceSelectorPanel", "MacOS", new { workspaceId = Model.WorkspaceId })"
           hx-target="#editorPanel"
           type="button" 
           class="btn btn-sm btn-primary cursor-pointer" onclick="toggleEditor()">
@@ -53,7 +92,7 @@
         @foreach (var workspaceInterface in Model.MacOSInterfaces)
         {
           <li>
-            <a href="@workspaceInterface.Route" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+            <a href="@MacInterfaceUrl(workspaceInterface)" hx-boost="true" hx-target="#workspace" hx-push-url="true">
               @workspaceInterface.Name
             </a>
           </li>
@@ -93,14 +132,14 @@
     @foreach (var widget in Model.Widgets)
     {
       <li>
-        <a href="@widget.Route" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+        <a href="@WidgetUrl(widget)" hx-boost="true" hx-target="#workspace" hx-push-url="true">
           @widget.Name
         </a>
       </li>
     }
     <li>
       <button
-        hx-get="/Workspaces/@Model.WorkspaceId/Widgets/NewWidgetPanel"
+        hx-get="@Url.Action("NewInterfacePanel", "Widgets", new { workspaceId = Model.WorkspaceId })"
         hx-target="#editorPanel"
         onclick="toggleEditor()"
         type="button"
@@ -115,15 +154,15 @@
   <div class="font-bold uppercase mb-1">System</div>
   <ul>
     <li>
-      <a href="/Workspaces/@Model.WorkspaceId/AccountManagement" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+      <a href="@Url.Action("Index", "AccountManagement", new { workspaceId = Model.WorkspaceId })" hx-boost="true" hx-target="#workspace" hx-push-url="true">
         Manage Account
       </a>
     </li>
     <li>
-      <a href="/Workspaces/@Model.WorkspaceId/WorkspaceManagement" hx-boost="true" hx-target="#workspace" hx-push-url="true">
+      <a href="@Url.Action("Index", "WorkspaceManagement", new { workspaceId = Model.WorkspaceId })" hx-boost="true" hx-target="#workspace" hx-push-url="true">
         Manage Workspace
       </a>
     </li>
-    <li><a href="/Auth/Logout">Logout</a></li>
+    <li><a href="@Url.Action("Logout", "Auth")">Logout</a></li>
   </ul>
 </div>

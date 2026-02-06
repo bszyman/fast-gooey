@@ -6,12 +6,16 @@
         <div class="flex-1 flex items-center">
             @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
             {
-                Url = $"/Workspaces/{Model.WorkspaceId()}/UpdateTitle/{Model.InterfaceId()}",
+                Url = Url.Action(
+                    "UpdateTitle",
+                    "Workspaces",
+                    new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() }
+                ),
                 Title = Model.WorkspaceViewModel!.ContentNode!.Name
             })
         </div>
         <button
-            hx-get="/Workspaces/@Model.WorkspaceViewModel.ContentNode.Workspace.PublicId/interfaces/mac/content/workspace/@Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url()"
+            hx-get="@Url.Action("Workspace", "MacContent", new { workspaceId = Model.WorkspaceViewModel.ContentNode.Workspace.PublicId, interfaceId = Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url() })"
             hx-target="#workspaceEditor"
             type="button"
             class="sectionButton activeSectionButton" onclick="changeSection(this)">
@@ -22,14 +26,14 @@
         </button>
         @await Html.PartialAsync(
             "~/Views/Partials/WorkspaceInfoButton.cshtml",
-            $"/Workspaces/{Model.WorkspaceId()}/Info/{Model.InterfaceId()}"
+            Url.Action("Info", "Workspaces", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })
         )
     </div>
 
     <div 
         id="workspaceEditor" 
         class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
-        hx-get="/Workspaces/@Model.WorkspaceId()/interfaces/mac/content/workspace/@Model.InterfaceId()" 
+        hx-get="@Url.Action("Workspace", "MacContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })" 
         hx-trigger="refreshWorkspace from:body"> 
         @await Html.PartialAsync("Workspace.cshtml", Model.WorkspaceViewModel)
     </div>

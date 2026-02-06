@@ -1,11 +1,8 @@
 @model FastGooey.Models.ViewModels.Mac.MacOutlineEditorPanelViewModel
 @{
-    var url = $"/Workspaces/{Model.WorkspaceId}/interfaces/mac/outline/{Model.InterfaceId.ToBase64Url()}/editor-panel";
-
-    if (!Model.Identifier.Equals(Guid.Empty))
-    {
-        url += $"/{Model.Identifier}";
-    }
+    var url = Model.Identifier.Equals(Guid.Empty)
+        ? Url.Action("SaveEditorPanel", "MacOutline", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url() })
+        : Url.Action("SaveEditorPanel", "MacOutline", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), itemId = Model.Identifier });
 }
 
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">

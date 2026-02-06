@@ -8,7 +8,7 @@
 
 <div id="interfaceOptions" class="py-4 px-4">
     <div
-        hx-post="/Workspaces/@Model/Interfaces/AppleMobile/List/create-interface"
+        hx-post="@Url.Action("CreateInterface", "AppleMobileList", new { workspaceId = Model })"
         hx-target="#workspace"
         hx-on::after-request="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
@@ -18,7 +18,7 @@
         </p>
     </div>
     <div
-        hx-post="/Workspaces/@Model/Interfaces/AppleMobile/Content/create-interface"
+        hx-post="@Url.Action("CreateInterface", "AppleMobileContent", new { workspaceId = Model })"
         hx-target="#workspace"
         hx-on::after-request="toggleEditor()"
         class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">

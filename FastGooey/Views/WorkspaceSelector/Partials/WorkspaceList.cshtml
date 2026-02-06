@@ -9,7 +9,7 @@
     {
         foreach (var workspace in Model)
         {
-            <a href="/Workspaces/@workspace.PublicId/Home">
+            <a href="@Url.Action("Home", "Workspaces", new { workspaceId = workspace.PublicId })">
                 <div class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
                     <p class="font-medium mb-1">@workspace.Name</p>
                     <p class="text-xs font-medium text-grayMid mb-1">
@@ -21,7 +21,7 @@
     }
     else
     {
-        <a href="/Workspaces/CreateWorkspace">
+        <a href="@Url.Action("CreateWorkspace", "WorkspaceSelector")">
             <div class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
                 <p class="font-medium mb-1">You don't have any workspaces.</p>
                 <p class="text-xs font-medium text-grayMid mb-1">

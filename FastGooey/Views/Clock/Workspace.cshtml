@@ -17,7 +17,7 @@
 </script>
 
 <form method="post"
-      hx-post="/Workspaces/@Model.WorkspaceId()/Widgets/Clock/Workspace/@Model.InterfaceId()"
+      hx-post="@Url.Action("SaveWorkspace", "Clock", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
       hx-target="#workspaceEditor">
     <div id="editor" class="mx-auto max-w-3xl mt-8">
         <div class="flex justify-center mb-8">
@@ -48,7 +48,7 @@
                             id="searchBtn"
                             type="button"
                             onclick="toggleEditor()"
-                            hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Clock/search-panel"
+                            hx-get="@Url.Action("SearchPanel", "Clock", new { workspaceId = Model.WorkspaceId() })"
                             hx-include="#location"
                             hx-target="#editorPanel"
                             class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">
@@ -67,7 +67,7 @@
             </div>
         </div>
         
-        <div hx-get="/Workspaces/@Model.WorkspaceId()/Widgets/Clock/preview-panel/@Model.InterfaceId()" 
+        <div hx-get="@Url.Action("PreviewPanel", "Clock", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })" 
              hx-trigger="load, refreshPreview from:body"
              hx-target="#previewPanel"
              hx-swap="outerHTML" 

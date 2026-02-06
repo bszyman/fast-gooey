@@ -1,8 +1,9 @@
 @model FastGooey.Models.ViewModels.AppleMobileInterface.AppleMobileTextConfigurationPanelViewModel
 
 @{
-    var url = $"/Workspaces/{Model.WorkspaceId}/Interfaces/AppleMobile/Content/{Model.InterfaceId?.ToBase64Url()}/text-item";
-    url = Model.Content.Identifier.Equals(Guid.Empty) ? url : $"{url}/{Model.Content.Identifier}";
+    var url = Model.Content.Identifier.Equals(Guid.Empty)
+        ? Url.Action("SaveText", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
+        : Url.Action("SaveText", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier });
 }
 
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
@@ -37,7 +38,7 @@
             {
                 <button
                     type="button"
-                    hx-delete="/Workspaces/@Model.WorkspaceId/Interfaces/AppleMobile/Content/@Model.InterfaceId?.ToBase64Url()/item/@Model.Content.Identifier"
+                    hx-delete="@Url.Action("DeleteItem", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier })"
                     hx-target="#workspaceEditor"
                     class="bg-rose-600 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
                     Delete
