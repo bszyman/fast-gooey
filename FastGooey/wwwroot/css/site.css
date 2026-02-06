@@ -101,7 +101,7 @@ body {
 }
 
 .sectionButton {
-    @apply text-center flex flex-col items-center gap-2 align-middle justify-center border-l border-l-zinc-300 w-26 cursor-pointer;
+    @apply text-center text-sm flex flex-col items-center gap-2 align-middle justify-center border-l border-l-zinc-300 w-26 cursor-pointer;
 }
 
 .activeSectionButton {
@@ -237,4 +237,8 @@ select.saved {
     after:absolute after:inset-x-0 after:top-0 after:h-1/2
     after:bg-gradient-to-b after:from-white/25 after:to-white/35
     after:pointer-events-none after:z-[3];
+}
+
+.workspaceTitleBar {
+    @apply text-sm bg-white flex h-20 border-b border-b-zinc-300 rounded-tr flex-shrink-0;
 }

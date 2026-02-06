@@ -2,7 +2,7 @@
 @model FastGooey.Models.ViewModels.Mac.MacContentViewModel
 
 <div class="h-full flex flex-col">
-    <div class="bg-white flex h-20 border-b border-b-zinc-300 rounded-tr-l flex-shrink-0">
+    <div class="workspaceTitleBar">
         <div class="flex-1 flex items-center">
             @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
             {
