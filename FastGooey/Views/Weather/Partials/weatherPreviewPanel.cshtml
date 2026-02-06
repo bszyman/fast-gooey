@@ -3,9 +3,18 @@
 <div class="w-full border-b border-b-zinc-300 py-2 px-4">
     <p class="font-semibold">Preview</p>
 </div>
-<div class="p-4">
-    <div id="preview" class="w-36 h-36 rounded-2xl border border-blueMid flex flex-col justify-center items-center bg-gradient-to-t from-blueLight to-blueMid">
-        <p class="font-bold text-5xl flex-1 flex items-center">@Model.Temperature℉</p>
-        <p class="h-8">@Model.Location</p>
+@if (Model.PreviewAvailable)
+{
+    <div class="p-4">
+        <div id="preview" class="w-36 h-36 rounded-2xl border border-blueMid flex flex-col justify-center items-center bg-gradient-to-t from-blueLight to-blueMid">
+            <p class="font-bold text-5xl flex-1 flex items-center">@Model.Temperature℉</p>
+            <p class="h-8">@Model.Location</p>
+        </div>
     </div>
-</div>
+}
+else
+{
+    <div class="p-4 text-center py-6 bg-zinc-100">
+        <p>Preview not available</p>
+    </div>
+}

@@ -36,7 +36,6 @@
       <Folder Include="Migrations\" />
       <Folder Include="Views\Home\Partials\" />
       <Folder Include="Views\Team\" />
-      <Folder Include="Views\Widgets\Workspaces\" />
     </ItemGroup>
 
     <ItemGroup>

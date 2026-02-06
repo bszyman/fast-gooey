@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using FastGooey.Attributes;
 using FastGooey.Database;
@@ -7,12 +8,15 @@ using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.ViewModels.Weather;
 using FastGooey.Services;
 using FastGooey.Utils;
+using Flurl;
 using Flurl.Http;
+using GeoTimeZone;
 using MapKit.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WeatherKit.Models;
 
 namespace FastGooey.Controllers.Widgets;
 
@@ -166,20 +170,54 @@ public class WeatherController(
         var gooeyInterface = await dbContext.GooeyInterfaces
             .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
-        // var config = gooeyInterface.Config.Deserialize<WeatherJsonDataModel>();
-        // var weatherKitKey = keyValueService.GetValueForKey("");
-
-        // fetch from weatherkit
-        // var weatherDataRequest =
-        //     await $"https://weatherkit.apple.com/api/v1/weather/en/{config.Latitude}/{config.Longitude}?timezone=America/Chicago&dataSets=currentWeather,forecastDaily&dailyEnd={endDateAsString}Z"
-        //         .WithHeader("Authorization", $"Bearer {authorizationToken}")
-        //         .GetJsonAsync<WeatherKitResponseModel>();
-
+        var config = gooeyInterface.Config.Deserialize<WeatherJsonDataModel>();
         var viewModel = new WeatherPreviewPanelViewModel
         {
-            Temperature = "79",
-            Location = "Pensacola, FL",
+            Location = config.Location
         };
+
+        if (string.IsNullOrWhiteSpace(config.Latitude) || string.IsNullOrWhiteSpace(config.Longitude))
+        {
+            return PartialView("~/Views/Weather/Partials/WeatherPreviewPanel.cshtml", viewModel);
+        }
+
+        if (!double.TryParse(config.Latitude, NumberStyles.Float, CultureInfo.InvariantCulture, out var latitude) ||
+            !double.TryParse(config.Longitude, NumberStyles.Float, CultureInfo.InvariantCulture, out var longitude))
+        {
+            return PartialView("~/Views/Weather/Partials/WeatherPreviewPanel.cshtml", viewModel);
+        }
+
+        var weatherKitJwt = await keyValueService.GetValueForKey(Constants.WeatherKitJwt);
+        if (string.IsNullOrWhiteSpace(weatherKitJwt))
+        {
+            logger.LogWarning("WeatherKit JWT not found for weather preview.");
+            return PartialView("~/Views/Weather/Partials/WeatherPreviewPanel.cshtml", viewModel);
+        }
+
+        try
+        {
+            var timezoneId = TimeZoneLookup.GetTimeZone(latitude, longitude).Result;
+
+            var weatherData = await $"https://weatherkit.apple.com/api/v1/weather/en/{latitude}/{longitude}"
+                .SetQueryParams(new
+                {
+                    timezone = timezoneId,
+                    dataSets = "currentWeather"
+                })
+                .WithHeader("Authorization", $"Bearer {weatherKitJwt}")
+                .GetJsonAsync<Weather>();
+
+            if (weatherData?.CurrentWeather != null)
+            {
+                var tempFahrenheit = (weatherData.CurrentWeather.Temperature * 9 / 5) + 32;
+                viewModel.Temperature = Math.Round(tempFahrenheit).ToString(CultureInfo.InvariantCulture);
+                viewModel.PreviewAvailable = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unable to fetch WeatherKit preview data.");
+        }
 
         return PartialView("~/Views/Weather/Partials/WeatherPreviewPanel.cshtml", viewModel);
     }
