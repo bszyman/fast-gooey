@@ -144,7 +144,7 @@ body {
 input.saved,
 textarea.saved,
 select.saved {
-    @apply border-green-400 !important;
+    @apply !border-green-400 bg-green-50;
 }
 
 .formGroup select {
@@ -225,4 +225,16 @@ select.saved {
 
 .selectedInterfaceListItem {
     @apply bg-gradient-to-b from-blue-400 to-blue-500 border-y border-y-cyan-300/60 shadow-sm text-white font-medium relative overflow-hidden;
+}
+
+.interfaceSelectorControlBar {
+    @apply absolute bottom-0 w-full flex items-center
+    border-t border-t-stone-400/50
+    before:absolute before:inset-0
+    bg-gradient-to-b from-stone-200 to-stone-100
+    before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)]
+    before:pointer-events-none before:z-[1]
+    after:absolute after:inset-x-0 after:top-0 after:h-1/2
+    after:bg-gradient-to-b after:from-white/25 after:to-white/35
+    after:pointer-events-none after:z-[3];
 }
