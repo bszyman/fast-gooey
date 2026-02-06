@@ -60,6 +60,25 @@ function changeInterfaceListSelection(sender) {
     sender.classList.add('selectedInterfaceListItem');
 }
 
+function deleteSelectedInterface(deleteUrlBase) {
+    const list = document.getElementById('interfaceList');
+    const selected = list?.querySelector('.selectedInterfaceListItem');
+    const interfaceId = selected?.dataset?.interfaceId;
+
+    if (!interfaceId) {
+        return;
+    }
+
+    if (!window.confirm('Delete this interface? This cannot be undone.')) {
+        return;
+    }
+
+    htmx.ajax('DELETE', `${deleteUrlBase}/${interfaceId}`, {
+        target: '#workspace',
+        swap: 'innerHTML'
+    });
+}
+
 document.addEventListener('htmx:afterRequest', function(event) {
     if (event.detail.successful) {
         let elt = event.detail.elt;

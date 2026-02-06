@@ -65,6 +65,32 @@ public class MacOSController(
 
         return PartialView("~/Views/MacOS/Partials/MacInterfaceSelectorPanel.cshtml", workspaceId);
     }
+
+    [HttpDelete("interface/{interfaceId:guid}")]
+    public async Task<IActionResult> DeleteInterface(Guid workspaceId, Guid interfaceId)
+    {
+        var interfaceNode = await dbContext.GooeyInterfaces
+            .Include(x => x.Workspace)
+            .FirstOrDefaultAsync(x =>
+                x.Workspace.PublicId.Equals(workspaceId) &&
+                x.DocId.Equals(interfaceId) &&
+                x.Platform.Equals("Mac"));
+
+        if (interfaceNode == null)
+        {
+            return NotFound();
+        }
+
+        dbContext.GooeyInterfaces.Remove(interfaceNode);
+        await dbContext.SaveChangesAsync();
+
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
+
+        return Content(
+            "<div class=\"flex justify-center items-center h-full w-full\">Select an interface to get started.</div>",
+            "text/html"
+        );
+    }
     
     private async Task<List<InterfaceNavigationItem>> GetInterfacesForWorkspace(Guid workspaceId)
     {
