@@ -355,6 +355,8 @@ public class Auth(
         try
         {
             var currentUser = await userManager.GetUserAsync(User);
+            if (currentUser is null)
+                return Unauthorized();
 
             var token = await userManager.GenerateEmailConfirmationTokenAsync(currentUser);
             var confirmationLink = Url.Action(
@@ -363,6 +365,9 @@ public class Auth(
                 new { userId = currentUser.Id, token },
                 Request.Scheme
             );
+
+            if (string.IsNullOrWhiteSpace(confirmationLink))
+                return StatusCode(500, "Unable to generate confirmation link.");
 
             await emailSender.SendVerificationEmail(currentUser, confirmationLink);
 

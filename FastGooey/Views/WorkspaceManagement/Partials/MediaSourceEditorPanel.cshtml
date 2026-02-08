@@ -1,0 +1,133 @@
+@using FastGooey.Models.Media
+@model FastGooey.Models.ViewModels.Media.MediaSourceEditorViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Media Source Configuration</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveMediaSource", "WorkspaceManagement", new { workspaceId = Model.WorkspaceId })"
+      hx-target="#workspace">
+    @Html.AntiForgeryToken()
+    
+    <div class="p-4">
+        <div class="formGroup formGroupAddBackground h-full">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold">Configuration</p>
+            </div>
+            <div class="px-4 py-4">
+            
+                <input asp-for="FormModel.MediaSourceId" type="hidden" />
+
+                <div class="mb-4">
+                    <label asp-for="FormModel.Name"></label>
+                    <input asp-for="FormModel.Name" type="text" class="w-full" />
+                    <span asp-validation-for="FormModel.Name" class="text-red-600 text-sm mt-1 block"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="FormModel.SourceType"></label>
+                    <select asp-for="FormModel.SourceType"
+                            asp-items="Html.GetEnumSelectList<MediaSourceType>()"
+                            class="w-full"
+                            data-media-source-type-select="true">
+                    </select>
+                    <span asp-validation-for="FormModel.SourceType" class="text-red-600 text-sm mt-1 block"></span>
+                </div>
+
+                <div class="mb-6 flex items-center gap-2">
+                    <input asp-for="FormModel.IsEnabled" type="checkbox" class="h-4 w-4" />
+                    <label asp-for="FormModel.IsEnabled" class="mb-0">Enabled</label>
+                </div>
+
+                <div class="media-source-fields" data-media-source-type="@((int)MediaSourceType.S3)">
+                    <div class="mb-4">
+                        <label asp-for="FormModel.S3BucketName"></label>
+                        <input asp-for="FormModel.S3BucketName" type="text" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="FormModel.S3Region"></label>
+                        <input asp-for="FormModel.S3Region" type="text" class="w-full" placeholder="us-east-1" />
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="FormModel.S3ServiceUrl"></label>
+                        <input asp-for="FormModel.S3ServiceUrl" type="url" class="w-full" placeholder="https://s3.amazonaws.com" />
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="FormModel.S3AccessKeyId"></label>
+                        <input asp-for="FormModel.S3AccessKeyId" type="text" class="w-full" autocomplete="off" />
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="FormModel.S3SecretAccessKey"></label>
+                        <input asp-for="FormModel.S3SecretAccessKey" type="password" class="w-full" autocomplete="off" />
+                    </div>
+                    @if (Model.HasStoredS3Credentials)
+                    {
+                        <p class="text-xs text-zinc-500 mb-4">Credentials are already stored. Leave blank to keep them unchanged.</p>
+                    }
+                </div>
+
+                <div class="media-source-fields" data-media-source-type="@((int)MediaSourceType.AzureBlob)">
+                    <div class="mb-4">
+                        <label asp-for="FormModel.AzureConnectionString"></label>
+                        <input asp-for="FormModel.AzureConnectionString" type="password" class="w-full" autocomplete="off" />
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="FormModel.AzureContainerName"></label>
+                        <input asp-for="FormModel.AzureContainerName" type="text" class="w-full" />
+                    </div>
+                    @if (Model.HasStoredAzureConnectionString)
+                    {
+                        <p class="text-xs text-zinc-500 mb-4">A connection string is already stored. Leave blank to keep it unchanged.</p>
+                    }
+                </div>
+
+                <div class="media-source-fields" data-media-source-type="@((int)MediaSourceType.WebDav)">
+                    <div class="mb-4">
+                        <label asp-for="FormModel.WebDavBaseUrl"></label>
+                        <input asp-for="FormModel.WebDavBaseUrl" type="url" class="w-full" placeholder="https://files.example.com/dav/" />
+                    </div>
+                    <div class="mb-4 flex items-center gap-2">
+                        <input asp-for="FormModel.WebDavUseBasicAuth" type="checkbox" class="h-4 w-4" />
+                        <label asp-for="FormModel.WebDavUseBasicAuth" class="mb-0">Use HTTP Basic Auth</label>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="FormModel.WebDavUsername"></label>
+                        <input asp-for="FormModel.WebDavUsername" type="text" class="w-full" autocomplete="off" />
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="FormModel.WebDavPassword"></label>
+                        <input asp-for="FormModel.WebDavPassword" type="password" class="w-full" autocomplete="off" />
+                    </div>
+                    @if (Model.HasStoredWebDavCredentials)
+                    {
+                        <p class="text-xs text-zinc-500 mb-4">Credentials are already stored. Leave blank to keep them unchanged.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+        <div class="flex gap-2 items-center w-1/2">
+            @if (Model.IsEditing)
+            {
+                <button
+                    type="button"
+                    hx-delete="@Url.Action("DeleteMediaSource", "WorkspaceManagement", new { workspaceId = Model.WorkspaceId, sourceId = Model.FormModel.MediaSourceId })"
+                    hx-target="#workspace"
+                    class="bg-rose-600 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+                    Delete
+                </button>
+            }
+        </div>
+        <div class="flex gap-2 items-center justify-end w-1/2 text-right">
+            @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+        </div>
+    </div>
+</form>
+
+

@@ -220,7 +220,11 @@ select.saved {
 }
 
 .segmentedControlItemActive {
-    @apply from-macAqua to-cyan-500 border-cyan-500/60 text-white;
+    @apply from-sky-600 to-sky-400 border-sky-500/60 text-white;
+}
+
+#interfaceList {
+    @apply flex flex-col text-sm;
 }
 
 .selectedInterfaceListItem {
@@ -229,7 +233,7 @@ select.saved {
 
 .interfaceSelectorControlBar {
     @apply absolute bottom-0 w-full flex items-center
-    border-t border-t-stone-400/50
+    h-8 border-t border-t-stone-400/50
     before:absolute before:inset-0
     bg-gradient-to-b from-stone-200 to-stone-100
     before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)]

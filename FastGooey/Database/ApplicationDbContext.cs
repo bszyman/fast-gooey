@@ -1,4 +1,5 @@
 using FastGooey.Models;
+using FastGooey.Models.Media;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -10,6 +11,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Workspace> Workspaces { get; set; } = null!;
     public DbSet<GooeyInterface> GooeyInterfaces { get; set; } = null!;
+    public DbSet<MediaSource> MediaSources { get; set; } = null!;
     public DbSet<KeyValueStore> KeyValueStores { get; set; } = null!;
     public DbSet<PasskeyCredential> PasskeyCredentials { get; set; } = null!;
     public DbSet<MagicLinkToken> MagicLinkTokens { get; set; } = null!;
@@ -57,6 +59,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .WithMany(w => w.GooeyInterfaces)
             .HasForeignKey(g => g.WorkspaceId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MediaSource>()
+            .HasOne(s => s.Workspace)
+            .WithMany(w => w.MediaSources)
+            .HasForeignKey(s => s.WorkspaceId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     public override int SaveChanges()
@@ -96,6 +104,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 if (entry.State == EntityState.Added)
                     gooeyInterface.CreatedAt = now;
                 gooeyInterface.UpdatedAt = now;
+            }
+            else if (entry.Entity is MediaSource mediaSource)
+            {
+                if (entry.State == EntityState.Added)
+                    mediaSource.CreatedAt = now;
+                mediaSource.UpdatedAt = now;
             }
         }
     }

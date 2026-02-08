@@ -76,6 +76,21 @@
           <a href="@Url.Action("Index", "Widgets", new { workspaceId = Model.WorkspaceId })" class="
           segmentedControlItem
           @(Model.ActiveTab == "Widgets" ? "segmentedControlItemActive text-white" : "")
+          -ml-px
+          before:absolute before:inset-0
+          before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+          before:pointer-events-none before:z-[1]
+          after:absolute after:inset-x-0 after:top-0 after:h-1/2
+          after:bg-gradient-to-b after:from-white/25 after:to-white/35
+          after:pointer-events-none after:z-[3]
+        ">
+            <span class="relative z-[2]">Widgets</span>
+          </a>
+        </li>
+        <li>
+          <a href="@Url.Action("Index", "Media", new { workspaceId = Model.WorkspaceId })" class="
+          segmentedControlItem
+          @(Model.ActiveTab == "Media" ? "segmentedControlItemActive text-white" : "")
           rounded-r-md
           -ml-px
           before:absolute before:inset-0 before:rounded-r-md 
@@ -86,7 +101,7 @@
           after:rounded-tr-md
           after:pointer-events-none after:z-[3]
         ">
-            <span class="relative z-[2]">Widgets</span>
+            <span class="relative z-[2]">Media</span>
           </a>
         </li>
       </ul>

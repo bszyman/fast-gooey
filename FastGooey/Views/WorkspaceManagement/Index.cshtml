@@ -1,26 +1,48 @@
 @model FastGooey.Models.ViewModels.ManageWorkspaceViewModel
+@{
+    ViewData["Title"] = "Workspace Settings";
+}
 
 <partial name="~/Views/NavigationBar/MetalNavBar.cshtml" model="@Model.NavBarViewModel" />
 
 <div class="flex-1 min-h-0 px-2 pb-2">
     <div class="relative w-full h-full shadow grid grid-cols-5 grid-rows-1 max-h-full">
-        <div 
-            id="interfacesPanel" 
+        <div
+            id="interfacesPanel"
             class="relative bg-indigo-100 border-r border-r-blue-400/50 col-span-1 rounded-l-lg overflow-y-auto overflow-x-clip min-h-0">
+            <div class="absolute top-0 w-full my-2 text-blue-900">
+                <span class="mx-3 uppercase text-sm font-semibold tracking-tight">Workspace Settings</span>
+            </div>
+
+            <div class="absolute top-10 bottom-8 overflow-y-scroll w-full">
+                <ul id="interfaceList">
+                    <li hx-get="@Url.Action("OrganizationWorkspace", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId })" 
+                        hx-boost="true" 
+                        hx-target="#workspace" 
+                        hx-push-url="false" 
+                        class="py-2 text-blueDark font-medium overflow-ellipsis cursor-pointer selectedInterfaceListItem" 
+                        onclick="changeInterfaceListSelection(this)">
+                        <p class="mx-4 inline-block">
+                            Workspace Configuration
+                        </p>
+                    </li>
+                    <li hx-get="@Url.Action("MediaSourceEditor", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId })" 
+                        hx-boost="true" 
+                        hx-target="#workspace" 
+                        hx-push-url="false" 
+                        class="py-2 text-blueDark font-medium overflow-ellipsis cursor-pointer" 
+                        onclick="changeInterfaceListSelection(this)">
+                        <p class="mx-4 inline-block">
+                            Media Source Configuration
+                        </p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="interfaceSelectorControlBar"></div>
         </div>
         <div id="workspace" class="bg-stone-200 col-span-4 rounded-r-lg min-h-0 overflow-hidden">
-            <div class="h-full flex flex-col">
-                <div class="bg-white flex h-20 border-b border-b-zinc-300 rounded-tr-l flex-shrink-0">
-                    <div class="flex-1 flex items-center">
-                        <p class="p-2 mx-6 w-full font-bold">Workspace Management</p>
-                    </div>
-                </div>
-
-                <div id="workspaceEditor" 
-                     class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"> 
-                    @await Html.PartialAsync("Workspaces/WorkspaceManagement.cshtml", Model)
-                </div>
-            </div>
+            @await Html.PartialAsync("WorkspaceManagement.cshtml", Model)
         </div>
     </div>
 </div>

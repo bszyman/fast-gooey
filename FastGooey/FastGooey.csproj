@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AWSSDK.S3" Version="4.0.18.2" />
+      <PackageReference Include="Azure.Storage.Blobs" Version="12.22.2" />
       <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
       <PackageReference Include="Fido2" Version="4.0.0" />
       <PackageReference Include="Flurl.Http" Version="4.0.2" />
@@ -82,6 +84,9 @@
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldTextEditorPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldTimeEditorPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormSubmissionViewerPanel.cshtml" />
+      <AdditionalFiles Include="Views\WorkspaceManagement\Partials\MediaSourceEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
     </ItemGroup>
 
     <ItemGroup>
@@ -100,6 +105,12 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Views\MacOS\Partials\MacInterfaceSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Views\WorkspaceManagement\WorkspaceManagement.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Views\WorkspaceManagement\Partials\MediaSourceEditor.Panelcshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>

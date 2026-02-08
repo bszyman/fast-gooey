@@ -132,3 +132,29 @@ document.addEventListener('input', function(event) {
         }
     }
 });
+
+function updateMediaSourceFields(root = document) {
+    const select = root.querySelector('[data-media-source-type-select="true"]');
+    if (!select) return;
+
+    const selectedType = select.value;
+    root.querySelectorAll('.media-source-fields').forEach(section => {
+        const sectionType = section.dataset.mediaSourceType;
+        section.style.display = sectionType === selectedType ? 'block' : 'none';
+    });
+}
+
+document.addEventListener('change', function(event) {
+    const target = event.target;
+    if (target.matches('[data-media-source-type-select="true"]')) {
+        updateMediaSourceFields(target.closest('form') || document);
+    }
+});
+
+document.addEventListener('htmx:afterSwap', function(event) {
+    updateMediaSourceFields(event.detail.target || document);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateMediaSourceFields(document);
+});

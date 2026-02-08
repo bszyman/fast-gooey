@@ -9,8 +9,9 @@ public static class HtmlHelpers
     public static IHtmlContent AntiForgeryTokenValue(this IHtmlHelper helper)
     {
         var antiforgery = helper.ViewContext.HttpContext.RequestServices.GetService<IAntiforgery>();
+        if (antiforgery is null) throw new Exception("Antiforgery service not found.");
+        
         var tokens = antiforgery.GetAndStoreTokens(helper.ViewContext.HttpContext);
-
         var tokenValue = tokens.RequestToken;
 
         return new HtmlString(tokenValue);

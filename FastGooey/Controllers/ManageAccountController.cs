@@ -109,6 +109,7 @@ public class AccountManagementController(
                 .Where(p => p.UserId == user.Id)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToList(),
+            Workspace = dbContext.Workspaces.First(x => x.PublicId == WorkspaceId),
             FormModel = new AccountManagementFormModel
             {
                 FirstName = user.FirstName,
