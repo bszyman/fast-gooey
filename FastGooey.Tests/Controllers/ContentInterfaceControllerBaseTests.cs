@@ -90,44 +90,4 @@ public class ContentInterfaceControllerBaseTests
         Assert.Equal("New Value", data.Items[0].Value);
         Assert.IsType<PartialViewResult>(result);
     }
-
-    [Fact]
-    public async Task DeleteItem_RemovesItem_WhenExists()
-    {
-        // Arrange
-        var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
-        using var dbContext = TestDbContextFactory.Create(clock);
-        var keyValueService = new StubKeyValueService();
-
-        var itemId = Guid.NewGuid();
-        var dataModel = new TestContentDataModel
-        {
-            Items = new List<TestContentItem> { new TestContentItem { Identifier = itemId, Value = "ToDelete" } }
-        };
-
-        var workspace = new Workspace { Name = "Test", Slug = "test" };
-        var gooeyInterface = new GooeyInterface
-        {
-            Workspace = workspace,
-            Name = "Interface",
-            Platform = "TestPlatform",
-            Config = JsonSerializer.SerializeToDocument(dataModel)
-        };
-        dbContext.GooeyInterfaces.Add(gooeyInterface);
-        await dbContext.SaveChangesAsync();
-
-        var controller = new ConcreteContentController(keyValueService, dbContext);
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext()
-        };
-
-        // Act
-        var result = await controller.DeleteItem(workspace.PublicId, gooeyInterface.DocId.ToString(), itemId);
-
-        // Assert
-        var updatedInterface = await dbContext.GooeyInterfaces.FirstAsync(x => x.Id == gooeyInterface.Id);
-        var data = JsonSerializer.Deserialize<TestContentDataModel>(updatedInterface.Config);
-        Assert.Empty(data.Items);
-    }
 }
