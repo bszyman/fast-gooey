@@ -136,8 +136,8 @@ public abstract class ContentInterfaceControllerBase<TDataModel, TItemBase, TWor
         return PartialView(viewPath, viewModel);
     }
 
-    [HttpDelete("{interfaceId}/item/{itemId:guid}")]
-    public async Task<IActionResult> DeleteItem(Guid workspaceId, string interfaceId, Guid itemId)
+    [NonAction]
+    protected async Task<IActionResult> DeleteItemInternal(string interfaceId, Guid itemId)
     {
         if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
         {

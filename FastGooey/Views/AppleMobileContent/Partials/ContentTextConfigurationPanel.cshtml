@@ -36,13 +36,14 @@
         <div class="flex items-center w-1/2">
             @if (!Model.Content.Identifier.Equals(Guid.Empty))
             {
-                <button
-                    type="button"
-                    hx-delete="@Url.Action("DeleteItem", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier })"
-                    hx-target="#workspaceEditor"
-                    class="bg-rose-600 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
-                    Delete
-                </button>
+                @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new FastGooey.Models.ViewModels.DeleteButtonViewModel
+                {
+                    Url = Url.Action(
+                        "DeleteItem",
+                        "AppleMobileContent",
+                        new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier }
+                    )
+                })
             }
         </div>
         <div class="flex items-center justify-end w-1/2 text-right gap-2">

@@ -32,7 +32,19 @@
     </div>
         
     <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
-        <div class="flex items-center w-1/2"></div>
+        <div class="flex items-center w-1/2">
+            @if (!Model.Content.Identifier.Equals(Guid.Empty))
+            {
+                @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new FastGooey.Models.ViewModels.DeleteButtonViewModel
+                {
+                    Url = Url.Action(
+                        "DeleteItem",
+                        "MacContent",
+                        new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier }
+                    )
+                })
+            }
+        </div>
         <div class="flex items-center justify-end w-1/2 text-right gap-2">
             @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
             @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")

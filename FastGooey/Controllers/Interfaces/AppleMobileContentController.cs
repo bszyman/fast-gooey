@@ -301,4 +301,10 @@ public class AppleMobileContentController(
             }
         );
     }
+
+    [HttpDelete("{interfaceId}/item/{itemId:guid}")]
+    public Task<IActionResult> DeleteItem(Guid workspaceId, string interfaceId, Guid itemId)
+    {
+        return DeleteItemInternal(interfaceId, itemId);
+    }
 }
