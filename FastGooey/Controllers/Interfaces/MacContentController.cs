@@ -3,6 +3,7 @@ using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Extensions;
 using FastGooey.Models;
+using FastGooey.Models.FormModels;
 using FastGooey.Models.FormModels.Mac;
 using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Models.ViewModels.Mac;
@@ -290,14 +291,14 @@ public class MacContentController(
     }
 
     [HttpPost("{interfaceId}/video-item/{itemId:guid?}")]
-    public async Task<IActionResult> SaveVideo(Guid workspaceId, string interfaceId, Guid? itemId, VideoContentFormModel form)
+    public async Task<IActionResult> SaveVideo(Guid workspaceId, string interfaceId, Guid? itemId, Models.FormModels.Mac.VideoContentFormModel form)
     {
         if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
         {
             return NotFound();
         }
 
-        return await SaveContentItemInternal<VideoContentItem, VideoContentFormModel>(
+        return await SaveContentItemInternal<VideoContentItem, Models.FormModels.Mac.VideoContentFormModel>(
             interfaceGuid,
             itemId,
             form,
@@ -308,6 +309,51 @@ public class MacContentController(
                 item.ThumbnailUrl = f.ThumbnailUrl;
             }
         );
+    }
+
+    [HttpPost("{interfaceId}/reorder-items")]
+    public async Task<IActionResult> ReorderItems(Guid workspaceId, string interfaceId, ContentItemOrderFormModel form)
+    {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var contentNode = await dbContext.GooeyInterfaces
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
+
+        var data = contentNode.Config.DeserializePolymorphic<MacContentJsonDataModel>();
+
+        if (form.OrderedItemIds.Count > 0)
+        {
+            var itemsById = data.Items.ToDictionary(item => item.Identifier);
+            var reordered = new List<MacContentItemJsonDataModel>();
+
+            foreach (var itemId in form.OrderedItemIds)
+            {
+                if (itemsById.TryGetValue(itemId, out var item))
+                {
+                    reordered.Add(item);
+                    itemsById.Remove(itemId);
+                }
+            }
+
+            foreach (var item in data.Items)
+            {
+                if (itemsById.ContainsKey(item.Identifier))
+                {
+                    reordered.Add(item);
+                    itemsById.Remove(item.Identifier);
+                }
+            }
+
+            data.Items = reordered;
+            contentNode.Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions);
+            await dbContext.SaveChangesAsync();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
+        return PartialView($"{BaseViewPath}/Workspace.cshtml", viewModel);
     }
 
     [HttpDelete("{interfaceId}/item/{itemId:guid}")]

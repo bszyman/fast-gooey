@@ -144,6 +144,17 @@ function updateMediaSourceFields(root = document) {
     });
 }
 
+function ensureContentOrderingScript(root = document) {
+    if (!root.querySelector('[data-content-order-container="true"]')) return;
+    if (document.querySelector('script[data-content-ordering-script="true"]')) return;
+
+    const script = document.createElement('script');
+    script.src = '/js/content-ordering.js';
+    script.defer = true;
+    script.dataset.contentOrderingScript = 'true';
+    document.body.appendChild(script);
+}
+
 document.addEventListener('change', function(event) {
     const target = event.target;
     if (target.matches('[data-media-source-type-select="true"]')) {
@@ -153,8 +164,10 @@ document.addEventListener('change', function(event) {
 
 document.addEventListener('htmx:afterSwap', function(event) {
     updateMediaSourceFields(event.detail.target || document);
+    ensureContentOrderingScript(event.detail.target || document);
 });
 
 document.addEventListener('DOMContentLoaded', function() {
     updateMediaSourceFields(document);
+    ensureContentOrderingScript(document);
 });

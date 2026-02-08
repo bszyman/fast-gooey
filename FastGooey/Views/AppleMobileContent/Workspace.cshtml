@@ -44,59 +44,80 @@
                 <p class="font-semibold">Page Content</p>
             </div>
             <div class="py-4 px-4">
-                @foreach (var item in Model.Data.Items)
-                {
-                    if (item.ContentType.Equals("headline"))
+                <div
+                    id="contentItems"
+                    data-content-order-container="true"
+                    hx-post="@Url.Action("ReorderItems", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                    hx-trigger="contentReordered"
+                    hx-target="#workspaceEditor">
+                    @foreach (var item in Model.Data.Items)
                     {
-                        var headline = (HeadlineContentItem)item;
-                        <div
-                            onclick="toggleEditor()"
-                            hx-get="@Url.Action("HeadlineConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = item.Identifier })"
-                            hx-target="#editorPanel"
-                            class="rounded hover:bg-zinc-100 p-1 cursor-pointer">
-                            <p class="text-lg font-bold">@headline.Headline</p>
-                        </div>
-                    }
+                        if (item.ContentType.Equals("headline"))
+                        {
+                            var headline = (HeadlineContentItem)item;
+                            <div
+                                draggable="true"
+                                data-content-item-id="@item.Identifier"
+                                onclick="toggleEditor()"
+                                hx-get="@Url.Action("HeadlineConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = item.Identifier })"
+                                hx-target="#editorPanel"
+                                class="rounded hover:bg-zinc-100 p-1 cursor-pointer cursor-grab">
+                                <p class="text-lg font-bold">@headline.Headline</p>
+                            </div>
+                        }
 
-                    if (item.ContentType.Equals("text"))
-                    {
-                        var text = (TextContentItem)item;
-                        <div
-                            onclick="toggleEditor()"
-                            hx-get="@Url.Action("TextConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = item.Identifier })"
-                            hx-target="#editorPanel"
-                            class="rounded hover:bg-zinc-100 p-1 cursor-pointer">
-                            <p class="text-md">@text.Text</p>
-                        </div>
-                    }
+                        if (item.ContentType.Equals("text"))
+                        {
+                            var text = (TextContentItem)item;
+                            <div
+                                draggable="true"
+                                data-content-item-id="@item.Identifier"
+                                onclick="toggleEditor()"
+                                hx-get="@Url.Action("TextConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = item.Identifier })"
+                                hx-target="#editorPanel"
+                                class="rounded hover:bg-zinc-100 p-1 cursor-pointer cursor-grab">
+                                <p class="text-md">@text.Text</p>
+                            </div>
+                        }
 
-                    if (item.ContentType.Equals("link"))
-                    {
-                        var link = (LinkContentItem)item;
-                        <div
-                            onclick="toggleEditor()"
-                            hx-get="@Url.Action("LinkConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = link.Identifier })"
-                            hx-target="#editorPanel"
-                            class="my-3 rounded-xl hover:bg-zinc-100 px-1 py-3 cursor-pointer text-center border border-zinc-300">
-                            <a href="@link.Url" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="text-md text-blueMid font-bold">
-                                @link.Title
-                            </a>
-                        </div>
-                    }
+                        if (item.ContentType.Equals("link"))
+                        {
+                            var link = (LinkContentItem)item;
+                            <div
+                                draggable="true"
+                                data-content-item-id="@item.Identifier"
+                                onclick="toggleEditor()"
+                                hx-get="@Url.Action("LinkConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = link.Identifier })"
+                                hx-target="#editorPanel"
+                                class="my-3 rounded-xl hover:bg-zinc-100 px-1 py-3 cursor-pointer cursor-grab text-center border border-zinc-300">
+                                <a href="@link.Url" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="text-md text-blueMid font-bold">
+                                    @link.Title
+                                </a>
+                            </div>
+                        }
 
-                    if (item.ContentType.Equals("image"))
-                    {
-                        var image = (ImageContentItem)item;
-                        <div
-                            onclick="toggleEditor()"
-                            hx-get="@Url.Action("ImageConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = image.Identifier })"
-                            hx-target="#editorPanel"
-                            class="rounded-xl hover:bg-zinc-100 px-1 py-3 cursor-pointer text-center">
-                            <img src="@image.Url" alt="@image.AltText" class="w-full">
-                            <p class="mt-2 px-2 text-sm font-medium text-left">@image.AltText</p>
-                        </div>
+                        if (item.ContentType.Equals("image"))
+                        {
+                            var image = (ImageContentItem)item;
+                            <div
+                                draggable="true"
+                                data-content-item-id="@item.Identifier"
+                                onclick="toggleEditor()"
+                                hx-get="@Url.Action("ImageConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = image.Identifier })"
+                                hx-target="#editorPanel"
+                                class="rounded-xl hover:bg-zinc-100 px-1 py-3 cursor-pointer cursor-grab text-center">
+                                <img src="@image.Url" alt="@image.AltText" class="w-full">
+                                <p class="mt-2 px-2 text-sm font-medium text-left">@image.AltText</p>
+                            </div>
+                        }
                     }
-                }
+                    <div class="hidden" data-content-order-inputs="true">
+                        @foreach (var item in Model.Data.Items)
+                        {
+                            <input type="hidden" name="orderedItemIds" value="@item.Identifier" />
+                        }
+                    </div>
+                </div>
                 <button
                     type="button"
                     onclick="toggleEditor()"

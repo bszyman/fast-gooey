@@ -302,6 +302,51 @@ public class AppleMobileContentController(
         );
     }
 
+    [HttpPost("{interfaceId}/reorder-items")]
+    public async Task<IActionResult> ReorderItems(Guid workspaceId, string interfaceId, ContentItemOrderFormModel form)
+    {
+        if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
+        {
+            return NotFound();
+        }
+
+        var contentNode = await dbContext.GooeyInterfaces
+            .FirstAsync(x => x.DocId.Equals(interfaceGuid));
+
+        var data = contentNode.Config.DeserializePolymorphic<AppleMobileContentJsonDataModel>();
+
+        if (form.OrderedItemIds.Count > 0)
+        {
+            var itemsById = data.Items.ToDictionary(item => item.Identifier);
+            var reordered = new List<AppleMobileContentItemJsonDataModel>();
+
+            foreach (var itemId in form.OrderedItemIds)
+            {
+                if (itemsById.TryGetValue(itemId, out var item))
+                {
+                    reordered.Add(item);
+                    itemsById.Remove(itemId);
+                }
+            }
+
+            foreach (var item in data.Items)
+            {
+                if (itemsById.ContainsKey(item.Identifier))
+                {
+                    reordered.Add(item);
+                    itemsById.Remove(item.Identifier);
+                }
+            }
+
+            data.Items = reordered;
+            contentNode.Config = JsonSerializer.SerializeToDocument(data, JsonDocumentExtensions.PolymorphicOptions);
+            await dbContext.SaveChangesAsync();
+        }
+
+        var viewModel = await WorkspaceViewModelForInterfaceId(interfaceGuid);
+        return PartialView($"{BaseViewPath}/Workspace.cshtml", viewModel);
+    }
+
     [HttpDelete("{interfaceId}/item/{itemId:guid}")]
     public Task<IActionResult> DeleteItem(Guid workspaceId, string interfaceId, Guid itemId)
     {
