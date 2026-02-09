@@ -8,11 +8,12 @@ using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FastGooey.Controllers;
 
 [Route("hypermedia")]
-public class HypermediaController(ApplicationDbContext dbContext) : Controller
+public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache memoryCache) : Controller
 {
     private const string FastGooeyLinkScheme = "fastgooey:";
     private const string FastGooeyMediaScheme = "fastgooey:media:";
@@ -25,7 +26,14 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
             return NotFound();
         }
 
+        var cacheKey = $"hypermedia:{interfaceGuid}:{Request.Scheme}:{Request.Host}";
+        if (memoryCache.TryGetValue(cacheKey, out IHypermediaResponse? cachedResponse))
+        {
+            return Ok(cachedResponse);
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
+            .AsNoTracking()
             .Include(x => x.Workspace)
             .FirstOrDefaultAsync(x => x.DocId.Equals(interfaceGuid));
 
@@ -43,7 +51,10 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
             hypermediaResponse = GenerateMacResponse(contentNode);
         }
 
-        return hypermediaResponse != null ? Ok(hypermediaResponse) : NotFound();
+        if (hypermediaResponse is null) return NotFound();
+
+        memoryCache.Set(cacheKey, hypermediaResponse, TimeSpan.FromSeconds(10));
+        return Ok(hypermediaResponse);
     }
 
     private IHypermediaResponse GenerateAppleMobileResponse(GooeyInterface gooeyInterface)
@@ -88,7 +99,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
             .Select(x => new AppleMobileListItemResponse(x))
             .ToList();
 
-        if (listData != null)
+        if (listData is not null)
         {
             foreach (var item in listData)
             {
@@ -189,7 +200,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         var sourceListGroups = content?.Groups
             .Select(x => new MacSourceListGroupResponse(x)).ToList();
 
-        if (sourceListGroups != null)
+        if (sourceListGroups is not null)
         {
             foreach (var group in sourceListGroups)
             {
