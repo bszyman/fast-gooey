@@ -14,6 +14,8 @@ namespace FastGooey.Controllers;
 [Route("hypermedia")]
 public class HypermediaController(ApplicationDbContext dbContext) : Controller
 {
+    private const string FastGooeyLinkScheme = "fastgooey:";
+
     [HttpGet("{interfaceId}")]
     public async Task<IActionResult> Get(string interfaceId)
     {
@@ -85,6 +87,14 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
             .Select(x => new AppleMobileListItemResponse(x))
             .ToList();
 
+        if (listData != null)
+        {
+            foreach (var item in listData)
+            {
+                item.Url = UnfurlFastGooeyLink(item.Url);
+            }
+        }
+
         return new AppleMobileListHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
@@ -105,6 +115,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
 
         var content = gooeyInterface.Config.Deserialize<AppleMobileContentJsonDataModel>(options);
         var viewContent = JsonSerializer.SerializeToNode(content?.Items ?? []) as JsonArray;
+        UnfurlFastGooeyLinksAndReturn(viewContent);
 
         return new AppleMobileContentHypermediaResponse
         {
@@ -155,6 +166,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
                     }
                 }
 
+                UnfurlFastGooeyLinksAndReturn(rowJson);
                 tableData.Add(rowJson);
             }
         }
@@ -175,6 +187,17 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         var content = gooeyInterface.Config.Deserialize<MacSourceListJsonDataModel>();
         var sourceListGroups = content?.Groups
             .Select(x => new MacSourceListGroupResponse(x)).ToList();
+
+        if (sourceListGroups != null)
+        {
+            foreach (var group in sourceListGroups)
+            {
+                foreach (var item in group.GroupItems)
+                {
+                    item.Url = UnfurlFastGooeyLink(item.Url);
+                }
+            }
+        }
 
         return new MacSourceListHypermediaResponse
         {
@@ -198,6 +221,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
 
         var content = gooeyInterface.Config.Deserialize<MacContentJsonDataModel>(options);
         var viewContent = JsonSerializer.SerializeToNode(content?.Items ?? []) as JsonArray;
+        UnfurlFastGooeyLinksAndReturn(viewContent);
 
         return new MacContentHypermediaResponse
         {
@@ -235,11 +259,81 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         var responseItems = rootItems
             .Select(x => new MacOutlineItemResponse(x, currentDepth: 1, maxDepth: 12))
             .ToList();
+        UnfurlFastGooeyLinks(responseItems);
 
         return new MacOutlineHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
             Content = responseItems
         };
+    }
+
+    private string UnfurlFastGooeyLink(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return value ?? string.Empty;
+        }
+
+        if (!value.StartsWith(FastGooeyLinkScheme, StringComparison.OrdinalIgnoreCase))
+        {
+            return value;
+        }
+
+        var idValue = value.Substring(FastGooeyLinkScheme.Length);
+        if (!Guid.TryParse(idValue, out var interfaceId))
+        {
+            return value;
+        }
+
+        var baseUrl = $"{Request.Scheme}://{Request.Host}";
+        return $"{baseUrl}/hypermedia/{interfaceId.ToBase64Url()}";
+    }
+
+    private JsonNode? UnfurlFastGooeyLinksAndReturn(JsonNode? node)
+    {
+        if (node is null)
+        {
+            return null;
+        }
+
+        if (node is JsonValue valueNode && valueNode.TryGetValue<string>(out var stringValue))
+        {
+            return JsonValue.Create(UnfurlFastGooeyLink(stringValue));
+        }
+
+        if (node is JsonObject obj)
+        {
+            foreach (var pair in obj.ToList())
+            {
+                obj[pair.Key] = UnfurlFastGooeyLinksAndReturn(pair.Value);
+            }
+
+            return obj;
+        }
+
+        if (node is JsonArray arr)
+        {
+            for (var i = 0; i < arr.Count; i++)
+            {
+                arr[i] = UnfurlFastGooeyLinksAndReturn(arr[i]);
+            }
+
+            return arr;
+        }
+
+        return node;
+    }
+
+    private void UnfurlFastGooeyLinks(IEnumerable<MacOutlineItemResponse> items)
+    {
+        foreach (var item in items)
+        {
+            item.Url = UnfurlFastGooeyLink(item.Url);
+            if (item.Children.Count > 0)
+            {
+                UnfurlFastGooeyLinks(item.Children);
+            }
+        }
     }
 }

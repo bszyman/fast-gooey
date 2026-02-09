@@ -1,73 +1,48 @@
-<div class="absolute top-0 bottom-0 right-0 left-0 h-full w-full bg-panelNegativeSpace transition z-60 flex justify-center items-center">
+@{
+    var listUrl = string.Empty;
+    if (ViewData["WorkspaceId"] is Guid workspaceId)
+    {
+        listUrl = Url.Action("ContentList", "LinkEditor", new { workspaceId }) ?? string.Empty;
+    }
+}
+
+<div id="linkEditorPalette" class="fixed top-0 bottom-0 right-0 left-0 h-full w-full bg-panelNegativeSpace transition z-60 flex justify-center items-center hidden" aria-hidden="true">
     <div class="w-2xl h-2xl mx-auto rounded-lg bg-white">
         <div class="flex justify-baseline items-center p-2">
             <h2 class="flex-1 font-semibold text-lg">Link to Resource</h2>
-            <button type="button" class="cursor-pointer">
+            <button type="button" class="cursor-pointer" data-link-editor-close="true">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                     <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
                 </svg>
             </button>
         </div>
         
-        <div class="mx-2 mb-2 border border-zinc-200 rounded-lg h-[400px] overflow-y-auto text-sm">
-            <div class="w-full p-2 bg-zinc-200"><h3 class="text-xs font-semibold uppercase">iOS</h3></div>
-            <div class="w-full grid grid-cols-4 gap-2 p-2">
-                <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                    <p>Interface1</p>
-                </div>
-                <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                    <p>Interface1</p>
-                </div>
+        @if (string.IsNullOrEmpty(listUrl))
+        {
+            <div id="contentSelector" class="mx-2 mb-2 border border-zinc-200 rounded-lg h-[400px] overflow-y-auto text-sm">
+                <p class="p-4 text-center text-zinc-500">Open a workspace to link content.</p>
             </div>
-            <div class="w-full p-2 bg-zinc-200"><h3 class="text-xs font-semibold uppercase">macOS</h3></div>
-            <div class="w-full grid grid-cols-4 gap-2 p-2">
-                <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                    <p>Interface1</p>
-                </div>
-                <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                    <p>Interface1</p>
-                </div>
-                <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                    <p>Interface1</p>
-                </div>
-                <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                    <p>Interface1</p>
-                </div>
-                <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                    <p>Interface1</p>
-                </div>
+        }
+        else
+        {
+            <div id="contentSelector"
+                 class="mx-2 mb-2 border border-zinc-200 rounded-lg h-[400px] overflow-y-auto text-sm"
+                 hx-get="@listUrl"
+                 hx-trigger="load-link-editor"
+                 hx-swap="innerHTML">
+                <p class="p-4 text-center text-zinc-500">Loading content...</p>
             </div>
-        </div>
+        }
         
         <div class="mx-2 mb-2">
-            <label for="customUrl" class="text-sm">...or, enter a custom url:</label>
-            <input id="customUrl" name="customUrl" type="url" placeholder="https://workspaces.fastgooey.com/..." class="w-full rounded-md border border-gray-300 p-2 text-sm" />
+            <label for="linkEditorCustomUrl" class="text-sm">...or, enter a custom url:</label>
+            <input id="linkEditorCustomUrl" name="customUrl" type="url" placeholder="https://workspaces.fastgooey.com/..." class="w-full rounded-md border border-gray-300 p-2 text-sm" />
         </div>
         
         <div class="p-2 flex gap-2 justify-end">
-            <button type="button" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer text-sm">Cancel</button>
-            <button type="button" class="bg-green-600 text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">Save</button>
+            <button type="button" class="bg-zinc-100 text-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer text-sm" data-link-editor-clear="true">Clear Link</button>
+            <button type="button" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer text-sm" data-link-editor-close="true">Cancel</button>
+            <button type="button" class="bg-green-600 text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm" data-link-editor-save="true">Save</button>
         </div>
     </div>
 </div>

@@ -35,15 +35,17 @@
                     </div>
                 </div>
                 <div>
-                    <label for="url">Url</label>
+                    <label for="urlLinkButton">Url</label>
                     <div class="flex gap-2">
-                        <input 
-                            type="url" 
-                            id="url" 
-                            name="url" 
-                            value="@Model.Item.Url"
-                            placeholder="https://..."
-                        />
+                        <input type="hidden" id="url" name="url" value="@Model.Item.Url" />
+                        <button type="button"
+                                id="urlLinkButton"
+                                class="linkEditorTriggerButton"
+                                data-link-editor-trigger="true"
+                                data-link-editor-target="url"
+                                data-link-editor-display="urlLinkDisplay">
+                            <span id="urlLinkDisplay" class="truncate">Select link...</span>
+                        </button>
                     </div>
                 </div>
             </div>

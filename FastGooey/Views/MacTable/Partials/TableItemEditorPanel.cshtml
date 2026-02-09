@@ -35,12 +35,28 @@
                 </div>
                 <div class="py-4 px-4">
                     <div class="mb-4">
-                        <label for="relatedUrl">Related Url</label>
-                        <input type="url" id="relatedUrl" name="relatedUrl" value="@Model.Content.RelatedUrl" />
+                        <label for="relatedUrlLinkButton">Related Url</label>
+                        <input type="hidden" id="relatedUrl" name="relatedUrl" value="@Model.Content.RelatedUrl" />
+                        <button type="button"
+                                id="relatedUrlLinkButton"
+                                class="linkEditorTriggerButton"
+                                data-link-editor-trigger="true"
+                                data-link-editor-target="relatedUrl"
+                                data-link-editor-display="relatedUrlLinkDisplay">
+                            <span id="relatedUrlLinkDisplay" class="truncate">Select link...</span>
+                        </button>
                     </div>
                     <div class="mb-4">
-                        <label for="doubleClickUrl">Double-Click Url</label>
-                        <input type="url" id="doubleClickUrl" name="doubleClickUrl" value="@Model.Content.DoubleClickUrl" />
+                        <label for="doubleClickUrlLinkButton">Double-Click Url</label>
+                        <input type="hidden" id="doubleClickUrl" name="doubleClickUrl" value="@Model.Content.DoubleClickUrl" />
+                        <button type="button"
+                                id="doubleClickUrlLinkButton"
+                                class="linkEditorTriggerButton"
+                                data-link-editor-trigger="true"
+                                data-link-editor-target="doubleClickUrl"
+                                data-link-editor-display="doubleClickUrlLinkDisplay">
+                            <span id="doubleClickUrlLinkDisplay" class="truncate">Select link...</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -97,8 +113,16 @@
                                     <input type="datetime-local" id="@field.FieldAlias" name="@field.FieldAlias" class="w-full" value="@fieldValue"/>
                                     break;
                                 case "url":
-                                    <label for="@field.FieldAlias">@field.FieldName</label>
-                                    <input type="url" id="@field.FieldAlias" name="@field.FieldAlias" placeholder="https://..." value="@fieldValue"/>
+                                    <label for="@(field.FieldAlias)LinkButton">@field.FieldName</label>
+                                    <input type="hidden" id="@field.FieldAlias" name="@field.FieldAlias" value="@fieldValue"/>
+                                    <button type="button"
+                                            id="@(field.FieldAlias)LinkButton"
+                                            class="linkEditorTriggerButton"
+                                            data-link-editor-trigger="true"
+                                            data-link-editor-target="@field.FieldAlias"
+                                            data-link-editor-display="@(field.FieldAlias)LinkDisplay">
+                                        <span id="@(field.FieldAlias)LinkDisplay" class="truncate">Select link...</span>
+                                    </button>
                                     break;
                                 case "email":
                                     <label for="@field.FieldAlias">@field.FieldName</label>

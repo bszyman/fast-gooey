@@ -46,9 +46,17 @@
                     <input type="text" id="name" name="name" required value="@Model.Name"/>
                 </div>
                 <div class="mb-2">
-                    <label for="url">Url (optional)</label>
+                    <label for="urlLinkButton">Url (optional)</label>
                     <div class="flex gap-2">
-                        <input type="url" id="url" name="url" value="@Model.Url"/>
+                        <input type="hidden" id="url" name="url" value="@Model.Url"/>
+                        <button type="button"
+                                id="urlLinkButton"
+                                class="linkEditorTriggerButton"
+                                data-link-editor-trigger="true"
+                                data-link-editor-target="url"
+                                data-link-editor-display="urlLinkDisplay">
+                            <span id="urlLinkDisplay" class="truncate">Select link...</span>
+                        </button>
                     </div>
                 </div>
             </div>
