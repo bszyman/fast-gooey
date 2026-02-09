@@ -1,4 +1,5 @@
 @using FastGooey.Models.JsonDataModels
+@using FastGooey.Utils
 @model FastGooey.Models.ViewModels.AppleMobileInterface.AppleMobileContentWorkspaceViewModel
 
 <form method="post"
@@ -27,13 +28,18 @@
                 <div>
                     <label for="headerBackgroundImage">Background Image</label>
                     <div class="flex gap-2">
-                        <input 
-                            type="url" 
-                            id="headerBackgroundImage" 
-                            name="headerBackgroundImage" 
-                            placeholder="https://example.com/image.jpg"
-                            value="@Model.Data.HeaderBackgroundImage"
-                        />
+                        <input type="hidden"
+                               id="headerBackgroundImage"
+                               name="headerBackgroundImage"
+                               value="@Model.Data.HeaderBackgroundImage" />
+                        <button type="button"
+                                id="headerBackgroundImageButton"
+                                class="linkEditorTriggerButton"
+                                data-media-picker-trigger="true"
+                                data-media-picker-target="headerBackgroundImage"
+                                data-media-picker-display="headerBackgroundImageDisplay">
+                            <span id="headerBackgroundImageDisplay" class="truncate">Select media...</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -106,7 +112,7 @@
                                 hx-get="@Url.Action("ImageConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = image.Identifier })"
                                 hx-target="#editorPanel"
                                 class="rounded-xl hover:bg-zinc-100 px-1 py-3 cursor-pointer cursor-grab text-center">
-                                <img src="@image.Url" alt="@image.AltText" class="w-full">
+                                <img src="@MediaUrlResolver.Resolve(Url, Model.WorkspaceId(), image.Url)" alt="@image.AltText" class="w-full">
                                 <p class="mt-2 px-2 text-sm font-medium text-left">@image.AltText</p>
                             </div>
                         }

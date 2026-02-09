@@ -15,6 +15,7 @@ namespace FastGooey.Controllers;
 public class HypermediaController(ApplicationDbContext dbContext) : Controller
 {
     private const string FastGooeyLinkScheme = "fastgooey:";
+    private const string FastGooeyMediaScheme = "fastgooey:media:";
 
     [HttpGet("{interfaceId}")]
     public async Task<IActionResult> Get(string interfaceId)
@@ -91,7 +92,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         {
             foreach (var item in listData)
             {
-                item.Url = UnfurlFastGooeyLink(item.Url);
+                item.Url = UnfurlFastGooeyLink(item.Url, gooeyInterface.Workspace.PublicId);
             }
         }
 
@@ -115,7 +116,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
 
         var content = gooeyInterface.Config.Deserialize<AppleMobileContentJsonDataModel>(options);
         var viewContent = JsonSerializer.SerializeToNode(content?.Items ?? []) as JsonArray;
-        UnfurlFastGooeyLinksAndReturn(viewContent);
+        UnfurlFastGooeyLinksAndReturn(viewContent, gooeyInterface.Workspace.PublicId);
 
         return new AppleMobileContentHypermediaResponse
         {
@@ -166,7 +167,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
                     }
                 }
 
-                UnfurlFastGooeyLinksAndReturn(rowJson);
+                UnfurlFastGooeyLinksAndReturn(rowJson, gooeyInterface.Workspace.PublicId);
                 tableData.Add(rowJson);
             }
         }
@@ -194,7 +195,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
             {
                 foreach (var item in group.GroupItems)
                 {
-                    item.Url = UnfurlFastGooeyLink(item.Url);
+                    item.Url = UnfurlFastGooeyLink(item.Url, gooeyInterface.Workspace.PublicId);
                 }
             }
         }
@@ -221,7 +222,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
 
         var content = gooeyInterface.Config.Deserialize<MacContentJsonDataModel>(options);
         var viewContent = JsonSerializer.SerializeToNode(content?.Items ?? []) as JsonArray;
-        UnfurlFastGooeyLinksAndReturn(viewContent);
+        UnfurlFastGooeyLinksAndReturn(viewContent, gooeyInterface.Workspace.PublicId);
 
         return new MacContentHypermediaResponse
         {
@@ -259,7 +260,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         var responseItems = rootItems
             .Select(x => new MacOutlineItemResponse(x, currentDepth: 1, maxDepth: 12))
             .ToList();
-        UnfurlFastGooeyLinks(responseItems);
+        UnfurlFastGooeyLinks(responseItems, gooeyInterface.Workspace.PublicId);
 
         return new MacOutlineHypermediaResponse
         {
@@ -268,11 +269,16 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         };
     }
 
-    private string UnfurlFastGooeyLink(string? value)
+    private string UnfurlFastGooeyLink(string? value, Guid workspaceId)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             return value ?? string.Empty;
+        }
+
+        if (value.StartsWith(FastGooeyMediaScheme, StringComparison.OrdinalIgnoreCase))
+        {
+            return UnfurlFastGooeyMediaLink(value, workspaceId);
         }
 
         if (!value.StartsWith(FastGooeyLinkScheme, StringComparison.OrdinalIgnoreCase))
@@ -290,7 +296,52 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         return $"{baseUrl}/hypermedia/{interfaceId.ToBase64Url()}";
     }
 
-    private JsonNode? UnfurlFastGooeyLinksAndReturn(JsonNode? node)
+    private string UnfurlFastGooeyMediaLink(string value, Guid workspaceId)
+    {
+        if (!TryParseMediaLink(value, out var sourceId, out var path))
+        {
+            return value;
+        }
+
+        var url = Url.Action(
+            "Preview",
+            "Media",
+            new { workspaceId, sourceId, path },
+            Request.Scheme,
+            Request.Host.ToString());
+
+        return url ?? value;
+    }
+
+    private static bool TryParseMediaLink(string value, out Guid sourceId, out string path)
+    {
+        sourceId = Guid.Empty;
+        path = string.Empty;
+
+        if (!value.StartsWith(FastGooeyMediaScheme, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var remainder = value.Substring(FastGooeyMediaScheme.Length);
+        var separatorIndex = remainder.IndexOf(':');
+        if (separatorIndex <= 0 || separatorIndex >= remainder.Length - 1)
+        {
+            return false;
+        }
+
+        var sourceValue = remainder[..separatorIndex];
+        var pathValue = remainder[(separatorIndex + 1)..];
+        if (!Guid.TryParse(sourceValue, out sourceId))
+        {
+            return false;
+        }
+
+        path = Uri.UnescapeDataString(pathValue);
+        return true;
+    }
+
+    private JsonNode? UnfurlFastGooeyLinksAndReturn(JsonNode? node, Guid workspaceId)
     {
         if (node is null)
         {
@@ -299,14 +350,14 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
 
         if (node is JsonValue valueNode && valueNode.TryGetValue<string>(out var stringValue))
         {
-            return JsonValue.Create(UnfurlFastGooeyLink(stringValue));
+            return JsonValue.Create(UnfurlFastGooeyLink(stringValue, workspaceId));
         }
 
         if (node is JsonObject obj)
         {
             foreach (var pair in obj.ToList())
             {
-                obj[pair.Key] = UnfurlFastGooeyLinksAndReturn(pair.Value);
+                obj[pair.Key] = UnfurlFastGooeyLinksAndReturn(pair.Value, workspaceId);
             }
 
             return obj;
@@ -316,7 +367,7 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         {
             for (var i = 0; i < arr.Count; i++)
             {
-                arr[i] = UnfurlFastGooeyLinksAndReturn(arr[i]);
+                arr[i] = UnfurlFastGooeyLinksAndReturn(arr[i], workspaceId);
             }
 
             return arr;
@@ -325,14 +376,14 @@ public class HypermediaController(ApplicationDbContext dbContext) : Controller
         return node;
     }
 
-    private void UnfurlFastGooeyLinks(IEnumerable<MacOutlineItemResponse> items)
+    private void UnfurlFastGooeyLinks(IEnumerable<MacOutlineItemResponse> items, Guid workspaceId)
     {
         foreach (var item in items)
         {
-            item.Url = UnfurlFastGooeyLink(item.Url);
+            item.Url = UnfurlFastGooeyLink(item.Url, workspaceId);
             if (item.Children.Count > 0)
             {
-                UnfurlFastGooeyLinks(item.Children);
+                UnfurlFastGooeyLinks(item.Children, workspaceId);
             }
         }
     }

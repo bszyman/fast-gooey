@@ -32,6 +32,7 @@ builder.Services.AddAppleMapKitServices();
 builder.Services.AddAppleWeatherKitServices();
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
             builder.Configuration.GetConnectionString("DefaultConnection"),

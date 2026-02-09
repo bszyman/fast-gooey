@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FastGooey.Controllers;
 
@@ -18,9 +19,14 @@ namespace FastGooey.Controllers;
 public class MediaController(
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
-    IMediaSourceProviderRegistry providerRegistry) :
+    IMediaSourceProviderRegistry providerRegistry,
+    IMemoryCache memoryCache) :
     BaseStudioController(keyValueService, dbContext)
 {
+    private const long MaxPreviewCacheBytes = 10 * 1024 * 1024;
+    private static readonly TimeSpan ListCacheDuration = TimeSpan.FromMinutes(2);
+    private static readonly TimeSpan PreviewCacheDuration = TimeSpan.FromMinutes(10);
+
     [HttpGet]
     public IActionResult Index()
     {
@@ -109,7 +115,6 @@ public class MediaController(
         if (source is null) return NotFound();
         if (!source.IsEnabled) return NotFound();
 
-        var provider = providerRegistry.GetProvider(source.SourceType);
         var normalizedPath = NormalizePath(path);
         IReadOnlyList<MediaItem> items;
         string? errorMessage = null;
@@ -123,7 +128,7 @@ public class MediaController(
         {
             try
             {
-                items = await provider.ListAsync(source, normalizedPath, cancellationToken);
+                items = await GetCachedItems(source, normalizedPath, cancellationToken);
             }
             catch (Exception)
             {
@@ -175,6 +180,12 @@ public class MediaController(
         }
 
         var provider = providerRegistry.GetProvider(source.SourceType);
+        var cacheKey = $"media-preview:{source.PublicId}:{path}";
+        if (memoryCache.TryGetValue(cacheKey, out CachedMediaFile? cached))
+        {
+            return File(cached.Bytes, cached.ContentType, enableRangeProcessing: true);
+        }
+
         var streamResult = await provider.OpenReadAsync(source, path, cancellationToken);
         if (streamResult == null)
         {
@@ -182,6 +193,17 @@ public class MediaController(
         }
 
         var contentType = streamResult.ContentType ?? GuessContentType(path) ?? "application/octet-stream";
+        if (streamResult.ContentLength.HasValue && streamResult.ContentLength.Value <= MaxPreviewCacheBytes)
+        {
+            await using var stream = streamResult.Stream;
+            await using var buffer = new MemoryStream();
+            await stream.CopyToAsync(buffer, cancellationToken);
+            var bytes = buffer.ToArray();
+
+            memoryCache.Set(cacheKey, new CachedMediaFile(bytes, contentType), PreviewCacheDuration);
+            return File(bytes, contentType, enableRangeProcessing: true);
+        }
+
         return File(streamResult.Stream, contentType, enableRangeProcessing: true);
     }
 
@@ -271,4 +293,20 @@ public class MediaController(
             _ => null
         };
     }
+
+    private async Task<IReadOnlyList<MediaItem>> GetCachedItems(MediaSource source, string? path, CancellationToken cancellationToken)
+    {
+        var normalizedPath = NormalizePath(path);
+        var cacheKey = $"media-source-list:{source.PublicId}:{normalizedPath ?? "root"}";
+        if (!memoryCache.TryGetValue(cacheKey, out IReadOnlyList<MediaItem>? items))
+        {
+            var provider = providerRegistry.GetProvider(source.SourceType);
+            items = await provider.ListAsync(source, normalizedPath, cancellationToken);
+            memoryCache.Set(cacheKey, items, ListCacheDuration);
+        }
+
+        return items ?? [];
+    }
+
+    private sealed record CachedMediaFile(byte[] Bytes, string ContentType);
 }

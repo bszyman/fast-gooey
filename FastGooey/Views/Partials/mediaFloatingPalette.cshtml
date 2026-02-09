@@ -1,85 +1,47 @@
-<div class="absolute top-0 bottom-0 right-0 left-0 h-full w-full bg-panelNegativeSpace transition z-60 flex justify-center items-center">
+@{
+    var listUrl = string.Empty;
+    if (ViewData["WorkspaceId"] is Guid workspaceId)
+    {
+        listUrl = Url.Action("ContentList", "MediaPalette", new { workspaceId }) ?? string.Empty;
+    }
+}
+
+<div id="mediaPalette" class="fixed top-0 bottom-0 right-0 left-0 h-full w-full bg-panelNegativeSpace transition z-60 flex justify-center items-center hidden" aria-hidden="true">
     <div class="w-2xl h-2xl mx-auto rounded-lg bg-white">
         <div class="flex justify-baseline items-center p-2">
             <h2 class="flex-1 font-semibold text-lg">Select Media</h2>
-            <button type="button" class="cursor-pointer">
+            <button type="button" class="cursor-pointer" data-media-picker-close="true">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                     <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
                 </svg>
             </button>
         </div>
         
-        <div class="mx-2 border border-zinc-200 rounded-lg h-[400px] overflow-y-auto">
-            <div class="mb-2">
-                <div class="w-full p-2 bg-zinc-200"><h3 class="text-xs font-semibold uppercase">Source 1</h3></div>
-                <div class="w-full grid grid-cols-4 gap-2 p-2">
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                </div>
-                <button type="button" class="text-blue-500 font-medium mx-2 text-sm">Load more...</button>
+        @if (string.IsNullOrEmpty(listUrl))
+        {
+            <div id="contentSelector" class="mx-2 mb-2 border border-zinc-200 rounded-lg h-[400px] overflow-y-auto text-sm">
+                <p class="p-4 text-center text-zinc-500">Open a workspace to select media.</p>
             </div>
-            <div>
-                <div class="w-full p-2 bg-zinc-200"><h3 class="text-xs font-semibold uppercase">Source 2</h3></div>
-                <div class="w-full grid grid-cols-4 gap-2 p-2">
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                </div>
+        }
+        else
+        {
+            <div id="contentSelector"
+                 class="mx-2 mb-2 border border-zinc-200 rounded-lg h-[400px] overflow-y-auto text-sm"
+                 hx-get="@listUrl"
+                 hx-trigger="load-media-palette"
+                 hx-swap="innerHTML">
+                <p class="p-4 text-center text-zinc-500">Loading media...</p>
             </div>
-            <div>
-                <div class="w-full p-2 bg-zinc-200"><h3 class="text-xs font-semibold uppercase">Source 3</h3></div>
-                <div class="w-full grid grid-cols-4 gap-2 p-2">
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                    <div>
-                        <img src="https://www.tidelas.com/media/t2glbhk0/fl_pensacola_beach_3ftd8ox.jpg" class="rounded" />
-                        <p class="text-sm">Pensacola Beach</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
         
         <div class="mx-2 mb-2">
-            <label for="customUrl" class="text-sm">...or, enter a custom url:</label>
-            <input id="customUrl" name="customUrl" type="url" placeholder="https://images.fastgooey.com/..." class="w-full rounded-md border border-gray-300 p-2 text-sm" />
+            <label for="mediaPickerCustomUrl" class="text-sm">...or, enter a custom url:</label>
+            <input id="mediaPickerCustomUrl" name="customUrl" type="url" placeholder="https://images.fastgooey.com/..." class="w-full rounded-md border border-gray-300 p-2 text-sm" />
         </div>
         
         <div class="p-2 flex gap-2 justify-end">
-            <button type="button" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer text-sm">Cancel</button>
-            <button type="button" class="bg-green-600 text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">Select</button>
+            <button type="button" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer text-sm" data-media-picker-close="true">Cancel</button>
+            <button type="button" class="bg-green-600 text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm" data-media-picker-save="true">Select</button>
         </div>
     </div>
 </div>

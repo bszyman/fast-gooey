@@ -28,14 +28,17 @@
             </div>
             <div class="py-4 px-4">
                 <div class="mb-4">
-                    <label for="url">Image Url</label>
+                    <label for="mediaUrlButton">Image Url</label>
                     <div class="flex gap-2">
-                        <input 
-                            type="url" 
-                            id="url" 
-                            name="url" 
-                            value="@Model.Content.Url"
-                        />
+                        <input type="hidden" id="url" name="url" value="@Model.Content.Url" />
+                        <button type="button"
+                                id="mediaUrlButton"
+                                class="linkEditorTriggerButton"
+                                data-media-picker-trigger="true"
+                                data-media-picker-target="url"
+                                data-media-picker-display="mediaUrlDisplay">
+                            <span id="mediaUrlDisplay" class="truncate">Select media...</span>
+                        </button>
                     </div>
                 </div>
                 <div>

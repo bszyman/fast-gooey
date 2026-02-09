@@ -157,6 +157,8 @@ function ensureContentOrderingScript(root = document) {
 
 const linkEditorSchemePrefix = 'fastgooey:';
 const linkEditorSelectedClass = 'selectedInterfaceListItem';
+const mediaPickerSchemePrefix = 'fastgooey:media:';
+const mediaPickerSelectedClass = 'selectedInterfaceListItem';
 
 function getLinkEditorPalette() {
     return document.getElementById('linkEditorPalette');
@@ -362,6 +364,211 @@ function clearLinkEditorSelectionValue() {
     closeLinkEditor();
 }
 
+function getMediaPickerPalette() {
+    return document.getElementById('mediaPalette');
+}
+
+function getMediaPickerItemMap() {
+    const palette = getMediaPickerPalette();
+    const map = new Map();
+
+    if (!palette) return map;
+
+    palette.querySelectorAll('[data-media-picker-item="true"]').forEach(item => {
+        const sourceId = item.dataset.mediaSourceId;
+        const path = item.dataset.mediaPath;
+        if (!sourceId || !path) return;
+
+        const key = `${sourceId}:${path}`;
+        map.set(key, {
+            label: item.dataset.mediaLabel || 'Untitled',
+            sourceName: item.dataset.mediaSourceName || ''
+        });
+    });
+
+    return map;
+}
+
+function parseMediaPickerValue(value) {
+    const trimmed = value?.trim() || '';
+    if (!trimmed.toLowerCase().startsWith(mediaPickerSchemePrefix)) return null;
+
+    const remainder = trimmed.slice(mediaPickerSchemePrefix.length);
+    const separatorIndex = remainder.indexOf(':');
+    if (separatorIndex < 0) return null;
+
+    const sourceId = remainder.slice(0, separatorIndex);
+    const encodedPath = remainder.slice(separatorIndex + 1);
+    if (!sourceId || !encodedPath) return null;
+
+    let decodedPath = '';
+    try {
+        decodedPath = decodeURIComponent(encodedPath);
+    } catch {
+        decodedPath = encodedPath;
+    }
+
+    return { sourceId, path: decodedPath };
+}
+
+function formatMediaPickerDisplayValue(value) {
+    const trimmed = value?.trim() || '';
+    if (!trimmed) return 'Select media...';
+
+    if (!trimmed.toLowerCase().startsWith(mediaPickerSchemePrefix)) {
+        return trimmed;
+    }
+
+    const parsed = parseMediaPickerValue(trimmed);
+    if (!parsed) return 'Unknown FastGooey media';
+
+    const itemMap = getMediaPickerItemMap();
+    const match = itemMap.get(`${parsed.sourceId}:${parsed.path}`);
+    if (!match) return 'Unknown FastGooey media';
+
+    const sourceSuffix = match.sourceName ? ` (${match.sourceName})` : '';
+    return `${match.label}${sourceSuffix}`;
+}
+
+function updateMediaPickerDisplay(trigger) {
+    const targetId = trigger.dataset.mediaPickerTarget;
+    const displayId = trigger.dataset.mediaPickerDisplay;
+    if (!targetId || !displayId) return;
+
+    const input = document.getElementById(targetId);
+    const display = document.getElementById(displayId);
+    if (!input || !display) return;
+
+    display.textContent = formatMediaPickerDisplayValue(input.value);
+}
+
+function updateMediaPickerDisplays(root = document) {
+    root.querySelectorAll('[data-media-picker-trigger="true"]').forEach(updateMediaPickerDisplay);
+}
+
+function clearMediaPickerSelection(palette) {
+    if (!palette) return;
+    palette.querySelectorAll('[data-media-picker-item="true"]').forEach(item => {
+        item.classList.remove(mediaPickerSelectedClass);
+    });
+}
+
+function selectMediaPickerItem(item) {
+    const palette = getMediaPickerPalette();
+    if (!palette) return;
+    clearMediaPickerSelection(palette);
+    item.classList.add(mediaPickerSelectedClass);
+}
+
+function applyMediaPickerSelectionFromValue(value) {
+    const palette = getMediaPickerPalette();
+    if (!palette) return;
+
+    const customUrlInput = document.getElementById('mediaPickerCustomUrl');
+    const trimmed = value?.trim() || '';
+
+    clearMediaPickerSelection(palette);
+
+    if (!trimmed) {
+        if (customUrlInput) customUrlInput.value = '';
+        return;
+    }
+
+    const parsed = parseMediaPickerValue(trimmed);
+    if (parsed) {
+        const items = palette.querySelectorAll('[data-media-picker-item="true"]');
+        for (const item of items) {
+            if (item.dataset.mediaSourceId === parsed.sourceId && item.dataset.mediaPath === parsed.path) {
+                selectMediaPickerItem(item);
+                if (customUrlInput) customUrlInput.value = '';
+                return;
+            }
+        }
+
+        if (customUrlInput) customUrlInput.value = '';
+        return;
+    }
+
+    if (customUrlInput) customUrlInput.value = trimmed;
+}
+
+function openMediaPicker(trigger) {
+    const palette = getMediaPickerPalette();
+    if (!palette) return;
+
+    const targetId = trigger.dataset.mediaPickerTarget;
+    const displayId = trigger.dataset.mediaPickerDisplay;
+    const input = targetId ? document.getElementById(targetId) : null;
+
+    palette.dataset.mediaPickerTarget = targetId || '';
+    palette.dataset.mediaPickerDisplay = displayId || '';
+    palette.dataset.mediaPickerInputValue = input?.value || '';
+
+    applyMediaPickerSelectionFromValue(input?.value || '');
+
+    const contentSelector = palette.querySelector('#contentSelector');
+    if (contentSelector) {
+        if (window.htmx) {
+            window.htmx.trigger(contentSelector, 'load-media-palette');
+        } else {
+            contentSelector.dispatchEvent(new Event('load-media-palette'));
+        }
+    }
+
+    palette.classList.remove('hidden');
+    palette.setAttribute('aria-hidden', 'false');
+}
+
+function closeMediaPicker() {
+    const palette = getMediaPickerPalette();
+    if (!palette) return;
+
+    palette.classList.add('hidden');
+    palette.setAttribute('aria-hidden', 'true');
+    palette.dataset.mediaPickerTarget = '';
+    palette.dataset.mediaPickerDisplay = '';
+    palette.dataset.mediaPickerInputValue = '';
+}
+
+function saveMediaPickerSelection() {
+    const palette = getMediaPickerPalette();
+    if (!palette) return;
+
+    const targetId = palette.dataset.mediaPickerTarget;
+    const displayId = palette.dataset.mediaPickerDisplay;
+    if (!targetId || !displayId) {
+        closeMediaPicker();
+        return;
+    }
+
+    const input = document.getElementById(targetId);
+    const display = document.getElementById(displayId);
+    if (!input || !display) {
+        closeMediaPicker();
+        return;
+    }
+
+    const customUrlInput = document.getElementById('mediaPickerCustomUrl');
+    const selectedItem = palette.querySelector(`.${mediaPickerSelectedClass}[data-media-picker-item="true"]`);
+    let nextValue = '';
+
+    if (customUrlInput && customUrlInput.value.trim()) {
+        nextValue = customUrlInput.value.trim();
+    } else if (selectedItem) {
+        const sourceId = selectedItem.dataset.mediaSourceId || '';
+        const path = selectedItem.dataset.mediaPath || '';
+        if (sourceId && path) {
+            nextValue = `${mediaPickerSchemePrefix}${sourceId}:${encodeURIComponent(path)}`;
+        }
+    }
+
+    input.value = nextValue;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    display.textContent = formatMediaPickerDisplayValue(nextValue);
+
+    closeMediaPicker();
+}
+
 document.addEventListener('change', function(event) {
     const target = event.target;
     if (target.matches('[data-media-source-type-select="true"]')) {
@@ -373,12 +580,20 @@ document.addEventListener('htmx:afterSwap', function(event) {
     updateMediaSourceFields(event.detail.target || document);
     ensureContentOrderingScript(event.detail.target || document);
     updateLinkEditorDisplays(event.detail.target || document);
+    updateMediaPickerDisplays(event.detail.target || document);
 
     const target = event.detail.target;
     if (target && target.id === 'contentSelector') {
-        const palette = getLinkEditorPalette();
-        if (palette && palette.dataset.linkEditorInputValue) {
-            applyLinkEditorSelectionFromValue(palette.dataset.linkEditorInputValue);
+        const linkPalette = getLinkEditorPalette();
+        if (linkPalette && linkPalette.contains(target) && linkPalette.dataset.linkEditorInputValue) {
+            applyLinkEditorSelectionFromValue(linkPalette.dataset.linkEditorInputValue);
+            updateLinkEditorDisplays(document);
+        }
+
+        const mediaPalette = getMediaPickerPalette();
+        if (mediaPalette && mediaPalette.contains(target) && mediaPalette.dataset.mediaPickerInputValue) {
+            applyMediaPickerSelectionFromValue(mediaPalette.dataset.mediaPickerInputValue);
+            updateMediaPickerDisplays(document);
         }
     }
 });
@@ -387,18 +602,37 @@ document.addEventListener('DOMContentLoaded', function() {
     updateMediaSourceFields(document);
     ensureContentOrderingScript(document);
     updateLinkEditorDisplays(document);
+    updateMediaPickerDisplays(document);
 });
 
 document.addEventListener('click', function(event) {
+    const mediaTrigger = event.target.closest('[data-media-picker-trigger="true"]');
+    if (mediaTrigger) {
+        openMediaPicker(mediaTrigger);
+        return;
+    }
+
     const trigger = event.target.closest('[data-link-editor-trigger="true"]');
     if (trigger) {
         openLinkEditor(trigger);
         return;
     }
 
+    const mediaCloseButton = event.target.closest('[data-media-picker-close="true"]');
+    if (mediaCloseButton) {
+        closeMediaPicker();
+        return;
+    }
+
     const closeButton = event.target.closest('[data-link-editor-close="true"]');
     if (closeButton) {
         closeLinkEditor();
+        return;
+    }
+
+    const mediaSaveButton = event.target.closest('[data-media-picker-save="true"]');
+    if (mediaSaveButton) {
+        saveMediaPickerSelection();
         return;
     }
 
@@ -420,6 +654,13 @@ document.addEventListener('click', function(event) {
         const customUrlInput = document.getElementById('linkEditorCustomUrl');
         if (customUrlInput) customUrlInput.value = '';
     }
+
+    const mediaItem = event.target.closest('[data-media-picker-item="true"]');
+    if (mediaItem) {
+        selectMediaPickerItem(mediaItem);
+        const customUrlInput = document.getElementById('mediaPickerCustomUrl');
+        if (customUrlInput) customUrlInput.value = '';
+    }
 });
 
 document.addEventListener('input', function(event) {
@@ -427,5 +668,10 @@ document.addEventListener('input', function(event) {
     if (target && target.id === 'linkEditorCustomUrl') {
         const palette = getLinkEditorPalette();
         clearLinkEditorSelection(palette);
+    }
+
+    if (target && target.id === 'mediaPickerCustomUrl') {
+        const palette = getMediaPickerPalette();
+        clearMediaPickerSelection(palette);
     }
 });
