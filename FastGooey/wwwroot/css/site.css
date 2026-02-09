@@ -245,9 +245,9 @@ select.saved {
 
 .linkEditorTriggerButton {
     @apply rounded-full px-4 py-2 max-w-full relative text-stone-800 flex items-center
-    cursor-pointer border border-stone-400/50
+    cursor-pointer shadow-sm border border-stone-400/50
     before:absolute before:inset-0
-    bg-gradient-to-b from-stone-200 to-stone-100
+    bg-gradient-to-b from-stone-300 to-stone-100
     before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)]
     before:pointer-events-none before:z-[1]
     after:absolute after:inset-x-0 after:top-0 after:h-1/2
