@@ -33,6 +33,62 @@ function toggleSubmenu(button) {
     }
 }
 
+function copyHyperGooeyUrl() {
+    const button = document.getElementById('copyHyperGooeyUrl');
+    const target = document.getElementById('hyperGooeyUrl');
+    if (!button || !target) {
+        return;
+    }
+
+    const text = target.textContent ? target.textContent.trim() : '';
+    if (!text) {
+        return;
+    }
+
+    const applyCopyFeedback = () => {
+        button.style.transition = 'none';
+        button.classList.add('text-white', 'bg-green-600');
+        requestAnimationFrame(() => {
+            button.style.transition = 'color 2s ease, background-color 2s ease';
+            setTimeout(() => {
+                button.classList.remove('text-white', 'bg-green-600');
+            }, 50);
+        });
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+            .then(applyCopyFeedback)
+            .catch(() => {
+                const selection = window.getSelection();
+                if (!selection) {
+                    return;
+                }
+
+                const range = document.createRange();
+                range.selectNodeContents(target);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                applyCopyFeedback();
+            });
+    } else {
+        const selection = window.getSelection();
+        if (!selection) {
+            return;
+        }
+
+        const range = document.createRange();
+        range.selectNodeContents(target);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        selection.removeAllRanges();
+        applyCopyFeedback();
+    }
+}
+
 window.addEventListener('openEditor', () => {
     if (!editorOpen) toggleEditor();
 });
