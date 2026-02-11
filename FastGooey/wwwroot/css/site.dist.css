@@ -384,6 +384,9 @@
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
   }
+  .mr-3 {
+    margin-right: calc(var(--spacing) * 3);
+  }
   .mr-4 {
     margin-right: calc(var(--spacing) * 4);
   }
@@ -1572,7 +1575,7 @@ body {
   line-height: var(--tw-leading, var(--text-sm--line-height));
 }
 .activeSectionButton {
-  background-color: var(--color-sky-600);
+  background-color: var(--color-sky-500);
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
   color: var(--color-white);

@@ -105,7 +105,7 @@ body {
 }
 
 .activeSectionButton {
-    @apply bg-sky-600 text-white font-semibold;
+    @apply bg-sky-500 text-white font-semibold;
 }
 
 .main-content {

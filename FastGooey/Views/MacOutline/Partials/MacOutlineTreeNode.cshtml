@@ -9,7 +9,14 @@
 
 <li>
     <div class="flex items-center py-2 border-b border-b-zinc-200">
-        <p class="pr-3">@Model.Name</p>
+        <button 
+            type="button"
+            hx-get="@Url.Action("EditorPanel", "MacOutline", new { workspaceId = ViewBag.WorkspaceId, interfaceId = ViewBag.InterfaceId, itemId = Model.Identifier })"
+            hx-target="#editorPanel"
+            onclick="toggleEditor()"
+            class="mr-3 px-2 py-1 rounded border border-zinc-300 cursor-pointer">
+            @Model.Name
+        </button>
         <button type="button" 
                 class="cursor-pointer" 
                 onclick="toggleEditor()" 
