@@ -185,7 +185,7 @@ function getLinkEditorNodeMap() {
 
 function formatLinkEditorDisplayValue(value) {
     const trimmed = value?.trim() || '';
-    if (!trimmed) return 'Select link...';
+    if (!trimmed) return 'No link selected.';
 
     if (!trimmed.toLowerCase().startsWith(linkEditorSchemePrefix)) {
         return trimmed;

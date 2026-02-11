@@ -47,7 +47,7 @@
                 </div>
                 <div class="mb-2">
                     <label for="urlLinkButton">Url (optional)</label>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 mb-2">
                         <input type="hidden" id="url" name="url" value="@Model.Url"/>
                         <button type="button"
                                 id="urlLinkButton"
@@ -55,9 +55,10 @@
                                 data-link-editor-trigger="true"
                                 data-link-editor-target="url"
                                 data-link-editor-display="urlLinkDisplay">
-                            <span id="urlLinkDisplay" class="truncate">Select link...</span>
+                            Select link...
                         </button>
                     </div>
+                    <span id="urlLinkDisplay" class="truncate text-xs text-gray-500 ml-1">No link selected.</span>
                 </div>
             </div>
         </div>
