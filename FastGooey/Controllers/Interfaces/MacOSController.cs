@@ -54,16 +54,15 @@ public class MacOSController(
         return PartialView("~/Views/MacOS/Partials/MacInterfaceSelector.cshtml", viewModel);
     }
     
-    [HttpGet("mac-interface-selector-panel")]
-    public async Task<IActionResult> MacInterfaceSelectorPanel(Guid workspaceId)
+    [HttpGet("mac-interface-create-palette")]
+    public async Task<IActionResult> MacInterfaceCreatorPalette(Guid workspaceId)
     {
-        // TODO: move views to appropriate paths 
         if (await InterfaceLimitReachedAsync())
         {
             return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
         }
 
-        return PartialView("~/Views/MacOS/Partials/MacInterfaceSelectorPanel.cshtml", workspaceId);
+        return PartialView("~/Views/MacOS/Partials/MacInterfaceCreatorPalette.cshtml", workspaceId);
     }
 
     [HttpDelete("interface/{interfaceId:guid}")]

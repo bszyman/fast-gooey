@@ -3,6 +3,7 @@
 
 // Write your JavaScript code.
 let editorOpen = false;
+let interfacePaletteOpen = false;
 
 function toggleEditor() {
     const panel = document.getElementById('editorPanel');
@@ -30,6 +31,23 @@ function toggleSubmenu(button) {
         // Expand
         ul.style.maxHeight = ul.scrollHeight + 'px';
         ul.style.opacity = '1';
+    }
+}
+
+function toggleInterfaceCreatePalette() {
+    const panel = getCreateInterfacePalette();
+    // const negativeSpace = document.getElementById('editorPanelNegativeSpace');
+
+    interfacePaletteOpen = !interfacePaletteOpen;
+
+    if (interfacePaletteOpen) {
+        panel.classList.remove("hidden");
+        panel.style.animation = 'fadeInEditorPanelNegativeSpaceFrames 0.5s ease-in-out forwards';
+        //panel.style.animation = 'slideInEditorPanelFrames 0.5s ease-in-out forwards';
+    } else {
+        panel.style.animation = 'fadeOutEditorPanelNegativeSpaceFrames 0.5s ease-in-out forwards';
+        window.setTimeout(() => panel.classList.add("hidden"), 250);
+        //panel.style.animation = 'slideOutEditorPanelFrames 0.5s ease-in-out forwards';
     }
 }
 
@@ -422,6 +440,10 @@ function clearLinkEditorSelectionValue() {
 
 function getMediaPickerPalette() {
     return document.getElementById('mediaPalette');
+}
+
+function getCreateInterfacePalette() {
+    return document.getElementById('createInterfaceFloatingPalette');
 }
 
 function getMediaPickerItemMap() {

@@ -104,13 +104,16 @@
       <Content Update="Views\AppleMobile\Partials\NewInterfaceSelectorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
-      <Content Update="Views\MacOS\Partials\MacInterfaceSelectorPanel.cshtml">
+      <Content Update="Views\MacOS\Partials\MacInterfaceCreatorPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Views\WorkspaceManagement\WorkspaceManagement.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Views\WorkspaceManagement\Partials\MediaSourceEditor.Panelcshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Views\Partials\createInterfaceFloatingPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>
