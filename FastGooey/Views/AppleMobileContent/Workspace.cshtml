@@ -32,12 +32,13 @@
                                id="headerBackgroundImage"
                                name="headerBackgroundImage"
                                value="@Model.Data.HeaderBackgroundImage" />
-                        <button type="button"
-                                id="headerBackgroundImageButton"
-                                class="linkEditorTriggerButton"
-                                data-media-picker-trigger="true"
-                                data-media-picker-target="headerBackgroundImage"
-                                data-media-picker-display="headerBackgroundImageDisplay">
+                            <button type="button"
+                                    id="headerBackgroundImageButton"
+                                    class="linkEditorTriggerButton"
+                                    onclick="openMediaPicker(this)"
+                                    data-media-picker-trigger="true"
+                                    data-media-picker-target="headerBackgroundImage"
+                                    data-media-picker-display="headerBackgroundImageDisplay">
                             <span id="headerBackgroundImageDisplay" class="truncate">Select media...</span>
                         </button>
                     </div>

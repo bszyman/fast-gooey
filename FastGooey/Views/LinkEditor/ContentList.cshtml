@@ -16,6 +16,7 @@
         {
             <button type="button"
                     class="text-center rounded-md border border-transparent hover:bg-zinc-100 p-2 transition"
+                    onclick="selectLinkEditorItem(this); let input = document.getElementById('linkEditorCustomUrl'); if (input) input.value = ''"
                     data-link-editor-item="true"
                     data-link-editor-id="@node.Id"
                     data-link-editor-label="@node.Name"
@@ -41,6 +42,7 @@
         {
             <button type="button"
                     class="text-center rounded-md border border-transparent hover:bg-zinc-100 p-2 transition"
+                    onclick="selectLinkEditorItem(this); var input = document.getElementById('linkEditorCustomUrl'); if (input) input.value = ''"
                     data-link-editor-item="true"
                     data-link-editor-id="@node.Id"
                     data-link-editor-label="@node.Name"

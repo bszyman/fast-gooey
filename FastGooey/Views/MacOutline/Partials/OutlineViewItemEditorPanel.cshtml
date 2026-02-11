@@ -49,12 +49,13 @@
                     <label for="urlLinkButton">Url (optional)</label>
                     <div class="flex gap-2 mb-1">
                         <input type="hidden" id="url" name="url" value="@Model.Url"/>
-                        <button type="button"
-                                id="urlLinkButton"
-                                class="linkEditorTriggerButton"
-                                data-link-editor-trigger="true"
-                                data-link-editor-target="url"
-                                data-link-editor-display="urlLinkDisplay">
+                            <button type="button"
+                                    id="urlLinkButton"
+                                    class="linkEditorTriggerButton"
+                                    onclick="openLinkEditor(this)"
+                                    data-link-editor-trigger="true"
+                                    data-link-editor-target="url"
+                                    data-link-editor-display="urlLinkDisplay">
                             Select link...
                         </button>
                     </div>

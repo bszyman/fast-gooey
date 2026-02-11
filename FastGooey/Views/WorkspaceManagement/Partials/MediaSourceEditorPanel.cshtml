@@ -32,6 +32,7 @@
                     <select asp-for="FormModel.SourceType"
                             asp-items="Html.GetEnumSelectList<MediaSourceType>()"
                             class="w-full"
+                            onchange="updateMediaSourceFields(this.closest('form') || document)"
                             data-media-source-type-select="true">
                     </select>
                     <span asp-validation-for="FormModel.SourceType" class="text-red-600 text-sm mt-1 block"></span>
@@ -129,5 +130,3 @@
         </div>
     </div>
 </form>
-
-

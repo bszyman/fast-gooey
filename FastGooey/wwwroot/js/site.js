@@ -648,13 +648,6 @@ function saveMediaPickerSelection() {
     closeMediaPicker();
 }
 
-document.addEventListener('change', function(event) {
-    const target = event.target;
-    if (target.matches('[data-media-source-type-select="true"]')) {
-        updateMediaSourceFields(target.closest('form') || document);
-    }
-});
-
 document.addEventListener('htmx:afterSwap', function(event) {
     updateMediaSourceFields(event.detail.target || document);
     ensureContentOrderingScript(event.detail.target || document);
@@ -682,75 +675,4 @@ document.addEventListener('DOMContentLoaded', function() {
     ensureContentOrderingScript(document);
     updateLinkEditorDisplays(document);
     updateMediaPickerDisplays(document);
-});
-
-document.addEventListener('click', function(event) {
-    const mediaTrigger = event.target.closest('[data-media-picker-trigger="true"]');
-    if (mediaTrigger) {
-        openMediaPicker(mediaTrigger);
-        return;
-    }
-
-    const trigger = event.target.closest('[data-link-editor-trigger="true"]');
-    if (trigger) {
-        openLinkEditor(trigger);
-        return;
-    }
-
-    const mediaCloseButton = event.target.closest('[data-media-picker-close="true"]');
-    if (mediaCloseButton) {
-        closeMediaPicker();
-        return;
-    }
-
-    const closeButton = event.target.closest('[data-link-editor-close="true"]');
-    if (closeButton) {
-        closeLinkEditor();
-        return;
-    }
-
-    const mediaSaveButton = event.target.closest('[data-media-picker-save="true"]');
-    if (mediaSaveButton) {
-        saveMediaPickerSelection();
-        return;
-    }
-
-    const saveButton = event.target.closest('[data-link-editor-save="true"]');
-    if (saveButton) {
-        saveLinkEditorSelection();
-        return;
-    }
-
-    const clearButton = event.target.closest('[data-link-editor-clear="true"]');
-    if (clearButton) {
-        clearLinkEditorSelectionValue();
-        return;
-    }
-
-    const item = event.target.closest('[data-link-editor-item="true"]');
-    if (item) {
-        selectLinkEditorItem(item);
-        const customUrlInput = document.getElementById('linkEditorCustomUrl');
-        if (customUrlInput) customUrlInput.value = '';
-    }
-
-    const mediaItem = event.target.closest('[data-media-picker-item="true"]');
-    if (mediaItem) {
-        selectMediaPickerItem(mediaItem);
-        const customUrlInput = document.getElementById('mediaPickerCustomUrl');
-        if (customUrlInput) customUrlInput.value = '';
-    }
-});
-
-document.addEventListener('input', function(event) {
-    const target = event.target;
-    if (target && target.id === 'linkEditorCustomUrl') {
-        const palette = getLinkEditorPalette();
-        clearLinkEditorSelection(palette);
-    }
-
-    if (target && target.id === 'mediaPickerCustomUrl') {
-        const palette = getMediaPickerPalette();
-        clearMediaPickerSelection(palette);
-    }
 });
