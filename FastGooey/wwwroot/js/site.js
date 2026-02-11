@@ -564,6 +564,7 @@ function saveMediaPickerSelection() {
 
     input.value = nextValue;
     input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change'));
     display.textContent = formatMediaPickerDisplayValue(nextValue);
 
     closeMediaPicker();

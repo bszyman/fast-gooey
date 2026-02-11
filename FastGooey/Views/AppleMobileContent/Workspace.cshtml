@@ -4,7 +4,7 @@
 
 <form method="post"
       hx-post="@Url.Action("SaveWorkspace", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
-      hx-trigger="blur from:#headerTitle, keyup[key=='Enter'] changed delay:500ms from:#headerTitle, blur from:#headerBackgroundImage, keyup[key=='Enter'] changed delay:500ms from:#headerBackgroundImage"
+      hx-trigger="blur from:#headerTitle, keyup[key=='Enter'] changed delay:500ms from:#headerTitle, changed from:#headerBackgroundImage"
       hx-target="#workspaceEditor"
       onsubmit="return false;">
     @Html.AntiForgeryToken()
@@ -112,8 +112,8 @@
                                 hx-get="@Url.Action("ImageConfigurationPanel", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = image.Identifier })"
                                 hx-target="#editorPanel"
                                 class="rounded-xl hover:bg-zinc-100 px-1 py-3 cursor-pointer cursor-grab text-center">
-                                <img src="@MediaUrlResolver.Resolve(Url, Model.WorkspaceId(), image.Url)" alt="@image.AltText" class="w-full">
-                                <p class="mt-2 px-2 text-sm font-medium text-left">@image.AltText</p>
+                                <img src="@MediaUrlResolver.Resolve(Url, Model.WorkspaceId(), image.Url)" alt="@image.Caption" class="w-full">
+                                <p class="mt-2 px-2 text-sm font-medium text-left">@image.Caption</p>
                             </div>
                         }
                     }

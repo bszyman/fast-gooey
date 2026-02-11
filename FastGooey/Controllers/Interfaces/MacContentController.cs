@@ -256,6 +256,22 @@ public class MacContentController(
             return NotFound();
         }
 
+        if (!ModelState.IsValid)
+        {
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            return await LoadConfigurationPanelInternal<ImageContentItem, MacContentImageConfigurationPanelViewModel>(
+                interfaceGuid,
+                itemId,
+                $"{BaseViewPath}/Partials/ContentImageConfigurationPanel.cshtml",
+                () => new MacContentImageConfigurationPanelViewModel
+                {
+                    WorkspaceId = WorkspaceId,
+                    InterfaceId = interfaceGuid,
+                },
+                (vm, content) => vm.Content = content
+            );
+        }
+
         return await SaveContentItemInternal<ImageContentItem, ImageContentFormModel>(
             interfaceGuid,
             itemId,
@@ -264,7 +280,7 @@ public class MacContentController(
             (item, f) =>
             {
                 item.Url = f.Url;
-                item.AltText = f.AltText;
+                item.Caption = f.Caption;
             }
         );
     }

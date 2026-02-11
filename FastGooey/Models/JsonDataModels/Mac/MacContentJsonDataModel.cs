@@ -40,7 +40,7 @@ public class TextContentItem : MacContentItemJsonDataModel
 public class ImageContentItem : MacContentItemJsonDataModel
 {
     public string Url { get; set; } = string.Empty;
-    public string AltText { get; set; } = string.Empty;
+    public string Caption { get; set; } = string.Empty;
 }
 
 public class VideoContentItem : MacContentItemJsonDataModel

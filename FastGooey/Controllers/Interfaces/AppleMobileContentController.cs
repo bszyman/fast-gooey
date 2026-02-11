@@ -246,6 +246,22 @@ public class AppleMobileContentController(
         {
             return NotFound();
         }
+        
+        if (!ModelState.IsValid)
+        {
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            return await LoadConfigurationPanelInternal<ImageContentItem, AppleMobileImageConfigurationPanelViewModel>(
+                interfaceGuid,
+                itemId,
+                $"{BaseViewPath}/Partials/ContentImageConfigurationPanel.cshtml",
+                () => new AppleMobileImageConfigurationPanelViewModel
+                {
+                    WorkspaceId = WorkspaceId,
+                    InterfaceId = interfaceGuid,
+                },
+                (vm, content) => vm.Content = content
+            );
+        }
 
         return await SaveContentItemInternal<ImageContentItem, ImageContentFormModel>(
             interfaceGuid,
@@ -255,7 +271,7 @@ public class AppleMobileContentController(
             (item, f) =>
             {
                 item.Url = f.Url;
-                item.AltText = f.AltText;
+                item.Caption = f.Caption;
             }
         );
     }

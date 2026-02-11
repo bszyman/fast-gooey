@@ -21,7 +21,7 @@ public class TextContentFormModel : ContentItemBase
 public class ImageContentFormModel : ContentItemBase
 {
     public string Url { get; set; } = string.Empty;
-    public string AltText { get; set; } = string.Empty;
+    public string Caption { get; set; } = string.Empty;
 }
 
 public class VideoContentFormModel : ContentItemBase

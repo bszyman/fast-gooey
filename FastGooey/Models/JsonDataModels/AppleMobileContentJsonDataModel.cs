@@ -40,7 +40,7 @@ public class TextContentItem : AppleMobileContentItemJsonDataModel
 public class ImageContentItem : AppleMobileContentItemJsonDataModel
 {
     public string Url { get; set; } = string.Empty;
-    public string AltText { get; set; } = string.Empty;
+    public string Caption { get; set; } = string.Empty;
 }
 
 public class VideoContentItem : AppleMobileContentItemJsonDataModel
