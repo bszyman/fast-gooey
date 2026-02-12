@@ -234,208 +234,264 @@ const linkEditorSelectedClass = 'selectedInterfaceListItem';
 const mediaPickerSchemePrefix = 'fastgooey:media:';
 const mediaPickerSelectedClass = 'selectedInterfaceListItem';
 
-function getLinkEditorPalette() {
-    return document.getElementById('linkEditorPalette');
-}
-
-function getLinkEditorNodeMap() {
-    const palette = getLinkEditorPalette();
-    const map = new Map();
-
-    if (!palette) return map;
-
-    palette.querySelectorAll('[data-link-editor-item="true"]').forEach(item => {
-        const id = item.dataset.linkEditorId;
-        if (!id) return;
-
-        map.set(id, {
-            label: item.dataset.linkEditorLabel || 'Untitled',
-            platform: item.dataset.linkEditorPlatform || ''
-        });
-    });
-
-    return map;
-}
-
-function formatLinkEditorDisplayValue(value) {
-    const trimmed = value?.trim() || '';
-    if (!trimmed) return 'No link selected.';
-
-    if (!trimmed.toLowerCase().startsWith(linkEditorSchemePrefix)) {
-        return trimmed;
+class LinkEditorPalette extends HTMLElement {
+    constructor() {
+        super();
+        this.customUrlInput = null;
+        this.handleTriggerClick = this.handleTriggerClick.bind(this);
+        this.handlePaletteClick = this.handlePaletteClick.bind(this);
+        this.handleCustomUrlInput = this.handleCustomUrlInput.bind(this);
+        this.handleAfterSwap = this.handleAfterSwap.bind(this);
+        this.handleDOMContentLoaded = this.handleDOMContentLoaded.bind(this);
     }
 
-    const id = trimmed.slice(linkEditorSchemePrefix.length);
-    const nodeMap = getLinkEditorNodeMap();
-    const match = nodeMap.get(id);
-    if (!match) return 'Unknown FastGooey link';
+    connectedCallback() {
+        this.customUrlInput = this.querySelector('#linkEditorCustomUrl');
+        if (this.customUrlInput) {
+            this.customUrlInput.addEventListener('input', this.handleCustomUrlInput);
+        }
 
-    const platformSuffix = match.platform ? ` (${match.platform})` : '';
-    return `${match.label}${platformSuffix}`;
-}
+        this.addEventListener('click', this.handlePaletteClick);
+        document.addEventListener('click', this.handleTriggerClick);
+        document.addEventListener('htmx:afterSwap', this.handleAfterSwap);
 
-function updateLinkEditorDisplay(trigger) {
-    const targetId = trigger.dataset.linkEditorTarget;
-    const displayId = trigger.dataset.linkEditorDisplay;
-    if (!targetId || !displayId) return;
-
-    const input = document.getElementById(targetId);
-    const display = document.getElementById(displayId);
-    if (!input || !display) return;
-
-    display.textContent = formatLinkEditorDisplayValue(input.value);
-}
-
-function updateLinkEditorDisplays(root = document) {
-    root.querySelectorAll('[data-link-editor-trigger="true"]').forEach(updateLinkEditorDisplay);
-}
-
-function clearLinkEditorSelection(palette) {
-    if (!palette) return;
-    palette.querySelectorAll('[data-link-editor-item="true"]').forEach(item => {
-        item.classList.remove(linkEditorSelectedClass);
-    });
-}
-
-function selectLinkEditorItem(item) {
-    const palette = getLinkEditorPalette();
-    if (!palette) return;
-    clearLinkEditorSelection(palette);
-    item.classList.add(linkEditorSelectedClass);
-}
-
-function applyLinkEditorSelectionFromValue(value) {
-    const palette = getLinkEditorPalette();
-    if (!palette) return;
-
-    const customUrlInput = document.getElementById('linkEditorCustomUrl');
-    const trimmed = value?.trim() || '';
-
-    clearLinkEditorSelection(palette);
-
-    if (!trimmed) {
-        if (customUrlInput) customUrlInput.value = '';
-        return;
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', this.handleDOMContentLoaded, { once: true });
+        } else {
+            this.updateDisplays(document);
+        }
     }
 
-    if (trimmed.toLowerCase().startsWith(linkEditorSchemePrefix)) {
-        const id = trimmed.slice(linkEditorSchemePrefix.length);
-        const item = palette.querySelector(`[data-link-editor-item="true"][data-link-editor-id="${id}"]`);
-        if (item) {
-            selectLinkEditorItem(item);
-            if (customUrlInput) customUrlInput.value = '';
+    disconnectedCallback() {
+        if (this.customUrlInput) {
+            this.customUrlInput.removeEventListener('input', this.handleCustomUrlInput);
+        }
+        this.removeEventListener('click', this.handlePaletteClick);
+        document.removeEventListener('click', this.handleTriggerClick);
+        document.removeEventListener('htmx:afterSwap', this.handleAfterSwap);
+        document.removeEventListener('DOMContentLoaded', this.handleDOMContentLoaded);
+    }
+
+    handleDOMContentLoaded() {
+        this.updateDisplays(document);
+    }
+
+    handleTriggerClick(event) {
+        const trigger = event.target.closest('[data-link-editor-trigger="true"]');
+        if (!trigger) return;
+
+        this.openFromTrigger(trigger);
+    }
+
+    handlePaletteClick(event) {
+        const actionButton = event.target.closest('[data-link-editor-action]');
+        if (actionButton) {
+            const action = actionButton.dataset.linkEditorAction;
+            if (action === 'close') this.close();
+            if (action === 'save') this.saveSelection();
+            if (action === 'clear') this.clearSelectionValue();
             return;
         }
 
-        if (customUrlInput) customUrlInput.value = '';
-        return;
+        const item = event.target.closest('[data-link-editor-item="true"]');
+        if (!item) return;
+
+        this.selectItem(item);
+        if (this.customUrlInput) this.customUrlInput.value = '';
     }
 
-    if (customUrlInput) customUrlInput.value = trimmed;
-}
+    handleCustomUrlInput() {
+        this.clearSelection();
+    }
 
-function openLinkEditor(trigger) {
-    const palette = getLinkEditorPalette();
-    if (!palette) return;
+    handleAfterSwap(event) {
+        this.updateDisplays(event.detail.target || document);
 
-    const targetId = trigger.dataset.linkEditorTarget;
-    const displayId = trigger.dataset.linkEditorDisplay;
-    const input = targetId ? document.getElementById(targetId) : null;
-    const customUrlInput = document.getElementById('linkEditorCustomUrl');
-
-    palette.dataset.linkEditorTarget = targetId || '';
-    palette.dataset.linkEditorDisplay = displayId || '';
-    palette.dataset.linkEditorInputValue = input?.value || '';
-
-    applyLinkEditorSelectionFromValue(input?.value || '');
-
-    const contentSelector = palette.querySelector('#contentSelector');
-    if (contentSelector) {
-        if (window.htmx) {
-            window.htmx.trigger(contentSelector, 'load-link-editor');
-        } else {
-            contentSelector.dispatchEvent(new Event('load-link-editor'));
+        const target = event.detail.target;
+        if (target && target.id === 'contentSelector' && this.contains(target) && this.dataset.linkEditorInputValue) {
+            this.applySelectionFromValue(this.dataset.linkEditorInputValue);
+            this.updateDisplays(document);
         }
     }
 
-    palette.classList.remove('hidden');
-    palette.setAttribute('aria-hidden', 'false');
+    getNodeMap() {
+        const map = new Map();
+        this.querySelectorAll('[data-link-editor-item="true"]').forEach(item => {
+            const id = item.dataset.linkEditorId;
+            if (!id) return;
+
+            map.set(id, {
+                label: item.dataset.linkEditorLabel || 'Untitled',
+                platform: item.dataset.linkEditorPlatform || ''
+            });
+        });
+
+        return map;
+    }
+
+    formatDisplayValue(value) {
+        const trimmed = value?.trim() || '';
+        if (!trimmed) return 'No link selected.';
+
+        if (!trimmed.toLowerCase().startsWith(linkEditorSchemePrefix)) {
+            return trimmed;
+        }
+
+        const id = trimmed.slice(linkEditorSchemePrefix.length);
+        const nodeMap = this.getNodeMap();
+        const match = nodeMap.get(id);
+        if (!match) return 'Unknown FastGooey link';
+
+        const platformSuffix = match.platform ? ` (${match.platform})` : '';
+        return `${match.label}${platformSuffix}`;
+    }
+
+    updateDisplay(trigger) {
+        const targetId = trigger.dataset.linkEditorTarget;
+        const displayId = trigger.dataset.linkEditorDisplay;
+        if (!targetId || !displayId) return;
+
+        const input = document.getElementById(targetId);
+        const display = document.getElementById(displayId);
+        if (!input || !display) return;
+
+        display.textContent = this.formatDisplayValue(input.value);
+    }
+
+    updateDisplays(root = document) {
+        root.querySelectorAll('[data-link-editor-trigger="true"]').forEach(trigger => {
+            this.updateDisplay(trigger);
+        });
+    }
+
+    clearSelection() {
+        this.querySelectorAll('[data-link-editor-item="true"]').forEach(item => {
+            item.classList.remove(linkEditorSelectedClass);
+        });
+    }
+
+    selectItem(item) {
+        this.clearSelection();
+        item.classList.add(linkEditorSelectedClass);
+    }
+
+    applySelectionFromValue(value) {
+        const trimmed = value?.trim() || '';
+        this.clearSelection();
+
+        if (!trimmed) {
+            if (this.customUrlInput) this.customUrlInput.value = '';
+            return;
+        }
+
+        if (trimmed.toLowerCase().startsWith(linkEditorSchemePrefix)) {
+            const id = trimmed.slice(linkEditorSchemePrefix.length);
+            const item = this.querySelector(`[data-link-editor-item="true"][data-link-editor-id="${id}"]`);
+            if (item) {
+                this.selectItem(item);
+                if (this.customUrlInput) this.customUrlInput.value = '';
+                return;
+            }
+
+            if (this.customUrlInput) this.customUrlInput.value = '';
+            return;
+        }
+
+        if (this.customUrlInput) this.customUrlInput.value = trimmed;
+    }
+
+    openFromTrigger(trigger) {
+        const targetId = trigger.dataset.linkEditorTarget;
+        const displayId = trigger.dataset.linkEditorDisplay;
+        const input = targetId ? document.getElementById(targetId) : null;
+
+        this.dataset.linkEditorTarget = targetId || '';
+        this.dataset.linkEditorDisplay = displayId || '';
+        this.dataset.linkEditorInputValue = input?.value || '';
+
+        this.applySelectionFromValue(input?.value || '');
+
+        const contentSelector = this.querySelector('#contentSelector');
+        if (contentSelector) {
+            if (window.htmx) {
+                window.htmx.trigger(contentSelector, 'load-link-editor');
+            } else {
+                contentSelector.dispatchEvent(new Event('load-link-editor'));
+            }
+        }
+
+        this.classList.remove('hidden');
+        this.setAttribute('aria-hidden', 'false');
+    }
+
+    close() {
+        this.classList.add('hidden');
+        this.setAttribute('aria-hidden', 'true');
+        this.dataset.linkEditorTarget = '';
+        this.dataset.linkEditorDisplay = '';
+        this.dataset.linkEditorInputValue = '';
+    }
+
+    saveSelection() {
+        const targetId = this.dataset.linkEditorTarget;
+        const displayId = this.dataset.linkEditorDisplay;
+        if (!targetId || !displayId) {
+            this.close();
+            return;
+        }
+
+        const input = document.getElementById(targetId);
+        const display = document.getElementById(displayId);
+        if (!input || !display) {
+            this.close();
+            return;
+        }
+
+        const selectedItem = this.querySelector(`.${linkEditorSelectedClass}[data-link-editor-item="true"]`);
+        let nextValue = '';
+
+        if (this.customUrlInput && this.customUrlInput.value.trim()) {
+            nextValue = this.customUrlInput.value.trim();
+        } else if (selectedItem) {
+            nextValue = `${linkEditorSchemePrefix}${selectedItem.dataset.linkEditorId}`;
+        }
+
+        input.value = nextValue;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        display.textContent = this.formatDisplayValue(nextValue);
+
+        this.close();
+    }
+
+    clearSelectionValue() {
+        const targetId = this.dataset.linkEditorTarget;
+        const displayId = this.dataset.linkEditorDisplay;
+        if (!targetId || !displayId) {
+            this.close();
+            return;
+        }
+
+        const input = document.getElementById(targetId);
+        const display = document.getElementById(displayId);
+        if (!input || !display) {
+            this.close();
+            return;
+        }
+
+        if (this.customUrlInput) this.customUrlInput.value = '';
+
+        this.clearSelection();
+
+        input.value = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        display.textContent = this.formatDisplayValue('');
+
+        this.close();
+    }
 }
 
-function closeLinkEditor() {
-    const palette = getLinkEditorPalette();
-    if (!palette) return;
-
-    palette.classList.add('hidden');
-    palette.setAttribute('aria-hidden', 'true');
-    palette.dataset.linkEditorTarget = '';
-    palette.dataset.linkEditorDisplay = '';
-    palette.dataset.linkEditorInputValue = '';
-}
-
-function saveLinkEditorSelection() {
-    const palette = getLinkEditorPalette();
-    if (!palette) return;
-
-    const targetId = palette.dataset.linkEditorTarget;
-    const displayId = palette.dataset.linkEditorDisplay;
-    if (!targetId || !displayId) {
-        closeLinkEditor();
-        return;
-    }
-
-    const input = document.getElementById(targetId);
-    const display = document.getElementById(displayId);
-    if (!input || !display) {
-        closeLinkEditor();
-        return;
-    }
-
-    const customUrlInput = document.getElementById('linkEditorCustomUrl');
-    const selectedItem = palette.querySelector(`.${linkEditorSelectedClass}[data-link-editor-item="true"]`);
-    let nextValue = '';
-
-    if (customUrlInput && customUrlInput.value.trim()) {
-        nextValue = customUrlInput.value.trim();
-    } else if (selectedItem) {
-        nextValue = `${linkEditorSchemePrefix}${selectedItem.dataset.linkEditorId}`;
-    }
-
-    input.value = nextValue;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    display.textContent = formatLinkEditorDisplayValue(nextValue);
-
-    closeLinkEditor();
-}
-
-function clearLinkEditorSelectionValue() {
-    const palette = getLinkEditorPalette();
-    if (!palette) return;
-
-    const targetId = palette.dataset.linkEditorTarget;
-    const displayId = palette.dataset.linkEditorDisplay;
-    if (!targetId || !displayId) {
-        closeLinkEditor();
-        return;
-    }
-
-    const input = document.getElementById(targetId);
-    const display = document.getElementById(displayId);
-    if (!input || !display) {
-        closeLinkEditor();
-        return;
-    }
-
-    const customUrlInput = document.getElementById('linkEditorCustomUrl');
-    if (customUrlInput) customUrlInput.value = '';
-
-    clearLinkEditorSelection(palette);
-
-    input.value = '';
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    display.textContent = formatLinkEditorDisplayValue('');
-
-    closeLinkEditor();
+if (!customElements.get('link-editor-palette')) {
+    customElements.define('link-editor-palette', LinkEditorPalette);
 }
 
 function getMediaPickerPalette() {
@@ -651,17 +707,10 @@ function saveMediaPickerSelection() {
 document.addEventListener('htmx:afterSwap', function(event) {
     updateMediaSourceFields(event.detail.target || document);
     ensureContentOrderingScript(event.detail.target || document);
-    updateLinkEditorDisplays(event.detail.target || document);
     updateMediaPickerDisplays(event.detail.target || document);
 
     const target = event.detail.target;
     if (target && target.id === 'contentSelector') {
-        const linkPalette = getLinkEditorPalette();
-        if (linkPalette && linkPalette.contains(target) && linkPalette.dataset.linkEditorInputValue) {
-            applyLinkEditorSelectionFromValue(linkPalette.dataset.linkEditorInputValue);
-            updateLinkEditorDisplays(document);
-        }
-
         const mediaPalette = getMediaPickerPalette();
         if (mediaPalette && mediaPalette.contains(target) && mediaPalette.dataset.mediaPickerInputValue) {
             applyMediaPickerSelectionFromValue(mediaPalette.dataset.mediaPickerInputValue);
@@ -673,6 +722,5 @@ document.addEventListener('htmx:afterSwap', function(event) {
 document.addEventListener('DOMContentLoaded', function() {
     updateMediaSourceFields(document);
     ensureContentOrderingScript(document);
-    updateLinkEditorDisplays(document);
     updateMediaPickerDisplays(document);
 });
