@@ -68,51 +68,53 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication()
-    .AddGoogle(options =>
-    {
-        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
-        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-    })
-    .AddMicrosoftAccount(options =>
-    {
-        options.ClientId = builder.Configuration["Authentication:Microsoft:ClientId"]!;
-        options.ClientSecret = builder.Configuration["Authentication:Microsoft:ClientSecret"]!;
-    })
-    .AddOpenIdConnect("Apple", "Sign in with Apple", options =>
-    {
-        options.Authority = "https://appleid.apple.com";
-        options.ClientId = builder.Configuration["Authentication:Apple:ClientId"]!;
-        options.CallbackPath = "/signin-apple";
-        options.ResponseType = "code id_token";
-        options.ResponseMode = "form_post";
-        options.DisableTelemetry = true;
-        options.Scope.Clear();
-        options.Scope.Add("openid");
-        options.Scope.Add("email");
-        options.Scope.Add("name");
+builder.Services.AddAuthentication();
 
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidIssuer = "https://appleid.apple.com",
-            ValidAudience = builder.Configuration["Authentication:Apple:ClientId"]!,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true
-        };
-
-        options.Events = new OpenIdConnectEvents
-        {
-            OnAuthorizationCodeReceived = context =>
-            {
-                var jwtService = context.HttpContext.RequestServices
-                    .GetRequiredService<IAppleSignInJwtService>();
-                context.TokenEndpointRequest!.ClientSecret = jwtService.GenerateClientSecret();
-
-                return Task.CompletedTask;
-            }
-        };
-    });
+// builder.Services.AddAuthentication()
+//     .AddGoogle(options =>
+//     {
+//         options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+//         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+//     })
+//     .AddMicrosoftAccount(options =>
+//     {
+//         options.ClientId = builder.Configuration["Authentication:Microsoft:ClientId"]!;
+//         options.ClientSecret = builder.Configuration["Authentication:Microsoft:ClientSecret"]!;
+//     })
+//     .AddOpenIdConnect("Apple", "Sign in with Apple", options =>
+//     {
+//         options.Authority = "https://appleid.apple.com";
+//         options.ClientId = builder.Configuration["Authentication:Apple:ClientId"]!;
+//         options.CallbackPath = "/signin-apple";
+//         options.ResponseType = "code id_token";
+//         options.ResponseMode = "form_post";
+//         options.DisableTelemetry = true;
+//         options.Scope.Clear();
+//         options.Scope.Add("openid");
+//         options.Scope.Add("email");
+//         options.Scope.Add("name");
+//
+//         options.TokenValidationParameters = new TokenValidationParameters
+//         {
+//             ValidIssuer = "https://appleid.apple.com",
+//             ValidAudience = builder.Configuration["Authentication:Apple:ClientId"]!,
+//             ValidateIssuer = true,
+//             ValidateAudience = true,
+//             ValidateLifetime = true
+//         };
+//
+//         options.Events = new OpenIdConnectEvents
+//         {
+//             OnAuthorizationCodeReceived = context =>
+//             {
+//                 var jwtService = context.HttpContext.RequestServices
+//                     .GetRequiredService<IAppleSignInJwtService>();
+//                 context.TokenEndpointRequest!.ClientSecret = jwtService.GenerateClientSecret();
+//
+//                 return Task.CompletedTask;
+//             }
+//         };
+//     });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
