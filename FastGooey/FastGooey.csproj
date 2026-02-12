@@ -16,10 +16,7 @@
       <PackageReference Include="GeoTimeZone" Version="6.0.0" />
       <PackageReference Include="Handlebars.Net" Version="2.1.6" />
       <PackageReference Include="Joonasw.AspNetCore.SecurityHeaders" Version="6.0.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.10" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="9.0.10" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.10" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.10" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
