@@ -123,6 +123,7 @@ app.UseCsp(csp =>
     csp.AllowScripts
         .FromSelf()
         .AllowUnsafeInline()
+        .AllowUnsafeEval()
         .From("https://unpkg.com")
         .From("https://cdn.apple-mapkit.com")
         .From("https://challenges.cloudflare.com");
