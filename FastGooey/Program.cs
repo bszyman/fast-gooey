@@ -153,6 +153,11 @@ app.Use(async(context, next) =>
     context.Response.Headers["X-Content-Type-Options"] = "nosniff";
     context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
     context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    context.Response.Headers["Permissions-Policy"] =
+        "accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), " +
+        "fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), " +
+        "payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), " +
+        "usb=(), web-share=(), xr-spatial-tracking=()";
     
     await next();
 });
