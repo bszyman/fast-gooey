@@ -94,6 +94,7 @@ public class AppleMobileController(
         var interfaces = await dbContext.GooeyInterfaces
             .Where(x => x.Workspace.PublicId.Equals(workspaceId))
             .Where(x => x.Platform.Equals("AppleMobile"))
+            .OrderByDescending(x => x.CreatedAt)
             .Select(x => new InterfaceNavigationItem
             {
                 Id = x.DocId,

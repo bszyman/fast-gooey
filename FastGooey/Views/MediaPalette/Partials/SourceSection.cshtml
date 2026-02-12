@@ -30,7 +30,7 @@
             {
                 <button type="button"
                         class="text-left rounded-md border border-transparent hover:bg-zinc-100 p-2 transition"
-                        onclick="selectMediaPickerItem(this); document.getElementById('mediaPickerCustomUrl')?.value = ''"
+                        onclick="selectMediaPickerItem(this); let input = document.getElementById('mediaPickerCustomUrl'); if (input) input.value = ''"
                         data-media-picker-item="true"
                         data-media-source-id="@Model.SourceId"
                         data-media-source-name="@Model.Name"
