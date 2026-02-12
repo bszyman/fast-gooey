@@ -73,7 +73,7 @@ public class AppleMobileController(
                 x.DocId.Equals(interfaceId) &&
                 x.Platform.Equals("AppleMobile"));
 
-        if (interfaceNode == null)
+        if (interfaceNode is null)
         {
             return NotFound();
         }

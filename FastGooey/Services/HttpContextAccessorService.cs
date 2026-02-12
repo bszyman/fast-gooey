@@ -20,7 +20,7 @@ public class HttpContextAccessorService : IHttpContextAccessorService
     public string GetRemoteIpAddress()
     {
         var context = _httpContextAccessor.HttpContext;
-        if (context == null)
+        if (context is null)
             return string.Empty;
 
         var ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();

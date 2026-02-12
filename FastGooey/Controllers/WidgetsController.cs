@@ -78,7 +78,7 @@ public class WidgetsController(
                 x.DocId.Equals(interfaceId) &&
                 x.Platform.Equals("Widget"));
 
-        if (interfaceNode == null)
+        if (interfaceNode is null)
         {
             return NotFound();
         }

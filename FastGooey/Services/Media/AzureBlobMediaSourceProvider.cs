@@ -38,7 +38,7 @@ public class AzureBlobMediaSourceProvider(IMediaCredentialProtector credentialPr
             else
             {
                 var item = blob.Blob;
-                if (item == null)
+                if (item is null)
                 {
                     continue;
                 }

@@ -114,7 +114,7 @@ public class AppleMobileListController(
             var item = data.Items
                 .FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
 
-            if (item != null)
+            if (item is not null)
             {
                 editorItem = item;
             }
@@ -153,7 +153,7 @@ public class AppleMobileListController(
 
         if (ModelState.IsValid)
         {
-            if (item == null)
+            if (item is null)
             {
                 item = new AppleMobileListItemJsonDataModel
                 {
@@ -198,7 +198,7 @@ public class AppleMobileListController(
         var data = contentNode.Config.Deserialize<AppleMobileListJsonDataModel>();
         var item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId));
 
-        if (item == null)
+        if (item is null)
         {
             return NotFound();
         }

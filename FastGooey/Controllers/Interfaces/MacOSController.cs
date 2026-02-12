@@ -75,7 +75,7 @@ public class MacOSController(
                 x.DocId.Equals(interfaceId) &&
                 x.Platform.Equals("Mac"));
 
-        if (interfaceNode == null)
+        if (interfaceNode is null)
         {
             return NotFound();
         }

@@ -131,7 +131,7 @@ public class WorkspaceManagementController(
             .First(x => x.PublicId == WorkspaceId);
 
         var mediaSource = workspace.MediaSources.FirstOrDefault(source => source.PublicId == sourceId);
-        if (mediaSource == null)
+        if (mediaSource is null)
         {
             return NotFound();
         }
@@ -200,7 +200,7 @@ public class WorkspaceManagementController(
 
     private MediaSourceEditorViewModel BuildMediaSourceEditorViewModel(Workspace workspace, Guid? sourceId)
     {
-        if (sourceId == null)
+        if (sourceId is null)
         {
             return new MediaSourceEditorViewModel
             {
@@ -210,7 +210,7 @@ public class WorkspaceManagementController(
         }
 
         var source = workspace.MediaSources.FirstOrDefault(item => item.PublicId == sourceId);
-        if (source == null)
+        if (source is null)
         {
             return new MediaSourceEditorViewModel
             {
@@ -255,7 +255,7 @@ public class WorkspaceManagementController(
         if (model.MediaSourceId.HasValue)
         {
             var existing = workspace.MediaSources.FirstOrDefault(source => source.PublicId == model.MediaSourceId.Value);
-            if (existing != null)
+            if (existing is not null)
             {
                 return existing;
             }

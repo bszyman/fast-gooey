@@ -35,7 +35,7 @@ public class AppleWeatherKitJwtService(
     {
         var config = configuration.GetSection("uCupertino:weatherkit").Get<WeatherKitConfigurationModel>();
 
-        if (config == null)
+        if (config is null)
         {
             logger.LogError("WeatherKit configuration not found");
             return;

@@ -117,7 +117,7 @@ public class WeatherController(
         }
 
         var currentUser = await userManager.GetUserAsync(User);
-        if (currentUser == null)
+        if (currentUser is null)
         {
             return Unauthorized();
         }
@@ -207,7 +207,7 @@ public class WeatherController(
                 .WithHeader("Authorization", $"Bearer {weatherKitJwt}")
                 .GetJsonAsync<Weather>();
 
-            if (weatherData?.CurrentWeather != null)
+            if (weatherData?.CurrentWeather is not null)
             {
                 var tempFahrenheit = (weatherData.CurrentWeather.Temperature * 9 / 5) + 32;
                 viewModel.Temperature = Math.Round(tempFahrenheit).ToString(CultureInfo.InvariantCulture);

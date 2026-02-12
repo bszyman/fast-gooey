@@ -224,7 +224,7 @@ public class MacTableController(
             var existingFieldType = data.Structure
                 .FirstOrDefault(x => x.FieldAlias.Equals(fieldAlias));
 
-            if (string.IsNullOrWhiteSpace(fieldAlias) || existingFieldType == null)
+            if (string.IsNullOrWhiteSpace(fieldAlias) || existingFieldType is null)
             {
                 var fieldType = new MacTableStructureItemJsonDataModel
                 {
@@ -278,7 +278,7 @@ public class MacTableController(
         var item = data.Structure
             .FirstOrDefault(x => x.FieldAlias.Equals(fieldAlias));
 
-        if (item == null)
+        if (item is null)
         {
             return NotFound();
         }
@@ -392,27 +392,27 @@ public class MacTableController(
                             break;
                         case "integer":
                             var intValue = int.TryParse(stringValue, out var i) ? (object)i : null;
-                            if (intValue != null)
+                            if (intValue is not null)
                                 UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(intValue));
                             break;
                         case "boolean":
                             var boolValue = bool.TryParse(stringValue, out var b) ? (object)b : null;
-                            if (boolValue != null)
+                            if (boolValue is not null)
                                 UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(boolValue));
                             break;
                         case "date":
                             var dateValue = DateTime.TryParse(stringValue, out var d) ? (object)d.Date : null;
-                            if (dateValue != null)
+                            if (dateValue is not null)
                                 UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(dateValue));
                             break;
                         case "time":
                             var timeValue = TimeSpan.TryParse(stringValue, out var t) ? (object)t : null;
-                            if (timeValue != null)
+                            if (timeValue is not null)
                                 UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(timeValue));
                             break;
                         case "dateTime":
                             var dateTimeValue = DateTime.TryParse(stringValue, out var dt) ? (object)dt : null;
-                            if (dateTimeValue != null)
+                            if (dateTimeValue is not null)
                                 UpdateKeyOrAddIfNotExists(tableItem?.Content, field.FieldAlias, JsonValue.Create(dateTimeValue));
                             break;
                         default:
@@ -476,7 +476,7 @@ public class MacTableController(
 
     private static void UpdateKeyOrAddIfNotExists(Dictionary<string, object>? json, string key, JsonNode? value)
     {
-        if (json == null || value == null)
+        if (json is null || value is null)
             return;
 
         if (json.ContainsKey(key))

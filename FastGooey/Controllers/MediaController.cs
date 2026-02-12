@@ -174,7 +174,7 @@ public class MediaController(
         var source = await dbContext.MediaSources
             .FirstOrDefaultAsync(s => s.PublicId == sourceId && s.Workspace.PublicId == WorkspaceId, cancellationToken);
 
-        if (source == null)
+        if (source is null)
         {
             return NotFound();
         }
@@ -187,7 +187,7 @@ public class MediaController(
         }
 
         var streamResult = await provider.OpenReadAsync(source, path, cancellationToken);
-        if (streamResult == null)
+        if (streamResult is null)
         {
             return NotFound();
         }

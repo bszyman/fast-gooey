@@ -86,7 +86,7 @@ public abstract class ContentInterfaceControllerBase<TDataModel, TItemBase, TWor
                     .FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
             }
 
-            if (item == null)
+            if (item is null)
             {
                 item = new TItem
                 {
@@ -152,7 +152,7 @@ public abstract class ContentInterfaceControllerBase<TDataModel, TItemBase, TWor
         var item = data.Items
             .FirstOrDefault(x => x.Identifier.Equals(itemId));
 
-        if (item == null)
+        if (item is null)
         {
             return NotFound();
         }

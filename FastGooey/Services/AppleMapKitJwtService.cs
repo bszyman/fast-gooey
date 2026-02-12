@@ -43,7 +43,7 @@ public class AppleMapKitJwtService(
     {
         var config = configuration.GetSection("uCupertino:mapkit").Get<MapKitConfigurationModel>();
 
-        if (config == null)
+        if (config is null)
         {
             logger.LogError("MapKit configuration not found");
             throw new InvalidOperationException("MapKit configuration is missing");

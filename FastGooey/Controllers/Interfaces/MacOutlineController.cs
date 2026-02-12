@@ -176,7 +176,7 @@ public class MacOutlineController(
         {
             // Update existing
             item = data?.FindById(itemId.Value);
-            if (item == null)
+            if (item is null)
             {
                 // Item to update not found in tree
                 return NotFound();
@@ -191,7 +191,7 @@ public class MacOutlineController(
             }
 
             var parentItem = data.FindById(formModel.ParentId.Value);
-            if (parentItem == null)
+            if (parentItem is null)
             {
                 return NotFound("Parent item not found.");
             }
@@ -243,7 +243,7 @@ public class MacOutlineController(
             .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
         var data = contentNode.Config.Deserialize<MacOutlineJsonDataModel>();
-        if (data == null)
+        if (data is null)
         {
             return NotFound("Outline data not found.");
         }
@@ -254,7 +254,7 @@ public class MacOutlineController(
             return NotFound();
         }
 
-        if (parentList == null)
+        if (parentList is null)
         {
             // Item is the root node – depending on your rules, either clear it or forbid delete
             return BadRequest("Cannot delete the root item.");

@@ -184,7 +184,7 @@ public class MacSourceListController(
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
         var group = data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId));
 
-        if (group == null)
+        if (group is null)
             return BadRequest();
 
         var item = itemId.HasValue && itemId.Value != Guid.Empty ?
@@ -220,7 +220,7 @@ public class MacSourceListController(
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
         var group = data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId));
 
-        if (group == null)
+        if (group is null)
             return BadRequest();
 
         var item = itemId.HasValue && itemId != Guid.Empty ?
@@ -272,7 +272,7 @@ public class MacSourceListController(
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
         var group = data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId));
 
-        if (group == null)
+        if (group is null)
             return BadRequest();
 
         data.Groups.Remove(group);
@@ -299,12 +299,12 @@ public class MacSourceListController(
         var data = contentNode.Config.Deserialize<MacSourceListJsonDataModel>();
         var group = data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId));
 
-        if (group == null)
+        if (group is null)
             return BadRequest();
 
         var item = group.GroupItems.FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
 
-        if (item == null)
+        if (item is null)
             return BadRequest();
 
         group.GroupItems.Remove(item);

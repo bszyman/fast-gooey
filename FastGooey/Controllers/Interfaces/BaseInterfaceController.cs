@@ -31,7 +31,7 @@ public abstract class BaseInterfaceController(
         nodeProp?.SetValue(viewModel, contentNode);
 
         var dataProp = typeof(TViewModel).GetProperty("Data");
-        if (dataProp != null)
+        if (dataProp is not null)
         {
             dataProp.SetValue(viewModel, contentNode.Config.DeserializePolymorphic<TDataModel>());
         }

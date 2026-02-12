@@ -16,7 +16,7 @@ public class KeyValueService(ApplicationDbContext context) : IKeyValueService
     {
         var existing = await context.KeyValueStores.FirstOrDefaultAsync(x => x.Key == key);
 
-        if (existing != null)
+        if (existing is not null)
         {
             existing.Value = value;
         }
