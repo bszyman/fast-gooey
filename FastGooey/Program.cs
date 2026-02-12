@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using NodaTime;
 using Fido2NetLib;
 using Fido2NetLib.Serialization;
+using Joonasw.AspNetCore.SecurityHeaders;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -145,6 +146,55 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.Use(async(context, next) =>
+{
+    context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    
+    await next();
+});
+
+app.UseCsp(csp =>
+{
+    csp.ByDefaultAllow.FromSelf();
+    
+    csp.AllowScripts
+        .FromSelf()
+        .AllowUnsafeInline()
+        .From("https://unpkg.com")
+        .From("https://cdn.apple-mapkit.com")
+        .From("https://challenges.cloudflare.com");
+    
+    csp.AllowStyles
+        .FromSelf()
+        .AllowUnsafeInline()
+        .From("https://fonts.googleapis.com");
+    
+    csp.AllowFonts
+        .FromSelf()
+        .From("https://fonts.gstatic.com");
+    
+    csp.AllowImages
+        .FromSelf()
+        .From("https:");
+    
+    csp.AllowConnections
+        .ToSelf()
+        .To("https://challenges.cloudflare.com")
+        .To("https://*.apple-mapkit.com")
+        .To("https://*.apple.com");
+    
+    csp.AllowFrames
+        .FromSelf()
+        .From("https://challenges.cloudflare.com");
+    
+    csp.AllowWorkers
+        .FromSelf()
+        .From("blob:");
+});
+
 app.UseRouting();
 
 app.UseAuthentication();
