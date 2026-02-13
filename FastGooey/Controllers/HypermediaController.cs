@@ -63,6 +63,8 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
         {
             case "List":
                 return GenerateAppleMobileList(gooeyInterface);
+            case "Collection":
+                return GenerateAppleMobileCollection(gooeyInterface);
             case "Content":
                 return GenerateAppleMobileContent(gooeyInterface);
             default:
@@ -76,6 +78,8 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
         {
             case "Table":
                 return GenerateMacTable(gooeyInterface);
+            case "Collection":
+                return GenerateMacCollection(gooeyInterface);
             case "SourceList":
                 return GenerateMacSourceList(gooeyInterface);
             case "Content":
@@ -134,6 +138,26 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
             InterfaceId = gooeyInterface.DocId,
             Title = gooeyInterface.Name,
             Content = viewContent
+        };
+    }
+
+    private AppleMobileCollectionHypermediaResponse GenerateAppleMobileCollection(GooeyInterface gooeyInterface)
+    {
+        var content = gooeyInterface.Config.Deserialize<AppleMobileCollectionViewJsonDataModel>();
+        var collectionData = content?.Items
+            .Select(x => new AppleMobileCollectionItemResponse(x))
+            .ToList() ?? [];
+
+        foreach (var item in collectionData)
+        {
+            item.ImageUrl = UnfurlFastGooeyLink(item.ImageUrl, gooeyInterface.Workspace.PublicId);
+            item.Url = UnfurlFastGooeyLink(item.Url, gooeyInterface.Workspace.PublicId);
+        }
+
+        return new AppleMobileCollectionHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Content = collectionData
         };
     }
 
@@ -218,6 +242,26 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
             {
                 Groups = sourceListGroups ?? []
             }
+        };
+    }
+
+    private MacCollectionHypermediaResponse GenerateMacCollection(GooeyInterface gooeyInterface)
+    {
+        var content = gooeyInterface.Config.Deserialize<MacCollectionViewJsonDataModel>();
+        var collectionData = content?.Items
+            .Select(x => new MacCollectionItemResponse(x))
+            .ToList() ?? [];
+
+        foreach (var item in collectionData)
+        {
+            item.ImageUrl = UnfurlFastGooeyLink(item.ImageUrl, gooeyInterface.Workspace.PublicId);
+            item.Url = UnfurlFastGooeyLink(item.Url, gooeyInterface.Workspace.PublicId);
+        }
+
+        return new MacCollectionHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Content = collectionData
         };
     }
 

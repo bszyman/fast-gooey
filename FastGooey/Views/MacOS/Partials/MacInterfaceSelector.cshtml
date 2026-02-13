@@ -12,6 +12,7 @@
         return item.Type switch
         {
             "Table" => Url.Action("Index", "MacTable", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Collection" => Url.Action("Index", "MacCollection", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
             "Content" => Url.Action("Index", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
             "SourceList" => Url.Action("Index", "MacSourceList", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
             "Outline" => Url.Action("Index", "MacOutline", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
