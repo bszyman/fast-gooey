@@ -1,4 +1,7 @@
 @model FastGooey.Models.ViewModels.WorkspaceHomeViewModel
+@{
+    ViewData["Title"] = Model.NavBarViewModel.WorkspaceName;
+}
 
 <partial name="~/Views/NavigationBar/MetalNavBar.cshtml" model="@Model.NavBarViewModel" />
 

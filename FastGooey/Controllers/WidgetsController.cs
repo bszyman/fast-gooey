@@ -44,7 +44,7 @@ public class WidgetsController(
     }
     
     [HttpGet("interface-selector")]
-    public async Task<IActionResult> MacInterfaceSelector(Guid workspaceId)
+    public async Task<IActionResult> InterfaceSelector(Guid workspaceId)
     {
         var widgets = await GetInterfacesForWorkspace(workspaceId);
      
@@ -54,18 +54,18 @@ public class WidgetsController(
             InterfaceItems = widgets
         };
         
-        return PartialView("~/Views/Widgets/Partials/WidgetsInterfaceSelector.cshtml", viewModel);
+        return PartialView("~/Views/Widgets/Partials/InterfaceSelector.cshtml", viewModel);
     }
     
     [HttpGet("new-interface-panel")]
-    public async Task<IActionResult> NewInterfacePanel(Guid workspaceId)
+    public async Task<IActionResult> InterfaceCreatorPalette(Guid workspaceId)
     {
         if (await InterfaceLimitReachedAsync())
         {
             return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
         }
 
-        return PartialView("~/Views/Widgets/Partials/NewWidgetPartialView.cshtml", workspaceId);
+        return PartialView("~/Views/Widgets/Partials/InterfaceCreatorPalette.cshtml", workspaceId);
     }
 
     [HttpDelete("interface/{interfaceId:guid}")]

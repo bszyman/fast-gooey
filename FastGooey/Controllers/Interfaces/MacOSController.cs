@@ -62,7 +62,7 @@ public class MacOSController(
             return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
         }
 
-        return PartialView("~/Views/MacOS/Partials/MacInterfaceCreatorPalette.cshtml", workspaceId);
+        return PartialView("~/Views/MacOS/Partials/InterfaceCreatorPalette.cshtml", workspaceId);
     }
 
     [HttpDelete("interface/{interfaceId:guid}")]

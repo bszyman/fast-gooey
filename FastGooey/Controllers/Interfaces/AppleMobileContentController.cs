@@ -78,7 +78,7 @@ public class AppleMobileContentController(
             }
         };
 
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
         return PartialView($"{BaseViewPath}/Index.cshtml", viewModel);
     }

@@ -39,7 +39,7 @@ public class AppleMobileController(
     }
     
     [HttpGet("interface-selector")]
-    public async Task<IActionResult> MacInterfaceSelector(Guid workspaceId)
+    public async Task<IActionResult> InterfaceSelector(Guid workspaceId)
     {
         var iOSInterfaces = await GetInterfacesForWorkspace(workspaceId);
      
@@ -53,14 +53,14 @@ public class AppleMobileController(
     }
     
     [HttpGet("new-interface-panel")]
-    public async Task<IActionResult> MacInterfaceSelectorPanel(Guid workspaceId)
+    public async Task<IActionResult> InterfaceCreatorPalette(Guid workspaceId)
     {
         if (await InterfaceLimitReachedAsync())
         {
             return PartialView("~/Views/Workspaces/Partials/UpgradeToStandardPanel.cshtml");
         }
 
-        return PartialView("~/Views/AppleMobile/Partials/NewInterfaceSelectorPanel.cshtml", workspaceId);
+        return PartialView("~/Views/AppleMobile/Partials/InterfaceCreatorPalette.cshtml", workspaceId);
     }
 
     [HttpDelete("interface/{interfaceId:guid}")]

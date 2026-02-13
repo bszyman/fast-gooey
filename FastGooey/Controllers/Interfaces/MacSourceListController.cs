@@ -60,7 +60,7 @@ public class MacSourceListController(
             }
         };
 
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
         return PartialView("~/Views/MacSourceList/Index.cshtml", viewModel);
     }

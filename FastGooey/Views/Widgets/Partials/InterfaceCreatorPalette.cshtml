@@ -1,0 +1,74 @@
+@model Guid
+
+<div class="w-2xl h-2xl mx-auto rounded-lg bg-white">
+    <div class="flex justify-baseline items-center p-2">
+        <h2 class="flex-1 font-semibold text-lg">Create Widget</h2>
+        <button type="button" class="cursor-pointer" onclick="toggleInterfaceCreatePalette()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6 text-rose-500">
+                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+    
+    <div id="contentSelector"
+     class="mx-2 mb-2 border border-zinc-200 rounded-lg h-[400px] overflow-y-auto text-sm relative">
+        <div class="w-full grid grid-cols-4 gap-2 p-2">
+            <button type="button"
+                    class="text-center rounded-md border border-transparent hover:bg-zinc-100 p-2 transition cursor-pointer"
+                    data-interface-create-option="true"
+                    data-interface-create-url="@Url.Action("CreateWidget", "Clock", new { workspaceId = Model })"
+                    onclick="selectInterfaceCreateOption(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <p class="text-sm font-semibold truncate">Clock</p>
+            </button>
+            <button type="button"
+                    class="text-center rounded-md border border-transparent hover:bg-zinc-100 p-2 transition cursor-pointer"
+                    data-interface-create-option="true"
+                    data-interface-create-url="@Url.Action("CreateWidget", "Map", new { workspaceId = Model })"
+                    onclick="selectInterfaceCreateOption(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
+                </svg>
+                <p class="text-sm font-semibold truncate">Map</p>
+            </button>
+            <button type="button"
+                    class="text-center rounded-md border border-transparent hover:bg-zinc-100 p-2 transition cursor-pointer"
+                    data-interface-create-option="true"
+                    data-interface-create-url="@Url.Action("CreateWidget", "RssFeed", new { workspaceId = Model })"
+                    onclick="selectInterfaceCreateOption(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
+                </svg>
+                <p class="text-sm font-semibold truncate">RSS Feed</p>
+            </button>
+            <button type="button"
+                    class="text-center rounded-md border border-transparent hover:bg-zinc-100 p-2 transition cursor-pointer"
+                    data-interface-create-option="true"
+                    data-interface-create-url="@Url.Action("CreateWidget", "Weather", new { workspaceId = Model })"
+                    onclick="selectInterfaceCreateOption(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <p class="text-sm font-semibold truncate">Weather</p>
+            </button>
+        </div>
+    </div>
+    
+    <div class="p-2 flex gap-2 justify-end">
+        <button
+            type="button"
+            class="bg-zinc-300 text-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer text-sm"
+            onclick="toggleInterfaceCreatePalette()">
+            Cancel
+        </button>
+        <button
+            type="button"
+            class="bg-green-600 text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm"
+            data-interface-create-target="#workspace"
+            onclick="createInterfaceFromPalette(this)">
+            Create
+        </button>
+    </div>
+</div>

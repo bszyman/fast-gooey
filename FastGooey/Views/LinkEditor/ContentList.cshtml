@@ -4,7 +4,9 @@
     var macNodes = Model?.MacNodes ?? [];
 }
 
-<div class="w-full p-2 bg-zinc-200"><h3 class="text-xs font-semibold uppercase">iOS</h3></div>
+<div class="w-full p-2 bg-zinc-200">
+    <h3 class="text-xs font-semibold uppercase">iOS</h3>
+</div>
 <div class="w-full grid grid-cols-4 gap-2 p-2">
     @if (appleNodes.Count == 0)
     {
@@ -30,7 +32,9 @@
         }
     }
 </div>
-<div class="w-full p-2 bg-zinc-200"><h3 class="text-xs font-semibold uppercase">macOS</h3></div>
+<div class="w-full p-2 bg-zinc-200">
+    <h3 class="text-xs font-semibold uppercase">macOS</h3>
+</div>
 <div class="w-full grid grid-cols-4 gap-2 p-2">
     @if (macNodes.Count == 0)
     {

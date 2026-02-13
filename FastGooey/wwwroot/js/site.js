@@ -3,7 +3,6 @@
 
 // Write your JavaScript code.
 let editorOpen = false;
-let interfacePaletteOpen = false;
 
 function toggleEditor() {
     const panel = document.getElementById('editorPanel');
@@ -34,22 +33,6 @@ function toggleSubmenu(button) {
     }
 }
 
-function toggleInterfaceCreatePalette() {
-    const panel = getCreateInterfacePalette();
-    // const negativeSpace = document.getElementById('editorPanelNegativeSpace');
-
-    interfacePaletteOpen = !interfacePaletteOpen;
-
-    if (interfacePaletteOpen) {
-        panel.classList.remove("hidden");
-        panel.style.animation = 'fadeInEditorPanelNegativeSpaceFrames 0.5s ease-in-out forwards';
-        //panel.style.animation = 'slideInEditorPanelFrames 0.5s ease-in-out forwards';
-    } else {
-        panel.style.animation = 'fadeOutEditorPanelNegativeSpaceFrames 0.5s ease-in-out forwards';
-        window.setTimeout(() => panel.classList.add("hidden"), 250);
-        //panel.style.animation = 'slideOutEditorPanelFrames 0.5s ease-in-out forwards';
-    }
-}
 
 function copyHyperGooeyUrl() {
     const button = document.getElementById('copyHyperGooeyUrl');
@@ -227,10 +210,6 @@ function ensureContentOrderingScript(root = document) {
     script.defer = true;
     script.dataset.contentOrderingScript = 'true';
     document.body.appendChild(script);
-}
-
-function getCreateInterfacePalette() {
-    return document.getElementById('createInterfaceFloatingPalette');
 }
 
 document.addEventListener('htmx:afterSwap', function(event) {

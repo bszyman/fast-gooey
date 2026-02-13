@@ -102,7 +102,7 @@
       <Content Update="Views\AppleMobile\Partials\NewInterfaceSelectorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
-      <Content Update="Views\MacOS\Partials\MacInterfaceCreatorPalette.cshtml">
+      <Content Update="Views\MacOS\Partials\InterfaceCreatorPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Views\WorkspaceManagement\WorkspaceManagement.cshtml">
@@ -112,6 +112,12 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Views\Partials\createInterfaceFloatingPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Views\AppleMobile\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Views\Widgets\Partials\InterfaceCreatorPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>

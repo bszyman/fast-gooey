@@ -9,7 +9,7 @@
 <div class="flex-1 min-h-0 px-2 pb-2">
     <div class="relative w-full h-full shadow grid grid-cols-5 grid-rows-1 max-h-full">
         <div 
-            hx-get="@Url.Action("MacInterfaceSelector", "Widgets", new { workspaceId = Model.Workspace.PublicId })"
+            hx-get="@Url.Action("InterfaceSelector", "Widgets", new { workspaceId = Model.Workspace.PublicId })"
             hx-trigger="load, refreshInterfaces from:body"
             id="interfacesPanel" 
             class="relative bg-indigo-100 border-r border-r-blue-400/50 col-span-1 rounded-l-lg overflow-y-auto overflow-x-clip min-h-0">

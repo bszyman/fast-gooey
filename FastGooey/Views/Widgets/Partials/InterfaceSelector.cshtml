@@ -46,10 +46,10 @@
 <div class="interfaceSelectorControlBar">
     <button 
         type="button"
-        hx-get="@Url.Action("NewInterfacePanel", "Widgets", new { workspaceId = Model.WorkspaceId })"
-        hx-target="#editorPanel"
+        hx-get="@Url.Action("InterfaceCreatorPalette", "Widgets", new { workspaceId = Model.WorkspaceId })"
+        hx-target="#createInterfaceFloatingPalette"
         class="w-8 h-8 cursor-pointer text-center border-r border-r-blue-400/50" 
-        onclick="toggleEditor()"
+        onclick="toggleInterfaceCreatePalette()"
     >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mx-auto">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

@@ -1,0 +1,55 @@
+@model Guid
+
+<div class="w-2xl h-2xl mx-auto rounded-lg bg-white">
+    <div class="flex justify-baseline items-center p-2">
+        <h2 class="flex-1 font-semibold text-lg">Create Interface</h2>
+        <button type="button" class="cursor-pointer" onclick="toggleInterfaceCreatePalette()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6 text-rose-500">
+                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+    
+    <div id="contentSelector"
+        class="mx-2 mb-2 border border-zinc-200 rounded-lg h-[400px] overflow-y-auto text-sm relative">
+        <div class="w-full grid grid-cols-4 gap-2 p-2">
+            <button type="button"
+                    class="text-center rounded-md border border-transparent hover:bg-zinc-100 p-2 transition cursor-pointer"
+                    data-interface-create-option="true"
+                    data-interface-create-url="@Url.Action("CreateInterface", "AppleMobileList", new { workspaceId = Model })"
+                    onclick="selectInterfaceCreateOption(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.242 5.992h12m-12 6.003H20.24m-12 5.999h12M4.117 7.495v-3.75H2.99m1.125 3.75H2.99m1.125 0H5.24m-1.92 2.577a1.125 1.125 0 1 1 1.591 1.59l-1.83 1.83h2.16M2.99 15.745h1.125a1.125 1.125 0 0 1 0 2.25H3.74m0-.002h.375a1.125 1.125 0 0 1 0 2.25H2.99" />
+                </svg>
+
+                <p class="text-sm font-semibold truncate">List</p>
+            </button>
+            <button type="button"
+                    class="text-center rounded-md border border-transparent hover:bg-zinc-100 p-2 transition cursor-pointer"
+                    data-interface-create-option="true"
+                    data-interface-create-url="@Url.Action("CreateInterface", "AppleMobileContent", new { workspaceId = Model })"
+                    onclick="selectInterfaceCreateOption(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 inline">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
+                </svg>
+                <p class="text-sm font-semibold truncate">Content</p>
+            </button>
+        </div>
+    </div>
+    
+    <div class="p-2 flex gap-2 justify-end">
+        <button
+            type="button"
+            class="bg-zinc-300 text-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer text-sm"
+            onclick="toggleInterfaceCreatePalette()">
+            Cancel
+        </button>
+        <button
+            type="button"
+            class="bg-green-600 text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm"
+            data-interface-create-target="#workspace"
+            onclick="createInterfaceFromPalette(this)">
+            Create
+        </button>
+    </div>
+</div>

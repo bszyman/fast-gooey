@@ -65,7 +65,7 @@ public class MacOutlineController(
             }
         };
 
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
         return PartialView("~/Views/MacOutline/Index.cshtml", viewModel);
     }

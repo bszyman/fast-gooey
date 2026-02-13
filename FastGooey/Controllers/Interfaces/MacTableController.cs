@@ -107,7 +107,7 @@ public class MacTableController(
             }
         };
 
-        Response.Headers.Append("HX-Trigger", "refreshNavigation");
+        Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
         return PartialView("~/Views/MacTable/Index.cshtml", viewModel);
     }
