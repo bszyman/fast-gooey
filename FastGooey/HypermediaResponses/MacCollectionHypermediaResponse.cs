@@ -6,7 +6,7 @@ public class MacCollectionHypermediaResponse : IHypermediaResponse
 {
     public Guid InterfaceId { get; set; } = Guid.Empty;
     public string Platform { get; set; } = "Mac";
-    public string View { get; set; } = "collectionView";
+    public string View { get; set; } = "Collection";
 
     public List<MacCollectionItemResponse> Content { get; set; } = [];
 }
