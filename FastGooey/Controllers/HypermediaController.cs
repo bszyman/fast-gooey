@@ -339,7 +339,7 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
 
         if (value.StartsWith(FastGooeyMediaScheme, StringComparison.OrdinalIgnoreCase))
         {
-            return UnfurlFastGooeyMediaLink(value, workspaceId);
+            return UnfurlFastGooeyPublicMediaLink(value, workspaceId);
         }
 
         if (!value.StartsWith(FastGooeyLinkScheme, StringComparison.OrdinalIgnoreCase))
@@ -357,7 +357,7 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
         return $"{baseUrl}/hypermedia/{interfaceId.ToBase64Url()}";
     }
 
-    private string UnfurlFastGooeyMediaLink(string value, Guid workspaceId)
+    private string UnfurlFastGooeyPublicMediaLink(string value, Guid workspaceId)
     {
         if (!TryParseMediaLink(value, out var sourceId, out var path))
         {
@@ -366,7 +366,7 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
 
         var url = Url.Action(
             "Preview",
-            "Media",
+            "PublicMedia",
             new { workspaceId, sourceId, path },
             Request.Scheme,
             Request.Host.ToString());

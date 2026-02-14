@@ -7,3 +7,6 @@ GET https://localhost:7110/hypermedia/z2XP3i1du0GRkLyhkPC-Ag
 
 ###
 GET https://localhost:7110/hypermedia/_r87jV5prUasUSSwI3DBAA
+
+###
+GET https://localhost:7110/Workspaces/b9d1e5c4-ae9b-4695-9fbf-8d61c41afeab/Media/preview/1ffea2ed-4575-42c7-b223-18f383d8cd0c?path=imac-g3.jpg

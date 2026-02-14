@@ -180,10 +180,17 @@ public class MediaController(
         }
 
         var provider = providerRegistry.GetProvider(source.SourceType);
-        var cacheKey = $"media-preview:{source.PublicId}:{path}";
+        var cacheKey = $"media-preview:{WorkspaceId}:{source.PublicId}:{path}";
+        
         if (memoryCache.TryGetValue(cacheKey, out CachedMediaFile? cached))
         {
-            return File(cached.Bytes, cached.ContentType, enableRangeProcessing: true);
+            if (cached is not null &&
+                cached.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+            {
+                return File(cached.Bytes, cached.ContentType, enableRangeProcessing: true);
+            }
+
+            memoryCache.Remove(cacheKey); // stale/bad cache entry (e.g. text/html)
         }
 
         var streamResult = await provider.OpenReadAsync(source, path, cancellationToken);
@@ -193,13 +200,19 @@ public class MediaController(
         }
 
         var contentType = streamResult.ContentType ?? GuessContentType(path) ?? "application/octet-stream";
+        
+        if (!contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        {
+            return StatusCode(StatusCodes.Status502BadGateway);
+        }
+        
         if (streamResult.ContentLength.HasValue && streamResult.ContentLength.Value <= MaxPreviewCacheBytes)
         {
             await using var stream = streamResult.Stream;
             await using var buffer = new MemoryStream();
             await stream.CopyToAsync(buffer, cancellationToken);
             var bytes = buffer.ToArray();
-
+            
             memoryCache.Set(cacheKey, new CachedMediaFile(bytes, contentType), PreviewCacheDuration);
             return File(bytes, contentType, enableRangeProcessing: true);
         }
