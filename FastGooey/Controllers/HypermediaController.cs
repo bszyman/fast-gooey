@@ -192,8 +192,14 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
                     if (item.Content.TryGetValue(colDef.FieldAlias, out var value))
                     {
                         // Map it to the External Name (FieldAlias)
-                        // SerializeToNode converts the 'object' (which is likely a JsonElement) into a node compatible with JsonObject
-                        rowJson.Add(colDef.FieldAlias, JsonSerializer.SerializeToNode(value));
+                        // If the source is already a JsonNode, clone it so this row owns its own node tree.
+                        JsonNode? nodeValue = value switch
+                        {
+                            JsonNode jsonNode => jsonNode.DeepClone(),
+                            _ => JsonSerializer.SerializeToNode(value)
+                        };
+
+                        rowJson.Add(colDef.FieldAlias, nodeValue);
                     }
                     else
                     {
@@ -412,7 +418,13 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
         {
             foreach (var pair in obj.ToList())
             {
-                obj[pair.Key] = UnfurlFastGooeyLinksAndReturn(pair.Value, workspaceId);
+                if (pair.Value is JsonValue value && value.TryGetValue<string>(out var jsonObjStringValue))
+                {
+                    obj[pair.Key] = JsonValue.Create(UnfurlFastGooeyLink(jsonObjStringValue, workspaceId));
+                    continue;
+                }
+
+                UnfurlFastGooeyLinksAndReturn(pair.Value, workspaceId);
             }
 
             return obj;
@@ -422,7 +434,14 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
         {
             for (var i = 0; i < arr.Count; i++)
             {
-                arr[i] = UnfurlFastGooeyLinksAndReturn(arr[i], workspaceId);
+                var current = arr[i];
+                if (current is JsonValue value && value.TryGetValue<string>(out var jsonArrayStringValue))
+                {
+                    arr[i] = JsonValue.Create(UnfurlFastGooeyLink(jsonArrayStringValue, workspaceId));
+                    continue;
+                }
+
+                UnfurlFastGooeyLinksAndReturn(current, workspaceId);
             }
 
             return arr;
