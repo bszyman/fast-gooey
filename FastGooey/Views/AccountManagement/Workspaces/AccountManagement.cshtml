@@ -117,7 +117,7 @@
                                 hx-delete="@Url.Action("DeleteAccount", "AccountManagement", new { workspaceId = ViewData["WorkspaceId"] })"
                                 hx-confirm="Are you sure you want to delete your account? This cannot be undone."
                                 hx-target="#workspaceEditor"
-                                class="text-sm text-red-600 font-semibold">
+                                class="text-sm text-red-600 font-semibold cursor-pointer">
                             Delete my account.
                         </button>
                         @if (!string.IsNullOrWhiteSpace(Model.DeleteAccountErrorMessage))
