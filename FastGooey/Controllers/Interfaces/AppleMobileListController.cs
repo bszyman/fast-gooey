@@ -151,7 +151,20 @@ public class AppleMobileListController(
             item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
         }
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+        {
+            item ??= new AppleMobileListItemJsonDataModel
+            {
+                Identifier = itemId ?? Guid.Empty
+            };
+
+            item.Title = formModel.Title;
+            item.Subtitle = formModel.Subtitle;
+            item.Url = formModel.Url;
+
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+        }
+        else
         {
             if (item is null)
             {
