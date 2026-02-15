@@ -157,7 +157,7 @@ public class AppleMobileCollectionController(
             Response.Headers.Append("HX-Retarget", "#editorPanel");
             item ??= new AppleMobileCollectionViewItemJsonDataModel
             {
-                Identifier = itemId ?? Guid.Empty
+                Identifier = itemId ?? Guid.NewGuid()
             };
             item.Title = formModel.Title;
             item.ImageUrl = formModel.ImageUrl ?? string.Empty;
