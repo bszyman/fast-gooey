@@ -209,6 +209,22 @@ public class AppleMobileContentController(
             return NotFound();
         }
 
+        if (!ModelState.IsValid)
+        {
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            return await LoadConfigurationPanelInternal<TextContentItem, AppleMobileTextConfigurationPanelViewModel>(
+                interfaceGuid,
+                itemId,
+                $"{BaseViewPath}/Partials/ContentTextConfigurationPanel.cshtml",
+                () => new AppleMobileTextConfigurationPanelViewModel
+                {
+                    WorkspaceId = WorkspaceId,
+                    InterfaceId = interfaceGuid,
+                },
+                (vm, content) => vm.Content = content
+            );
+        }
+
         return await SaveContentItemInternal<TextContentItem, TextContentFormModel>(
             interfaceGuid,
             itemId,
