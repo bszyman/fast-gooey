@@ -27,6 +27,7 @@
                             value="@Model.Item.Title"
                         />
                     </div>
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
                 <div class="mb-3">
                     <label for="subtitle">Subtitle</label>
