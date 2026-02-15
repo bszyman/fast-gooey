@@ -110,6 +110,22 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="formGroup formGroupAddBackground mb-8">
+                    <div class="py-3 px-4">
+                        <button type="button"
+                                hx-delete="@Url.Action("DeleteAccount", "AccountManagement", new { workspaceId = ViewData["WorkspaceId"] })"
+                                hx-confirm="Are you sure you want to delete your account? This cannot be undone."
+                                hx-target="#workspaceEditor"
+                                class="text-sm text-red-600 font-semibold cursor-pointer">
+                            Delete my account.
+                        </button>
+                        @if (!string.IsNullOrWhiteSpace(Model.DeleteAccountErrorMessage))
+                        {
+                            <p class="mt-2 text-sm text-red-600">@Model.DeleteAccountErrorMessage</p>
+                        }
+                    </div>
+                </div>
             </div>
         </form>
     </div>
