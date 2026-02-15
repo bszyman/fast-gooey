@@ -110,8 +110,8 @@ app.Use(async(context, next) =>
     context.Response.Headers["Permissions-Policy"] =
         "accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), " +
         "fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), " +
-        "payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), " +
-        "usb=(), web-share=(), xr-spatial-tracking=()";
+        "payment=(), picture-in-picture=(), publickey-credentials-get=(self), screen-wake-lock=(), " +
+        "usb=(), web-share=(self), xr-spatial-tracking=()";
     
     await next();
 });
