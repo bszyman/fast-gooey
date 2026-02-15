@@ -38,6 +38,7 @@ public class MacSourceListGroupItemResponse
 {
     public Guid Identifier { get; set; } = Guid.Empty;
     public string Title { get; set; } = string.Empty;
+    public string Icon { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
 
     public MacSourceListGroupItemResponse()
@@ -48,6 +49,7 @@ public class MacSourceListGroupItemResponse
     {
         Identifier = model.Identifier;
         Title = model.Title;
+        Icon = model.Icon;
         Url = model.Url;
     }
 }

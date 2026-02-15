@@ -198,6 +198,7 @@ public class MacSourceListController(
             GroupId = group.Identifier,
             Identifier = item.Identifier,
             Title = item.Title,
+            Icon = item.Icon,
             Url = item.Url,
         };
 
@@ -236,6 +237,7 @@ public class MacSourceListController(
             }
 
             item.Title = formModel.Title;
+            item.Icon = formModel.Icon ?? string.Empty;
             item.Url = formModel.Url;
 
             contentNode.Config = JsonSerializer.SerializeToDocument(data);
@@ -251,6 +253,7 @@ public class MacSourceListController(
             GroupId = group.Identifier,
             Identifier = item.Identifier,
             Title = item.Title,
+            Icon = item.Icon,
             Url = item.Url,
         };
 

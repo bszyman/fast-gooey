@@ -217,6 +217,7 @@ document.addEventListener('htmx:afterSwap', function(event) {
     ensureContentOrderingScript(event.detail.target || document);
     updateLinkEditorDisplays(event.detail.target || document);
     updateMediaPickerDisplays(event.detail.target || document);
+    updateIconPickerDisplays(event.detail.target || document);
 
     const target = event.detail.target;
     if (target && target.id === 'contentSelector') {
@@ -239,4 +240,5 @@ document.addEventListener('DOMContentLoaded', function() {
     ensureContentOrderingScript(document);
     updateLinkEditorDisplays(document);
     updateMediaPickerDisplays(document);
+    updateIconPickerDisplays(document);
 });

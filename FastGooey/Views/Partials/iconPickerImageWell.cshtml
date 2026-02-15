@@ -1,0 +1,37 @@
+@{
+    var inputId = ViewData["IconPickerInputId"]?.ToString() ?? "iconName";
+    var inputName = ViewData["IconPickerInputName"]?.ToString() ?? inputId;
+    var label = ViewData["IconPickerLabel"]?.ToString() ?? "Icon";
+    var value = ViewData["IconPickerValue"]?.ToString() ?? string.Empty;
+
+    var triggerId = ViewData["IconPickerTriggerId"]?.ToString() ?? $"{inputId}Button";
+    var displayId = ViewData["IconPickerDisplayId"]?.ToString() ?? $"{inputId}Display";
+    var previewId = ViewData["IconPickerPreviewId"]?.ToString() ?? $"{inputId}Preview";
+    var previewSrc = string.IsNullOrWhiteSpace(value)
+        ? string.Empty
+        : $"https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/24/outline/{value}.svg";
+}
+
+<div class="mb-4">
+    <label for="@triggerId">@label</label>
+    <input type="hidden" id="@inputId" name="@inputName" value="@value" />
+
+    <div class="mt-2 flex flex-col items-start gap-2">
+        <button type="button"
+                id="@triggerId"
+                class="w-16 h-16 rounded-md border border-zinc-300 bg-white flex items-center justify-center hover:bg-zinc-100 transition cursor-pointer"
+                onclick="openIconPicker(this)"
+                data-icon-picker-trigger="true"
+                data-icon-picker-target="@inputId"
+                data-icon-picker-display="@displayId"
+                data-icon-picker-preview="@previewId">
+                <img id="@previewId"
+                     src="@previewSrc"
+                     alt="@(!string.IsNullOrWhiteSpace(value) ? $"{value} icon" : string.Empty)"
+                     class="size-8 @(!string.IsNullOrWhiteSpace(value) ? string.Empty : "hidden")"
+                     loading="lazy"
+                     referrerpolicy="no-referrer"/>
+        </button>
+        <p id="@displayId" class="truncate text-xs text-gray-500 ml-1">@(string.IsNullOrWhiteSpace(value) ? "No icon selected." : value)</p>
+    </div>
+</div>
