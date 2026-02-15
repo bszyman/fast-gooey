@@ -152,36 +152,49 @@ public class AppleMobileCollectionController(
             item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
         }
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            if (item is null)
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            item ??= new AppleMobileCollectionViewItemJsonDataModel
             {
-                item = new AppleMobileCollectionViewItemJsonDataModel
-                {
-                    Identifier = Guid.NewGuid()
-                };
-
-                data.Items = data.Items.Append(item).ToList();
-            }
-
+                Identifier = itemId ?? Guid.Empty
+            };
             item.Title = formModel.Title;
             item.ImageUrl = formModel.ImageUrl ?? string.Empty;
             item.Url = formModel.Url ?? string.Empty;
-
-            contentNode.Config = JsonSerializer.SerializeToDocument(data);
-            await dbContext.SaveChangesAsync();
-
-            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
+            return PartialView("~/Views/AppleMobileCollection/Partials/CollectionViewItemEditorPanel.cshtml", new AppleMobileInterfaceCollectionEditorViewModel
+            {
+                WorkspaceId = WorkspaceId,
+                InterfaceId = interfaceGuid,
+                Item = item
+            });
         }
 
-        var viewModel = new AppleMobileInterfaceCollectionEditorViewModel
+        if (item is null)
+        {
+            item = new AppleMobileCollectionViewItemJsonDataModel
+            {
+                Identifier = Guid.NewGuid()
+            };
+
+            data.Items = data.Items.Append(item).ToList();
+        }
+
+        item.Title = formModel.Title;
+        item.ImageUrl = formModel.ImageUrl ?? string.Empty;
+        item.Url = formModel.Url ?? string.Empty;
+
+        contentNode.Config = JsonSerializer.SerializeToDocument(data);
+        await dbContext.SaveChangesAsync();
+
+        Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
+
+        return PartialView("~/Views/AppleMobileCollection/Partials/CollectionViewItemEditorPanel.cshtml", new AppleMobileInterfaceCollectionEditorViewModel
         {
             WorkspaceId = WorkspaceId,
             InterfaceId = interfaceGuid,
-            Item = item ?? new AppleMobileCollectionViewItemJsonDataModel()
-        };
-
-        return PartialView("~/Views/AppleMobileCollection/Partials/CollectionViewItemEditorPanel.cshtml", viewModel);
+            Item = item
+        });
     }
 
     [HttpDelete("{interfaceId}/item/{itemId:guid}")]
