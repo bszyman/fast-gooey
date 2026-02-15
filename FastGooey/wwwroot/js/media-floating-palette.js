@@ -202,7 +202,7 @@
 
         input.value = nextValue;
         input.dispatchEvent(new Event('input', { bubbles: true }));
-        input.dispatchEvent(new Event('change'));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
         display.textContent = formatMediaPickerDisplayValue(nextValue);
 
         closeMediaPicker();

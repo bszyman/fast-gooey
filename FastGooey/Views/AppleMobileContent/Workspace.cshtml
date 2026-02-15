@@ -4,7 +4,7 @@
 
 <form method="post"
       hx-post="@Url.Action("SaveWorkspace", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
-      hx-trigger="blur from:#headerTitle, keyup[key=='Enter'] changed delay:500ms from:#headerTitle, changed from:#headerBackgroundImage"
+      hx-trigger="blur from:#headerTitle, keyup[key=='Enter'] changed delay:500ms from:#headerTitle, change from:#headerBackgroundImage"
       hx-target="#workspaceEditor"
       onsubmit="return false;">
     @Html.AntiForgeryToken()
