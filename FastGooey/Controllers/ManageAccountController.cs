@@ -4,6 +4,7 @@ using FastGooey.Models;
 using FastGooey.Models.FormModels;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -100,6 +101,52 @@ public class AccountManagementController(
         return PartialView("~/Views/AccountManagement/Workspaces/AccountManagement.cshtml", viewModel);
     }
 
+    [HttpDelete("Workspace/DeleteAccount")]
+    public async Task<IActionResult> DeleteAccount()
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser is null)
+            return Unauthorized();
+
+        try
+        {
+            dbContext.KeyValueStores.RemoveRange(dbContext.KeyValueStores.Where(x => x.Key.Contains(currentUser.Id)));
+
+            if (currentUser.WorkspaceId.HasValue)
+            {
+                var workspace = await dbContext.Workspaces.FirstOrDefaultAsync(x => x.Id == currentUser.WorkspaceId.Value);
+                if (workspace is not null)
+                {
+                    dbContext.KeyValueStores.RemoveRange(dbContext.KeyValueStores.Where(x => x.Key.Contains(workspace.PublicId.ToString())));
+                    dbContext.Workspaces.Remove(workspace);
+                }
+                else
+                {
+                    dbContext.PasskeyCredentials.RemoveRange(dbContext.PasskeyCredentials.Where(x => x.UserId == currentUser.Id));
+                    dbContext.MagicLinkTokens.RemoveRange(dbContext.MagicLinkTokens.Where(x => x.UserId == currentUser.Id));
+                    dbContext.Users.Remove(currentUser);
+                }
+            }
+            else
+            {
+                dbContext.PasskeyCredentials.RemoveRange(dbContext.PasskeyCredentials.Where(x => x.UserId == currentUser.Id));
+                dbContext.MagicLinkTokens.RemoveRange(dbContext.MagicLinkTokens.Where(x => x.UserId == currentUser.Id));
+                dbContext.Users.Remove(currentUser);
+            }
+            await dbContext.SaveChangesAsync();
+
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            Response.Headers["HX-Redirect"] = "/Home/Index";
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            var viewModel = CreateViewModel(currentUser);
+            viewModel.DeleteAccountErrorMessage = $"Unable to delete account: {ex.Message}";
+            return PartialView("~/Views/AccountManagement/Workspaces/AccountManagement.cshtml", viewModel);
+        }
+    }
+
     private ManageAccountViewModel CreateViewModel(ApplicationUser user)
     {
         return new ManageAccountViewModel
@@ -109,7 +156,7 @@ public class AccountManagementController(
                 .Where(p => p.UserId == user.Id)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToList(),
-            Workspace = dbContext.Workspaces.First(x => x.PublicId == WorkspaceId),
+            Workspace = dbContext.Workspaces.FirstOrDefault(x => x.PublicId == WorkspaceId),
             FormModel = new AccountManagementFormModel
             {
                 FirstName = user.FirstName,
