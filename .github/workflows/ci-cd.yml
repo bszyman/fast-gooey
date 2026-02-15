@@ -1,0 +1,107 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fastgooey-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-test-publish-deploy:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      NUGET_XMLDOC_MODE: skip
+      DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+      DEPLOY_PORT: ${{ vars.DEPLOY_PORT }}
+    steps:
+      - name: Check out repository (bash only)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --no-tags --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+
+      - name: Install .NET SDK 10.x
+        run: |
+          set -euo pipefail
+          curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+          bash /tmp/dotnet-install.sh --channel 10.0 --quality ga --install-dir "$HOME/.dotnet"
+          echo "$HOME/.dotnet" >> "$GITHUB_PATH"
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      - name: Restore and test
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.dotnet:$PATH"
+          dotnet --info
+          dotnet restore FastGooey.sln
+          dotnet test FastGooey.Tests/FastGooey.Tests.csproj --no-restore
+
+      - name: Restore and publish
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.dotnet:$PATH"
+          dotnet restore FastGooey.sln
+          dotnet publish FastGooey/FastGooey.csproj -c Release -o ./publish --no-restore
+
+      - name: Validate deploy configuration
+        env:
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_HOST:?Set repository variable DEPLOY_HOST}"
+          : "${DEPLOY_USER:?Set repository variable DEPLOY_USER}"
+          : "${DEPLOY_PATH:?Set repository variable DEPLOY_PATH}"
+          : "${DEPLOY_SSH_PRIVATE_KEY:?Set repository secret DEPLOY_SSH_PRIVATE_KEY}"
+
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          DEPLOY_SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+          printf '%s\n' "${DEPLOY_SSH_PRIVATE_KEY}" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+
+          if [ -n "${DEPLOY_SSH_KNOWN_HOSTS:-}" ]; then
+            printf '%s\n' "${DEPLOY_SSH_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+          else
+            port="${DEPLOY_PORT:-22}"
+            ssh-keyscan -p "$port" -H "$DEPLOY_HOST" > "$HOME/.ssh/known_hosts"
+          fi
+          chmod 644 "$HOME/.ssh/known_hosts"
+
+      - name: Deploy with rsync
+        run: |
+          set -euo pipefail
+          port="${DEPLOY_PORT:-22}"
+          rsync -az \
+            -e "ssh -p ${port} -i $HOME/.ssh/id_ed25519 -o StrictHostKeyChecking=yes" \
+            ./publish/ "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
+
+      - name: Restart FastGooey service
+        run: |
+          set -euo pipefail
+          port="${DEPLOY_PORT:-22}"
+          ssh -p "$port" \
+            -i "$HOME/.ssh/id_ed25519" \
+            -o StrictHostKeyChecking=yes \
+            -o BatchMode=yes \
+            "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "sudo service FastGooey restart"
