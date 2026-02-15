@@ -6,6 +6,7 @@ namespace FastGooey.Models.FormModels;
 
 public class HeadlineContentFormModel : ContentItemBase
 {
+    [Required]
     public string Headline { get; set; } = string.Empty;
 }
 
