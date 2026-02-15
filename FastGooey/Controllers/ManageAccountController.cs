@@ -110,28 +110,38 @@ public class AccountManagementController(
 
         try
         {
-            dbContext.KeyValueStores.RemoveRange(dbContext.KeyValueStores.Where(x => x.Key.Contains(currentUser.Id)));
+            dbContext.KeyValueStores.RemoveRange(dbContext.KeyValueStores.Where(x =>
+                x.Key == currentUser.Id ||
+                x.Key.StartsWith($"{currentUser.Id}:") ||
+                x.Key.EndsWith($":{currentUser.Id}")));
+
+            void RemoveUserScopedData()
+            {
+                dbContext.PasskeyCredentials.RemoveRange(dbContext.PasskeyCredentials.Where(x => x.UserId == currentUser.Id));
+                dbContext.MagicLinkTokens.RemoveRange(dbContext.MagicLinkTokens.Where(x => x.UserId == currentUser.Id));
+                dbContext.Users.Remove(currentUser);
+            }
 
             if (currentUser.WorkspaceId.HasValue)
             {
                 var workspace = await dbContext.Workspaces.FirstOrDefaultAsync(x => x.Id == currentUser.WorkspaceId.Value);
                 if (workspace is not null)
                 {
-                    dbContext.KeyValueStores.RemoveRange(dbContext.KeyValueStores.Where(x => x.Key.Contains(workspace.PublicId.ToString())));
+                    var workspaceKey = workspace.PublicId.ToString();
+                    dbContext.KeyValueStores.RemoveRange(dbContext.KeyValueStores.Where(x =>
+                        x.Key == workspaceKey ||
+                        x.Key.StartsWith($"{workspaceKey}:") ||
+                        x.Key.EndsWith($":{workspaceKey}")));
                     dbContext.Workspaces.Remove(workspace);
                 }
                 else
                 {
-                    dbContext.PasskeyCredentials.RemoveRange(dbContext.PasskeyCredentials.Where(x => x.UserId == currentUser.Id));
-                    dbContext.MagicLinkTokens.RemoveRange(dbContext.MagicLinkTokens.Where(x => x.UserId == currentUser.Id));
-                    dbContext.Users.Remove(currentUser);
+                    RemoveUserScopedData();
                 }
             }
             else
             {
-                dbContext.PasskeyCredentials.RemoveRange(dbContext.PasskeyCredentials.Where(x => x.UserId == currentUser.Id));
-                dbContext.MagicLinkTokens.RemoveRange(dbContext.MagicLinkTokens.Where(x => x.UserId == currentUser.Id));
-                dbContext.Users.Remove(currentUser);
+                RemoveUserScopedData();
             }
             await dbContext.SaveChangesAsync();
 
@@ -139,10 +149,22 @@ public class AccountManagementController(
             Response.Headers["HX-Redirect"] = "/Home/Index";
             return Ok();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            var viewModel = CreateViewModel(currentUser);
-            viewModel.DeleteAccountErrorMessage = $"Unable to delete account: {ex.Message}";
+            var viewModel = new ManageAccountViewModel
+            {
+                User = currentUser,
+                Passkeys = dbContext.PasskeyCredentials
+                    .Where(p => p.UserId == currentUser.Id)
+                    .OrderByDescending(p => p.CreatedAt)
+                    .ToList(),
+                FormModel = new AccountManagementFormModel
+                {
+                    FirstName = currentUser.FirstName,
+                    LastName = currentUser.LastName,
+                },
+                DeleteAccountErrorMessage = "Unable to delete account. Please try again."
+            };
             return PartialView("~/Views/AccountManagement/Workspaces/AccountManagement.cshtml", viewModel);
         }
     }
@@ -156,7 +178,7 @@ public class AccountManagementController(
                 .Where(p => p.UserId == user.Id)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToList(),
-            Workspace = dbContext.Workspaces.FirstOrDefault(x => x.PublicId == WorkspaceId),
+            Workspace = dbContext.Workspaces.First(x => x.PublicId == WorkspaceId),
             FormModel = new AccountManagementFormModel
             {
                 FirstName = user.FirstName,
