@@ -168,6 +168,7 @@ public class MapController(
     }
 
     [HttpPost("add-location")]
+    [ValidateAntiForgeryToken]
     public IActionResult AddLocationEntry([FromForm] MapAddLocationEntryFormModel formModel)
     {
         if (!ModelState.IsValid)

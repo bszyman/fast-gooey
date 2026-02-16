@@ -17,6 +17,7 @@
     @foreach (var location in Model.Results?.Results ?? [])
     {
         <form>
+            @Html.AntiForgeryToken()
             <input type="hidden" id="locationName" name="locationName" value="@location.Name" />
             <input type="hidden" id="latitude" name="latitude" value="@location.Coordinate.Latitude" />
             <input type="hidden" id="longitude" name="longitude" value="@location.Coordinate.Longitude" />
