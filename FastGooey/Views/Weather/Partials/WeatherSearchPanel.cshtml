@@ -7,19 +7,23 @@
 </div>
 
 <div id="searchResults" class="py-4 px-4">
-    @foreach (var location in Model.Results!.Results!)
+    @Html.ValidationMessage("Location", "", new { @class = "text-red-600 text-sm mt-1 block" })
+    @if (Model.Results?.Results is not null)
     {
-        <div
-            data-name="@location.Name"
-            data-lat="@location.Coordinate.Latitude"
-            data-lng="@location.Coordinate.Longitude"
-            data-coords="@location.Coordinate.CoordinateDisplay()"
-            data-identifier="@location.Id"
-            onclick="selectLocation(this)"
-            class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
-            <p class="font-medium mb-1">@location.Name</p>
-            <p class="text-xs font-semibold uppercase text-grayMid mb-1">@location.Coordinate.CoordinateDisplay()</p>
-        </div>
+        @foreach (var location in Model.Results.Results)
+        {
+            <div
+                data-name="@location.Name"
+                data-lat="@location.Coordinate.Latitude"
+                data-lng="@location.Coordinate.Longitude"
+                data-coords="@location.Coordinate.CoordinateDisplay()"
+                data-identifier="@location.Id"
+                onclick="selectLocation(this)"
+                class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+                <p class="font-medium mb-1">@location.Name</p>
+                <p class="text-xs font-semibold uppercase text-grayMid mb-1">@location.Coordinate.CoordinateDisplay()</p>
+            </div>
+        }
     }
 </div>
     

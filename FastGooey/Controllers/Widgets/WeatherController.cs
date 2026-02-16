@@ -141,18 +141,28 @@ public class WeatherController(
         return PartialView("~/Views/Weather/Workspace.cshtml", viewModel);
     }
 
-    [HttpGet("search-panel")]
-    public async Task<IActionResult> WeatherSearchPanel([FromQuery] string location)
+    [HttpPost("search-panel")]
+    public async Task<IActionResult> WeatherSearchPanel([FromForm] WeatherWorkspaceFormModel formModel)
     {
+        if (!ModelState.IsValid)
+        {
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            return PartialView("~/Views/Weather/Partials/WeatherSearchPanel.cshtml", new WeatherSearchPanelViewModel
+            {
+                SearchText = formModel.Location,
+                Results = new MapKitSearchResponseModel { Results = [] }
+            });
+        }
+
         var mapKitServerToken = await keyValueService.GetValueForKey(Constants.MapKitServerKey);
 
-        var results = await $"https://maps-api.apple.com/v1/search?q={location}"
+        var results = await $"https://maps-api.apple.com/v1/search?q={formModel.Location}"
             .WithHeader("Authorization", $"Bearer {mapKitServerToken}")
             .GetJsonAsync<MapKitSearchResponseModel>();
 
         var viewModel = new WeatherSearchPanelViewModel
         {
-            SearchText = location,
+            SearchText = formModel.Location,
             Results = results
         };
 
