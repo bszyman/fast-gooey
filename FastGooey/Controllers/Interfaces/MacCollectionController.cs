@@ -152,27 +152,44 @@ public class MacCollectionController(
             item = data.Items.FirstOrDefault(x => x.Identifier.Equals(itemId.Value));
         }
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            if (item is null)
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+
+            var invalidViewModel = new MacInterfaceCollectionEditorPanelViewModel
             {
-                item = new MacCollectionViewItemJsonDataModel
+                WorkspaceId = WorkspaceId,
+                InterfaceId = interfaceGuid,
+                Item = new MacCollectionViewItemJsonDataModel
                 {
-                    Identifier = Guid.NewGuid()
-                };
+                    Identifier = item?.Identifier ?? Guid.Empty,
+                    Title = formModel.Title,
+                    ImageUrl = formModel.ImageUrl ?? string.Empty,
+                    Url = formModel.Url ?? string.Empty
+                }
+            };
 
-                data.Items.Add(item);
-            }
-
-            item.Title = formModel.Title;
-            item.ImageUrl = formModel.ImageUrl ?? string.Empty;
-            item.Url = formModel.Url ?? string.Empty;
-
-            contentNode.Config = JsonSerializer.SerializeToDocument(data);
-            await dbContext.SaveChangesAsync();
-
-            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
+            return PartialView("~/Views/MacCollection/Partials/CollectionViewItemEditorPanel.cshtml", invalidViewModel);
         }
+
+        if (item is null)
+        {
+            item = new MacCollectionViewItemJsonDataModel
+            {
+                Identifier = Guid.NewGuid()
+            };
+
+            data.Items.Add(item);
+        }
+
+        item.Title = formModel.Title;
+        item.ImageUrl = formModel.ImageUrl ?? string.Empty;
+        item.Url = formModel.Url ?? string.Empty;
+
+        contentNode.Config = JsonSerializer.SerializeToDocument(data);
+        await dbContext.SaveChangesAsync();
+
+        Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
 
         var viewModel = new MacInterfaceCollectionEditorPanelViewModel
         {

@@ -21,6 +21,7 @@
                 <div class="mb-4">
                     <label for="title">Title</label>
                     <input type="text" id="title" name="title" value="@Model.Item!.Title" />
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
                 <div class="mb-4">
                     <label for="imageUrlButton">Image</label>
