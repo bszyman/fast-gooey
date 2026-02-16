@@ -168,16 +168,31 @@ public class MapController(
     }
 
     [HttpPost("add-location")]
-    public IActionResult AddLocationEntry(double latitude, double longitude, string locationName, string locationIdentifier)
+    public IActionResult AddLocationEntry([FromForm] MapAddLocationEntryFormModel formModel)
     {
+        if (!ModelState.IsValid)
+        {
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            var panelViewModel = new MapSearchPanelViewModel
+            {
+                WorkspaceId = WorkspaceId,
+                Results = new MapKitSearchResponseModel
+                {
+                    Results = []
+                }
+            };
+
+            return PartialView("~/Views/Map/Partials/SearchPanel.cshtml", panelViewModel);
+        }
+        
         var viewModel = new MapCityEntryViewModel
         {
-            Latitude = latitude,
-            Longitude = longitude,
-            LocationName = locationName,
-            LocationIdentifier = locationIdentifier,
+            Latitude = formModel.Latitude!.Value,
+            Longitude = formModel.Longitude!.Value,
+            LocationName = formModel.LocationName!,
+            LocationIdentifier = formModel.LocationIdentifier!,
             EntryId = Guid.NewGuid(),
-            CoordinateDisplay = MapKitCoordinateModel.CoordinateDisplay(latitude, longitude)
+            CoordinateDisplay = MapKitCoordinateModel.CoordinateDisplay(formModel.Latitude.Value, formModel.Longitude.Value)
         };
 
         return PartialView("~/Views/Map/Partials/CityEntry.cshtml", viewModel);
