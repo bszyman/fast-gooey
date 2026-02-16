@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using FastGooey.Models.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace FastGooey.Models.FormModels.Mac;
 
@@ -19,6 +20,7 @@ public class LinkContentFormModel : ContentItemBase
 
 public class TextContentFormModel : ContentItemBase
 {
+    [Required]
     public string Text { get; set; } = string.Empty;
 }
 

@@ -119,4 +119,39 @@ public class MacContentControllerTests
         Assert.Empty(data.Items);
         Assert.IsType<PartialViewResult>(result);
     }
+
+    [Fact]
+    public async Task SaveText_ReturnsEditorPanel_WhenModelStateIsInvalid()
+    {
+        var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
+        using var dbContext = TestDbContextFactory.Create(clock);
+        var controller = new MacContentController(
+            NullLogger<MacContentController>.Instance,
+            new StubKeyValueService(),
+            dbContext);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        controller.ModelState.AddModelError("Text", "The Text field is required.");
+
+        var result = await controller.SaveText(Guid.NewGuid(), Guid.NewGuid().ToString(), null, new TextContentFormModel());
+
+        var partial = Assert.IsType<PartialViewResult>(result);
+        Assert.Equal("~/Views/MacContent/Partials/ContentTextConfigurationPanel.cshtml", partial.ViewName);
+        Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
+    }
+
+    [Fact]
+    public void TextContentFormModel_RequiresText()
+    {
+        var form = new TextContentFormModel { Text = string.Empty };
+        var context = new ValidationContext(form);
+        var results = new List<ValidationResult>();
+
+        var isValid = Validator.TryValidateObject(form, context, results, validateAllProperties: true);
+
+        Assert.False(isValid);
+        Assert.Contains(results, r => r.MemberNames.Contains("Text"));
+    }
 }

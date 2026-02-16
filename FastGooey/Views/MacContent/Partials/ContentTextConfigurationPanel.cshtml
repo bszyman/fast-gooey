@@ -24,8 +24,9 @@
                 <div>
                     <label for="text">Text</label>
                     <div class="flex gap-2">
-                        <textarea id="text" name="text" rows="8">@Model.Content.Text</textarea>
+                        <textarea id="text" name="Text" rows="8">@Model.Content.Text</textarea>
                     </div>
+                    @Html.ValidationMessage("Text", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
             </div>
         </div>
