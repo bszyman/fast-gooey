@@ -218,37 +218,50 @@ public class MacTableController(
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceGuid));
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
-            var existingFieldType = data.Structure
-                .FirstOrDefault(x => x.FieldAlias.Equals(fieldAlias));
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
 
-            if (string.IsNullOrWhiteSpace(fieldAlias) || existingFieldType is null)
+            var invalidViewModel = new MacInterfaceTableFieldEditorPanelViewModel
             {
-                var fieldType = new MacTableStructureItemJsonDataModel
-                {
-                    FieldName = form.FieldName,
-                    FieldAlias = form.FieldAlias,
-                    FieldType = form.FieldType,
-                    DropdownOptions = form.DropdownOptions
-                };
+                WorkspaceId = contentNode.Workspace.PublicId,
+                InterfaceId = contentNode.DocId,
+                FieldName = form.FieldName,
+                FieldAlias = form.FieldAlias,
+                FieldType = form.FieldType
+            };
 
-                data.Structure.Add(fieldType);
-            }
-            else
-            {
-                existingFieldType.FieldName = form.FieldName;
-                existingFieldType.FieldType = form.FieldType;
-                existingFieldType.FieldAlias = form.FieldAlias;
-                existingFieldType.DropdownOptions = form.DropdownOptions;
-            }
-
-            contentNode.Config = JsonSerializer.SerializeToDocument(data);
-            await dbContext.SaveChangesAsync();
-
-            Response.Headers.Append("HX-Trigger", "refreshStructureWorkspace, toggleEditor");
+            return PartialView("~/Views/MacTable/Partials/TableFieldEditorPanel.cshtml", invalidViewModel);
         }
+
+        var data = contentNode.Config.Deserialize<MacTableJsonDataModel>();
+        var existingFieldType = data.Structure
+            .FirstOrDefault(x => x.FieldAlias.Equals(fieldAlias));
+
+        if (string.IsNullOrWhiteSpace(fieldAlias) || existingFieldType is null)
+        {
+            var fieldType = new MacTableStructureItemJsonDataModel
+            {
+                FieldName = form.FieldName,
+                FieldAlias = form.FieldAlias,
+                FieldType = form.FieldType,
+                DropdownOptions = form.DropdownOptions
+            };
+
+            data.Structure.Add(fieldType);
+        }
+        else
+        {
+            existingFieldType.FieldName = form.FieldName;
+            existingFieldType.FieldType = form.FieldType;
+            existingFieldType.FieldAlias = form.FieldAlias;
+            existingFieldType.DropdownOptions = form.DropdownOptions;
+        }
+
+        contentNode.Config = JsonSerializer.SerializeToDocument(data);
+        await dbContext.SaveChangesAsync();
+
+        Response.Headers.Append("HX-Trigger", "refreshStructureWorkspace, toggleEditor");
 
         var viewModel = new MacInterfaceTableFieldEditorPanelViewModel
         {
