@@ -29,6 +29,9 @@ public class HypermediaController(
 {
     private const string FastGooeyLinkScheme = "fastgooey:";
     private const string FastGooeyMediaScheme = "fastgooey:media:";
+    private const int MaxRssArticles = 10;
+    private const double CelsiusToFahrenheitMultiplier = 9d / 5d;
+    private const double FahrenheitOffset = 32d;
 
     [HttpGet("{interfaceId}")]
     public async Task<IActionResult> Get(string interfaceId)
@@ -193,7 +196,7 @@ public class HypermediaController(
                 var feed = SyndicationFeed.Load(xmlReader);
                 response.FeedTitle = feed?.Title?.Text ?? string.Empty;
                 response.Articles = feed?.Items
-                    .Take(10)
+                    .Take(MaxRssArticles)
                     .Select(item => new WidgetRssFeedItemResponse
                     {
                         Title = item.Title?.Text ?? string.Empty,
@@ -251,7 +254,7 @@ public class HypermediaController(
 
             if (weatherData?.CurrentWeather is not null)
             {
-                var tempFahrenheit = (weatherData.CurrentWeather.Temperature * 9 / 5) + 32;
+                var tempFahrenheit = (weatherData.CurrentWeather.Temperature * CelsiusToFahrenheitMultiplier) + FahrenheitOffset;
                 response.Temperature = Math.Round(tempFahrenheit).ToString(CultureInfo.InvariantCulture);
                 response.ConditionCode = weatherData.CurrentWeather.ConditionCode ?? string.Empty;
                 response.PreviewAvailable = true;
