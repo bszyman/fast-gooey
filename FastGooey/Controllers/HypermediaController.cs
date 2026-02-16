@@ -156,6 +156,7 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
 
         return new AppleMobileCollectionHypermediaResponse
         {
+            Title = gooeyInterface.Name,
             InterfaceId = gooeyInterface.DocId,
             Content = collectionData
         };

@@ -5,6 +5,7 @@ namespace FastGooey.HypermediaResponses;
 public class AppleMobileCollectionHypermediaResponse : IHypermediaResponse
 {
     public Guid InterfaceId { get; set; } = Guid.Empty;
+    public string Title { get; set; } = string.Empty;
     public string Platform { get; set; } = "AppleMobile";
     public string View { get; set; } = "Collection";
 
