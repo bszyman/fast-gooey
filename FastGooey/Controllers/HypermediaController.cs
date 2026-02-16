@@ -1,19 +1,31 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Globalization;
+using System.ServiceModel.Syndication;
+using System.Xml;
 using FastGooey.Database;
 using FastGooey.HypermediaResponses;
 using FastGooey.Models;
 using FastGooey.Models.JsonDataModels;
 using FastGooey.Models.JsonDataModels.Mac;
+using FastGooey.Services;
 using FastGooey.Utils;
+using Flurl;
+using Flurl.Http;
+using GeoTimeZone;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using WeatherKit.Models;
 
 namespace FastGooey.Controllers;
 
 [Route("hypermedia")]
-public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache memoryCache) : Controller
+public class HypermediaController(
+    ApplicationDbContext dbContext,
+    IMemoryCache memoryCache,
+    IKeyValueService keyValueService,
+    ILogger<HypermediaController> logger) : Controller
 {
     private const string FastGooeyLinkScheme = "fastgooey:";
     private const string FastGooeyMediaScheme = "fastgooey:media:";
@@ -51,10 +63,32 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
             hypermediaResponse = GenerateMacResponse(contentNode);
         }
 
+        if (contentNode.Platform.Equals("Widget"))
+        {
+            hypermediaResponse = await GenerateWidgetResponse(contentNode);
+        }
+
         if (hypermediaResponse is null) return NotFound();
 
-        memoryCache.Set(cacheKey, hypermediaResponse, TimeSpan.FromSeconds(10));
+        var cacheDuration = GetCacheDuration(contentNode);
+        memoryCache.Set(cacheKey, hypermediaResponse, cacheDuration);
         return Ok(hypermediaResponse);
+    }
+
+    private static TimeSpan GetCacheDuration(GooeyInterface gooeyInterface)
+    {
+        if (!gooeyInterface.Platform.Equals("Widget"))
+        {
+            return TimeSpan.FromSeconds(10);
+        }
+
+        return gooeyInterface.ViewType switch
+        {
+            "Clock" => TimeSpan.FromSeconds(1),
+            "RssFeed" => TimeSpan.FromMinutes(5),
+            "Weather" => TimeSpan.FromMinutes(5),
+            _ => TimeSpan.FromSeconds(10)
+        };
     }
 
     private IHypermediaResponse GenerateAppleMobileResponse(GooeyInterface gooeyInterface)
@@ -91,9 +125,144 @@ public class HypermediaController(ApplicationDbContext dbContext, IMemoryCache m
         }
     }
 
+    private async Task<IHypermediaResponse> GenerateWidgetResponse(GooeyInterface gooeyInterface)
+    {
+        switch (gooeyInterface.ViewType)
+        {
+            case "Clock":
+                return GenerateClockResponse(gooeyInterface);
+            case "Map":
+                return GenerateMapResponse(gooeyInterface);
+            case "RssFeed":
+                return await GenerateRssFeedResponse(gooeyInterface);
+            case "Weather":
+                return await GenerateWeatherResponse(gooeyInterface);
+            default:
+                return NotSupported();
+        }
+    }
+
     private NotSupported NotSupported()
     {
         return new NotSupported();
+    }
+
+    private WidgetClockHypermediaResponse GenerateClockResponse(GooeyInterface gooeyInterface)
+    {
+        var config = gooeyInterface.Config.Deserialize<ClockJsonDataModel>() ?? new ClockJsonDataModel();
+        var dateTimeSet = TimeFromCoordinates.CalculateDateTimeSet(config.Latitude, config.Longitude);
+
+        return new WidgetClockHypermediaResponse(config, dateTimeSet)
+        {
+            InterfaceId = gooeyInterface.DocId
+        };
+    }
+
+    private WidgetMapHypermediaResponse GenerateMapResponse(GooeyInterface gooeyInterface)
+    {
+        var config = gooeyInterface.Config.Deserialize<MapJsonDataModel>() ?? new MapJsonDataModel();
+        return new WidgetMapHypermediaResponse(config)
+        {
+            InterfaceId = gooeyInterface.DocId
+        };
+    }
+
+    private async Task<WidgetRssFeedHypermediaResponse> GenerateRssFeedResponse(GooeyInterface gooeyInterface)
+    {
+        var config = gooeyInterface.Config.Deserialize<RssFeedJsonDataModel>() ?? new RssFeedJsonDataModel();
+        var response = new WidgetRssFeedHypermediaResponse(config)
+        {
+            InterfaceId = gooeyInterface.DocId
+        };
+
+        if (!Uri.TryCreate(config.FeedUrl, UriKind.Absolute, out var feedUri) ||
+            (feedUri.Scheme != Uri.UriSchemeHttp && feedUri.Scheme != Uri.UriSchemeHttps))
+        {
+            return response;
+        }
+
+        try
+        {
+            var stream = await feedUri.ToString()
+                .WithTimeout(10)
+                .GetStreamAsync();
+
+            await using (stream)
+            {
+                using var xmlReader = XmlReader.Create(stream);
+                var feed = SyndicationFeed.Load(xmlReader);
+                response.FeedTitle = feed?.Title?.Text ?? string.Empty;
+                response.Articles = feed?.Items
+                    .Take(10)
+                    .Select(item => new WidgetRssFeedItemResponse
+                    {
+                        Title = item.Title?.Text ?? string.Empty,
+                        Summary = item.Summary?.Text ?? string.Empty,
+                        Link = item.Links.FirstOrDefault()?.Uri?.ToString() ?? string.Empty,
+                        PublishDate = item.PublishDate == DateTimeOffset.MinValue ? null : item.PublishDate.UtcDateTime
+                    })
+                    .ToList() ?? [];
+            }
+        }
+        catch (FlurlHttpException ex)
+        {
+            logger.LogWarning(ex, "Failed to fetch RSS feed for interface {InterfaceId}", gooeyInterface.DocId);
+        }
+        catch (XmlException ex)
+        {
+            logger.LogWarning(ex, "Failed to parse RSS feed for interface {InterfaceId}", gooeyInterface.DocId);
+        }
+
+        return response;
+    }
+
+    private async Task<WidgetWeatherHypermediaResponse> GenerateWeatherResponse(GooeyInterface gooeyInterface)
+    {
+        var config = gooeyInterface.Config.Deserialize<WeatherJsonDataModel>() ?? new WeatherJsonDataModel();
+        var response = new WidgetWeatherHypermediaResponse(config)
+        {
+            InterfaceId = gooeyInterface.DocId
+        };
+
+        if (!double.TryParse(config.Latitude, NumberStyles.Float, CultureInfo.InvariantCulture, out var latitude) ||
+            !double.TryParse(config.Longitude, NumberStyles.Float, CultureInfo.InvariantCulture, out var longitude))
+        {
+            return response;
+        }
+
+        var weatherKitJwt = await keyValueService.GetValueForKey(Constants.WeatherKitJwt);
+        if (string.IsNullOrWhiteSpace(weatherKitJwt))
+        {
+            return response;
+        }
+
+        try
+        {
+            var timezoneId = TimeZoneLookup.GetTimeZone(latitude, longitude).Result;
+
+            var weatherData = await $"https://weatherkit.apple.com/api/v1/weather/en/{latitude}/{longitude}"
+                .SetQueryParams(new
+                {
+                    timezone = timezoneId,
+                    dataSets = "currentWeather"
+                })
+                .WithHeader("Authorization", $"Bearer {weatherKitJwt}")
+                .GetJsonAsync<Weather>();
+
+            if (weatherData?.CurrentWeather is not null)
+            {
+                var tempFahrenheit = (weatherData.CurrentWeather.Temperature * 9 / 5) + 32;
+                response.Temperature = Math.Round(tempFahrenheit).ToString(CultureInfo.InvariantCulture);
+                response.ConditionCode = weatherData.CurrentWeather.ConditionCode ?? string.Empty;
+                response.PreviewAvailable = true;
+            }
+        }
+        catch (FlurlHttpException ex)
+        {
+            logger.LogWarning(ex, "Failed to fetch weather data for interface {InterfaceId}", gooeyInterface.DocId);
+        }
+
+        return response;
     }
 
     private AppleMobileListHypermediaResponse GenerateAppleMobileList(GooeyInterface gooeyInterface)
