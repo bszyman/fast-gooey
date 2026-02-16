@@ -142,6 +142,7 @@ public class WeatherController(
     }
 
     [HttpPost("search-panel")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> WeatherSearchPanel([FromForm] WeatherWorkspaceFormModel formModel)
     {
         if (!ModelState.IsValid)

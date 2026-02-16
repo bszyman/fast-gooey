@@ -48,7 +48,7 @@
                             type="button"
                             onclick="toggleEditor()"
                             hx-post="@Url.Action("WeatherSearchPanel", "Weather", new { workspaceId = Model.WorkspaceId() })"
-                            hx-include="#location"
+                            hx-include="#location, input[name='__RequestVerificationToken']"
                             hx-target="#editorPanel"
                             class="px-2 py-1 rounded cursor-pointer bg-blueMid text-white font-semibold">Search...</button>
                     </div>
