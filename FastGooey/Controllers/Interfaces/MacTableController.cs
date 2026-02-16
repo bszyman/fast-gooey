@@ -362,19 +362,16 @@ public class MacTableController(
         }
         else
         {
-            if (!string.IsNullOrEmpty(form.GooeyName))
-            {
-                tableItem.GooeyName = form.GooeyName;
-            }
+            tableItem.GooeyName = form.GooeyName;
 
             if (!string.IsNullOrEmpty(form.RelatedUrl))
             {
-                tableItem.RelatedUrl = form.RelatedUrl!;
+                tableItem.RelatedUrl = form.RelatedUrl;
             }
 
             if (!string.IsNullOrEmpty(form.DoubleClickUrl))
             {
-                tableItem.DoubleClickUrl = form.DoubleClickUrl!;
+                tableItem.DoubleClickUrl = form.DoubleClickUrl;
             }
 
             foreach (var field in data.Structure)
