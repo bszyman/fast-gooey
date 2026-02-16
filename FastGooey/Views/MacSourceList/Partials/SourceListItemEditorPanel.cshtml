@@ -18,6 +18,7 @@
                 <div class="mb-4">
                     <label asp-for="Title">Title</label>
                     <input asp-for="Title" />
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
                 @await Html.PartialAsync(
                     "~/Views/Partials/iconPickerImageWell.cshtml",
