@@ -11,8 +11,10 @@ public class HeadlineContentFormModel : ContentItemBase
 
 public class LinkContentFormModel : ContentItemBase
 {
-    public string Url { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Title is required")]
     public string Title { get; set; } = string.Empty;
+    [Required(ErrorMessage = "URL is required")]
+    public string Url { get; set; } = string.Empty;
 }
 
 public class TextContentFormModel : ContentItemBase

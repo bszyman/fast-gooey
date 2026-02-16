@@ -31,6 +31,7 @@
                             value="@Model.Content.Title"
                         />
                     </div>
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
                 <div>
                     <label for="urlLinkButton">Link Url</label>
@@ -47,6 +48,7 @@
                         </button>
                     </div>
                     <p id="urlLinkDisplay" class="truncate text-xs text-gray-500 ml-1">No link selected.</p>
+                    @Html.ValidationMessage("Url", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
             </div>
         </div>

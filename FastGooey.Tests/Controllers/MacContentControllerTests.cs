@@ -1,7 +1,7 @@
 using System.Text.Json;
 using FastGooey.Controllers.Interfaces;
-using FastGooey.Models;
 using FastGooey.Models.FormModels.Mac;
+using FastGooey.Models;
 using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
@@ -54,6 +54,28 @@ public class MacContentControllerTests
 
         Assert.False(isValid);
         Assert.Contains(results, r => r.MemberNames.Contains("Headline"));
+    }
+
+    [Fact]
+    public async Task SaveLink_ReturnsEditorPanel_WhenModelStateIsInvalid()
+    {
+        var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
+        using var dbContext = TestDbContextFactory.Create(clock);
+        var controller = new MacContentController(
+            NullLogger<MacContentController>.Instance,
+            new StubKeyValueService(),
+            dbContext);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        controller.ModelState.AddModelError("Title", "Title is required");
+
+        var result = await controller.SaveLink(Guid.NewGuid(), Guid.NewGuid().ToString(), null, new LinkContentFormModel());
+
+        var partial = Assert.IsType<PartialViewResult>(result);
+        Assert.Equal("~/Views/MacContent/Partials/ContentLinkConfigurationPanel.cshtml", partial.ViewName);
+        Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
     }
 
     [Fact]
