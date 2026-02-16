@@ -1,9 +1,11 @@
+using System.ComponentModel.DataAnnotations;
 using FastGooey.Models.Common;
 
 namespace FastGooey.Models.FormModels.Mac;
 
 public class HeadlineContentFormModel : ContentItemBase
 {
+    [Required]
     public string Headline { get; set; } = string.Empty;
 }
 
