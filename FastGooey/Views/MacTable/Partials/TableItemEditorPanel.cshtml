@@ -23,9 +23,11 @@
                     <p class="font-semibold text-sm">Name</p>
                 </div>
                 <div class="py-4 px-4">
+                    @Html.ValidationSummary("", new { @class = "text-red-600 text-sm mb-4" })
                     <div class="mb-4">
                         <label for="gooeyName">Name</label>
                         <input type="text" id="gooeyName" name="gooeyName" value="@Model.Content.GooeyName" required="required" />
+                        @Html.ValidationMessage("GooeyName", "", new { @class = "text-red-600 text-sm mt-1 block" })
                     </div>
                 </div>
             </div>
