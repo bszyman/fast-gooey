@@ -19,6 +19,7 @@
                 <div class="mb-4">
                     <label asp-for="GroupName">Group Name</label>
                     <input asp-for="GroupName" />
+                    @Html.ValidationMessage("GroupName", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
             </div>
         </div>
