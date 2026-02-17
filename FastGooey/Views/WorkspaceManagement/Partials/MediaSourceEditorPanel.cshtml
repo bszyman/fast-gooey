@@ -24,7 +24,7 @@
                 <div class="mb-4">
                     <label asp-for="FormModel.Name"></label>
                     <input asp-for="FormModel.Name" type="text" class="w-full" />
-                    <span asp-validation-for="FormModel.Name" class="text-red-600 text-sm mt-1 block"></span>
+                    @Html.ValidationMessageFor(m => m.FormModel.Name, "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
 
                 <div class="mb-4">
@@ -35,7 +35,7 @@
                             onchange="updateMediaSourceFields(this.closest('form') || document)"
                             data-media-source-type-select="true">
                     </select>
-                    <span asp-validation-for="FormModel.SourceType" class="text-red-600 text-sm mt-1 block"></span>
+                    @Html.ValidationMessageFor(m => m.FormModel.SourceType, "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
 
                 <div class="mb-6 flex items-center gap-2">
