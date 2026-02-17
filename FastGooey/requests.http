@@ -10,3 +10,15 @@ GET https://localhost:7110/hypermedia/cGrCi4e8zUy1wy8tL1eOxA
 
 ###
 GET https://localhost:7110/Workspaces/b9d1e5c4-ae9b-4695-9fbf-8d61c41afeab/Media/preview/1ffea2ed-4575-42c7-b223-18f383d8cd0c?path=imac-g3.jpg
+
+### Time Widget
+GET https://localhost:7110/hypermedia/YdZIOMVbmUSJ8Y7_KWShLg
+
+### Weather Widget
+GET https://localhost:7110/hypermedia/5XPj2RFBfkaq1Jpn8jnnRQ
+
+### RssFeed Widget
+GET https://localhost:7110/hypermedia/oIZosNZjkkGwH0VU-EnsYA
+
+### RssFeed Widget
+GET https://localhost:7110/hypermedia/xdosrEypDEiGvzbq5OJraw
