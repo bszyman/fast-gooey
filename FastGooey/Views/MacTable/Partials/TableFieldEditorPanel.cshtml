@@ -44,10 +44,12 @@
                 <div class="mb-4">
                     <label asp-for="FieldName">Field Name</label>
                     <input asp-for="FieldName" class="w-full" />
+                    @Html.ValidationMessage("FieldName", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
                 <div class="mb-4">
                     <label asp-for="FieldAlias">Field Alias</label>
                     <input asp-for="FieldAlias" class="w-full" />
+                    @Html.ValidationMessage("FieldAlias", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
                 <div class="mb-2">
                     <label asp-for="FieldType">Field Type</label>
@@ -56,6 +58,7 @@
                             onchange="detectDropDownType(event)"
                     >
                     </select>
+                    @Html.ValidationMessage("FieldType", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
             </div>
         </div>
