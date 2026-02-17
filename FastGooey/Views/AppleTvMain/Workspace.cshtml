@@ -1,3 +1,47 @@
-<div class="h-full w-full flex items-center justify-center text-zinc-500 text-sm">
-    Apple TV Main workspace is not implemented yet.
+@using FastGooey.Utils
+@model FastGooey.Models.ViewModels.AppleTv.AppleTvMainWorkspaceViewModel
+
+<div class="h-full w-full flex items-center justify-center py-8 px-4">
+    <div class="w-full max-w-5xl">
+        <div class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900">
+            <button type="button"
+                    hx-get="@Url.Action("BackgroundEditorPanel", "AppleTvMain", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                    hx-target="#editorPanel"
+                    onclick="toggleEditor()"
+                    class="absolute inset-0 cursor-pointer">
+                @if (!string.IsNullOrWhiteSpace(Model.Data.BackgroundSplash.ImageResource))
+                {
+                    <img src="@MediaUrlResolver.Resolve(Url, Model.WorkspaceId(), Model.Data.BackgroundSplash.ImageResource)"
+                         alt="Background"
+                         class="w-full h-full object-cover" />
+                }
+                else
+                {
+                    <div class="w-full h-full flex items-center justify-center text-zinc-200 text-sm bg-gradient-to-br from-zinc-700 to-zinc-900">
+                        Click to edit background
+                    </div>
+                }
+            </button>
+
+            <button type="button"
+                    hx-get="@Url.Action("MenuBarEditorPanel", "AppleTvMain", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                    hx-target="#editorPanel"
+                    onclick="toggleEditor()"
+                    class="absolute bottom-0 left-0 right-0 h-[10%] min-h-12 bg-black/65 backdrop-blur-sm border-t border-white/20 px-3 flex items-center gap-2 overflow-x-auto cursor-pointer">
+                @if (Model.Data.MenuBarButtons.Count == 0)
+                {
+                    <span class="text-zinc-200 text-xs">Click to edit menu bar links</span>
+                }
+                else
+                {
+                    @foreach (var button in Model.Data.MenuBarButtons)
+                    {
+                        <span class="px-3 py-1 rounded-md text-xs font-semibold bg-white/15 text-white whitespace-nowrap">
+                            @button.Text
+                        </span>
+                    }
+                }
+            </button>
+        </div>
+    </div>
 </div>

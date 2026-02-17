@@ -1,0 +1,60 @@
+@model FastGooey.Models.ViewModels.AppleTv.AppleTvMainMenuBarEditorPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Menu Bar</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveMenuBarEditorPanel", "AppleTvMain", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url() })"
+      hx-target="#editorPanel">
+    @Html.AntiForgeryToken()
+    <div class="py-4 px-4 space-y-3">
+        @for (var i = 0; i < Model.Items.Count; i++)
+        {
+            <div class="rounded-xl border border-zinc-300 bg-zinc-50 p-3">
+                <div class="mb-3">
+                    <label for="items_@(i)__text">Button Text</label>
+                    <input type="text" id="items_@(i)__text" name="items[@i].Text" value="@Model.Items[i].Text" />
+                    @Html.ValidationMessage($"Items[{i}].Text", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-3">
+                    <label for="items_@(i)__link">Link</label>
+                    <input type="hidden" id="items_@(i)__link" name="items[@i].Link" value="@Model.Items[i].Link" />
+                    <button type="button"
+                            class="linkEditorTriggerButton"
+                            onclick="openLinkEditor(this)"
+                            data-link-editor-trigger="true"
+                            data-link-editor-target="items_@(i)__link"
+                            data-link-editor-display="items_@(i)__linkDisplay">
+                        Select link...
+                    </button>
+                    <p id="items_@(i)__linkDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">No link selected.</p>
+                    @Html.ValidationMessage($"Items[{i}].Link", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" name="Action" value="up:@i" class="bg-zinc-200 text-zinc-700 rounded px-2 py-1 text-xs font-semibold">Up</button>
+                    <button type="submit" name="Action" value="down:@i" class="bg-zinc-200 text-zinc-700 rounded px-2 py-1 text-xs font-semibold">Down</button>
+                    <button type="submit" name="Action" value="remove:@i" class="bg-rose-100 text-rose-700 rounded px-2 py-1 text-xs font-semibold">Remove</button>
+                </div>
+            </div>
+        }
+
+        @if (Model.Items.Count == 0)
+        {
+            <p class="text-sm text-zinc-500">No menu links yet. Add one below.</p>
+        }
+
+        <button type="submit" name="Action" value="add" class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+            Add Link...
+        </button>
+    </div>
+
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-end items-center px-6 gap-2">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+        <button type="submit" name="Action" value="save" class="bg-emerald-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+            Save
+        </button>
+    </div>
+</form>
