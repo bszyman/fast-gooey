@@ -204,19 +204,36 @@ public class MacOutlineController(
             parentItem.Children.Add(item);
         }
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            item.Name = formModel.Name;
-            item.Url = formModel.Url;
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
 
-            contentNode.Config = JsonSerializer.SerializeToDocument(data);
-            await dbContext.SaveChangesAsync();
+            var invalidModel = new MacOutlineEditorPanelViewModel
+            {
+                WorkspaceId = WorkspaceId,
+                InterfaceId = interfaceGuid,
+                ParentName = formModel.ParentName,
+                ParentId = formModel.ParentId?.ToString() ?? string.Empty,
+                Name = formModel.Name,
+                Identifier = itemId ?? Guid.Empty,
+                Url = formModel.Url ?? string.Empty,
+            };
 
-            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
+            return PartialView("~/Views/MacOutline/Partials/OutlineViewItemEditorPanel.cshtml", invalidModel);
         }
+
+        item.Name = formModel.Name;
+        item.Url = formModel.Url;
+
+        contentNode.Config = JsonSerializer.SerializeToDocument(data);
+        await dbContext.SaveChangesAsync();
+
+        Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
 
         var viewModel = new MacOutlineEditorPanelViewModel
         {
+            WorkspaceId = WorkspaceId,
+            InterfaceId = interfaceGuid,
             Name = item.Name,
             Identifier = item.Identifier,
             Url = item.Url,

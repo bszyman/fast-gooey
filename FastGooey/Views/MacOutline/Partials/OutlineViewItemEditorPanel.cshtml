@@ -44,6 +44,7 @@
                 <div class="mb-4">
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" required value="@Model.Name"/>
+                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
                 <div class="mb-2">
                     <label for="urlLinkButton">Url (optional)</label>
