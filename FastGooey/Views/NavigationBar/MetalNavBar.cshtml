@@ -57,21 +57,21 @@
             <span class="relative z-[2]">macOS</span>
           </a>
         </li>
-@*         <li> *@
-@*           <a href="#" class=" *@
-@*           segmentedControlItem *@
-@*           @(Model.ActiveTab == "tvOS" ? "segmentedControlItemActive text-white" : "") *@
-@*           -ml-px *@
-@*           before:absolute before:inset-0 *@
-@*           before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] *@
-@*           before:pointer-events-none before:z-[1] *@
-@*           after:absolute after:inset-x-0 after:top-0 after:h-1/2  *@
-@*           after:bg-gradient-to-b after:from-white/25 after:to-white/35 *@
-@*           after:pointer-events-none after:z-[3] *@
-@*         "> *@
-@*             <span class="relative z-[2]">tvOS</span> *@
-@*           </a> *@
-@*         </li> *@
+         <li>
+           <a href="@Url.Action("Index", "AppleTv", new { workspaceId = Model.WorkspaceId })" class="
+           segmentedControlItem
+           @(Model.ActiveTab == "tvOS" ? "segmentedControlItemActive text-white" : "")
+           -ml-px
+           before:absolute before:inset-0
+           before:shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+           before:pointer-events-none before:z-[1]
+           after:absolute after:inset-x-0 after:top-0 after:h-1/2
+           after:bg-gradient-to-b after:from-white/25 after:to-white/35
+           after:pointer-events-none after:z-[3]
+         ">
+             <span class="relative z-[2]">tvOS</span>
+           </a>
+         </li>
         <li>
           <a href="@Url.Action("Index", "Widgets", new { workspaceId = Model.WorkspaceId })" class="
           segmentedControlItem
