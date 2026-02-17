@@ -6,10 +6,18 @@
     </div>
 </div>
 
+<div class="px-4 pt-4">
+    @Html.ValidationMessage("LocationName", "", new { @class = "text-red-600 text-sm mt-1 block" })
+    @Html.ValidationMessage("Latitude", "", new { @class = "text-red-600 text-sm mt-1 block" })
+    @Html.ValidationMessage("Longitude", "", new { @class = "text-red-600 text-sm mt-1 block" })
+    @Html.ValidationMessage("LocationIdentifier", "", new { @class = "text-red-600 text-sm mt-1 block" })
+</div>
+
 <div id="searchResults" class="py-4 px-4">
-    @foreach (var location in Model.Results.Results)
+    @foreach (var location in Model.Results?.Results ?? [])
     {
         <form>
+            @Html.AntiForgeryToken()
             <input type="hidden" id="locationName" name="locationName" value="@location.Name" />
             <input type="hidden" id="latitude" name="latitude" value="@location.Coordinate.Latitude" />
             <input type="hidden" id="longitude" name="longitude" value="@location.Coordinate.Longitude" />
