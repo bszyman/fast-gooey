@@ -31,6 +31,7 @@
                             value="@Model.Content.Headline"
                         />
                     </div>
+                    @Html.ValidationMessage("Headline", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
             </div>
         </div>

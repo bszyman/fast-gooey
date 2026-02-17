@@ -138,6 +138,22 @@ public class MacContentController(
             return NotFound();
         }
 
+        if (!ModelState.IsValid)
+        {
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            return await LoadConfigurationPanelInternal<HeadlineContentItem, MacContentHeadlineConfigurationPanelViewModel>(
+                interfaceGuid,
+                itemId,
+                $"{BaseViewPath}/Partials/ContentHeadlineConfigurationPanel.cshtml",
+                () => new MacContentHeadlineConfigurationPanelViewModel
+                {
+                    WorkspaceId = WorkspaceId,
+                    InterfaceId = interfaceGuid
+                },
+                (vm, content) => vm.Content = content
+            );
+        }
+
         return await SaveContentItemInternal<HeadlineContentItem, HeadlineContentFormModel>(
             interfaceGuid,
             itemId,

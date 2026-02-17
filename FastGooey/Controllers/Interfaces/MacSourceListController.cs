@@ -142,21 +142,33 @@ public class MacSourceListController(
             ? data?.Groups.FirstOrDefault(x => x.Identifier.Equals(groupId.Value)) ?? new MacSourceListGroupJsonDataModel()
             : new MacSourceListGroupJsonDataModel();
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            if (group.Identifier.Equals(Guid.Empty))
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+
+            var invalidViewModel = new MacInterfaceSourceListGroupEditorPanelViewModel
             {
-                group.Identifier = Guid.NewGuid();
-                data.Groups.Add(group);
-            }
+                WorkspaceId = contentNode.Workspace.PublicId,
+                InterfaceId = contentNode.DocId,
+                GroupId = group.Identifier,
+                GroupName = formModel.GroupName
+            };
 
-            group.GroupName = formModel.GroupName;
-
-            contentNode.Config = JsonSerializer.SerializeToDocument(data);
-            await dbContext.SaveChangesAsync();
-
-            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
+            return PartialView("~/Views/MacSourceList/Partials/SourceListEditorPanel.cshtml", invalidViewModel);
         }
+
+        if (group.Identifier.Equals(Guid.Empty))
+        {
+            group.Identifier = Guid.NewGuid();
+            data.Groups.Add(group);
+        }
+
+        group.GroupName = formModel.GroupName;
+
+        contentNode.Config = JsonSerializer.SerializeToDocument(data);
+        await dbContext.SaveChangesAsync();
+
+        Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
 
         var viewModel = new MacInterfaceSourceListGroupEditorPanelViewModel
         {
