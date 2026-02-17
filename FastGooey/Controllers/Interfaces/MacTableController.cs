@@ -339,7 +339,7 @@ public class MacTableController(
     public async Task<IActionResult> SaveTableItemEditorPanel(
         string interfaceId,
         Guid? itemId,
-        [FromForm] IFormCollection form)
+        [FromForm] MacTableItemEditorPanelFormModel form)
     {
         if (!GuidShortId.TryParse(interfaceId, out var interfaceGuid))
         {
@@ -356,26 +356,27 @@ public class MacTableController(
                             .FirstOrDefault(x => x.Identifier == itemId.GetValueOrDefault())
                         ?? new MacTableItemJsonDataModel { Identifier = Guid.NewGuid() };
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            if (!string.IsNullOrEmpty(form["gooeyName"]))
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+        }
+        else
+        {
+            tableItem.GooeyName = form.GooeyName;
+
+            if (!string.IsNullOrEmpty(form.RelatedUrl))
             {
-                tableItem.GooeyName = form["gooeyName"]!;
+                tableItem.RelatedUrl = form.RelatedUrl;
             }
 
-            if (!string.IsNullOrEmpty(form["relatedUrl"]))
+            if (!string.IsNullOrEmpty(form.DoubleClickUrl))
             {
-                tableItem.RelatedUrl = form["relatedUrl"]!;
-            }
-
-            if (!string.IsNullOrEmpty(form["doubleClickUrl"]))
-            {
-                tableItem.DoubleClickUrl = form["doubleClickUrl"]!;
+                tableItem.DoubleClickUrl = form.DoubleClickUrl;
             }
 
             foreach (var field in data.Structure)
             {
-                var rawValues = form[field.FieldAlias];
+                var rawValues = Request.Form[field.FieldAlias];
                 if (rawValues.Any())
                 {
                     var stringValue = rawValues.First();
