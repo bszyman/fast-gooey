@@ -11,11 +11,24 @@
         var interfaceId = item.Id.ToBase64Url();
         return item.Type switch
         {
-            // "Table" => Url.Action("Index", "MacTable", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
-            // "Collection" => Url.Action("Index", "MacCollection", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
-            // "Content" => Url.Action("Index", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
-            // "SourceList" => Url.Action("Index", "MacSourceList", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
-            // "Outline" => Url.Action("Index", "MacOutline", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Alert" => Url.Action("Index", "AppleTvAlert", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Catalog" => Url.Action("Index", "AppleTvCatalog", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Compilation" => Url.Action("Index", "AppleTvCompilation", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "DescriptiveAlert" => Url.Action("Index", "AppleTvDescriptiveAlert", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Div" => Url.Action("Index", "AppleTvDiv", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Form" => Url.Action("Index", "AppleTvForm", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "List" => Url.Action("Index", "AppleTvList", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Loading" => Url.Action("Index", "AppleTvLoading", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Main" => Url.Action("Index", "AppleTvMain", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "MenuBar" => Url.Action("Index", "AppleTvMenuBar", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "OneUp" => Url.Action("Index", "AppleTvOneUp", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Parade" => Url.Action("Index", "AppleTvParade", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "ProductBundle" => Url.Action("Index", "AppleTvProductBundle", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Product" => Url.Action("Index", "AppleTvProduct", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Rating" => Url.Action("Index", "AppleTvRating", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Search" => Url.Action("Index", "AppleTvSearch", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Showcase" => Url.Action("Index", "AppleTvShowcase", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
+            "Stack" => Url.Action("Index", "AppleTvStack", new { workspaceId = Model.WorkspaceId, interfaceId }) ?? "#",
             _ => "#"
         };
     }

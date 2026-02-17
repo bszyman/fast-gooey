@@ -1,0 +1,7 @@
+<div class="h-full w-full">
+    <div id="workspace"
+         hx-get="@Url.Action("Workspace", "AppleTvMain", new { workspaceId = Context.Request.RouteValues["workspaceId"], interfaceId = Context.Request.RouteValues["interfaceId"] })"
+         hx-trigger="load, refreshWorkspace from:body"
+         hx-swap="innerHTML">
+    </div>
+</div>
