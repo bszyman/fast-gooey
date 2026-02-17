@@ -1,6 +1,7 @@
 using System.Text.Json;
 using FastGooey.Controllers.Interfaces;
 using FastGooey.Models;
+using FastGooey.Models.FormModels.Mac;
 using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using NodaTime;
+using System.ComponentModel.DataAnnotations;
 
 namespace FastGooey.Tests.Controllers;
 
@@ -20,6 +22,40 @@ public class MacContentControllerTests
         public Task SetValueForKey(string key, string value) => Task.CompletedTask;
     }
     
+    [Fact]
+    public async Task SaveHeadline_ReturnsHeadlinePanelWithRetargetHeader_WhenModelStateIsInvalid()
+    {
+        using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
+        var controller = new MacContentController(
+            NullLogger<MacContentController>.Instance,
+            new StubKeyValueService(),
+            dbContext);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        controller.ModelState.AddModelError("Headline", "Required");
+
+        var result = await controller.SaveHeadline(Guid.NewGuid(), Guid.NewGuid().ToString(), null, new HeadlineContentFormModel());
+
+        var partial = Assert.IsType<PartialViewResult>(result);
+        Assert.Equal("~/Views/MacContent/Partials/ContentHeadlineConfigurationPanel.cshtml", partial.ViewName);
+        Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"]);
+    }
+
+    [Fact]
+    public void HeadlineContentFormModel_RequiresHeadline()
+    {
+        var form = new HeadlineContentFormModel { Headline = string.Empty };
+        var context = new ValidationContext(form);
+        var results = new List<ValidationResult>();
+
+        var isValid = Validator.TryValidateObject(form, context, results, validateAllProperties: true);
+
+        Assert.False(isValid);
+        Assert.Contains(results, r => r.MemberNames.Contains("Headline"));
+    }
+
     [Fact]
     public async Task DeleteItem_RemovesItem_WhenExists()
     {
