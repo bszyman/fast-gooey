@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using FastGooey.Controllers;
 using FastGooey.HypermediaResponses;
 using FastGooey.Models;
@@ -57,6 +58,42 @@ public class HypermediaControllerTests
 
         var ok = Assert.IsType<OkObjectResult>(result);
         Assert.IsType<WidgetMapHypermediaResponse>(ok.Value);
+    }
+
+    [Fact]
+    public async Task Get_ReturnsNotSupported_WhenPlatformIsAppleTv()
+    {
+        using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
+        using var memoryCache = new MemoryCache(new MemoryCacheOptions());
+
+        var workspace = new Workspace { Name = "Test", Slug = "test" };
+        var gooeyInterface = new GooeyInterface
+        {
+            Workspace = workspace,
+            Platform = "AppleTv",
+            ViewType = "Main",
+            Name = "AppleTv Main",
+            Config = JsonSerializer.SerializeToDocument(new JsonObject())
+        };
+        dbContext.GooeyInterfaces.Add(gooeyInterface);
+        await dbContext.SaveChangesAsync();
+
+        var controller = new HypermediaController(
+            dbContext,
+            memoryCache,
+            new StubKeyValueService(),
+            NullLogger<HypermediaController>.Instance);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        controller.HttpContext.Request.Scheme = "https";
+        controller.HttpContext.Request.Host = new HostString("example.com");
+
+        var result = await controller.Get(gooeyInterface.DocId.ToBase64Url());
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        Assert.IsType<NotSupported>(ok.Value);
     }
 
     [Fact]

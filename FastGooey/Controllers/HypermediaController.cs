@@ -66,6 +66,11 @@ public class HypermediaController(
             hypermediaResponse = GenerateMacResponse(contentNode);
         }
 
+        if (contentNode.Platform.Equals("AppleTv"))
+        {
+            hypermediaResponse = GenerateAppleTvResponse(contentNode);
+        }
+
         if (contentNode.Platform.Equals("Widget"))
         {
             hypermediaResponse = await GenerateWidgetResponse(contentNode);
@@ -140,6 +145,15 @@ public class HypermediaController(
                 return await GenerateRssFeedResponse(gooeyInterface);
             case "Weather":
                 return await GenerateWeatherResponse(gooeyInterface);
+            default:
+                return NotSupported();
+        }
+    }
+
+    private IHypermediaResponse GenerateAppleTvResponse(GooeyInterface gooeyInterface)
+    {
+        switch (gooeyInterface.ViewType)
+        {
             default:
                 return NotSupported();
         }
