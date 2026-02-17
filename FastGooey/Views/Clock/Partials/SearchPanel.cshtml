@@ -7,6 +7,7 @@
 </div>
 
 <div id="searchResults" class="py-4 px-4">
+    @Html.ValidationMessage("MapIdentifier", "", new { @class = "text-red-600 text-sm mt-1 block" })
     @foreach (var location in Model.Results)
     {
         <div

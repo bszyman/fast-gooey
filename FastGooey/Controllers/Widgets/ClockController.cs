@@ -116,6 +116,16 @@ public class ClockController(
             return NotFound();
         }
 
+        if (!ModelState.IsValid)
+        {
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            return PartialView("~/Views/Clock/Partials/SearchPanel.cshtml", new ClockSearchPanelViewModel
+            {
+                SearchText = formModel.Location,
+                Results = Array.Empty<MapKitSearchResponseModelWithTime>()
+            });
+        }
+
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceGuid));
