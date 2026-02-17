@@ -240,23 +240,37 @@ public class MacSourceListController(
             group.GroupItems.FirstOrDefault(x => x.Identifier.Equals(itemId.Value)) ?? new MacSourceListGroupItemJsonDataModel()
                 : new MacSourceListGroupItemJsonDataModel();
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            if (item.Identifier.Equals(Guid.Empty))
+            var invalidViewModel = new MacInterfaceSourceListGroupItemEditorPanelViewModel
             {
-                item.Identifier = Guid.NewGuid();
-                group.GroupItems.Add(item);
-            }
+                WorkspaceId = contentNode.Workspace.PublicId,
+                InterfaceId = contentNode.DocId,
+                GroupId = group.Identifier,
+                Identifier = item.Identifier,
+                Title = formModel.Title,
+                Icon = formModel.Icon ?? string.Empty,
+                Url = formModel.Url ?? string.Empty,
+            };
 
-            item.Title = formModel.Title;
-            item.Icon = formModel.Icon ?? string.Empty;
-            item.Url = formModel.Url;
-
-            contentNode.Config = JsonSerializer.SerializeToDocument(data);
-            await dbContext.SaveChangesAsync();
-
-            Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
+            Response.Headers.Append("HX-Retarget", "#editorPanel");
+            return PartialView("~/Views/MacSourceList/Partials/SourceListItemEditorPanel.cshtml", invalidViewModel);
         }
+
+        if (item.Identifier.Equals(Guid.Empty))
+        {
+            item.Identifier = Guid.NewGuid();
+            group.GroupItems.Add(item);
+        }
+
+        item.Title = formModel.Title;
+        item.Icon = formModel.Icon ?? string.Empty;
+        item.Url = formModel.Url;
+
+        contentNode.Config = JsonSerializer.SerializeToDocument(data);
+        await dbContext.SaveChangesAsync();
+
+        Response.Headers.Append("HX-Trigger", "refreshWorkspace, toggleEditor");
 
         var viewModel = new MacInterfaceSourceListGroupItemEditorPanelViewModel
         {
