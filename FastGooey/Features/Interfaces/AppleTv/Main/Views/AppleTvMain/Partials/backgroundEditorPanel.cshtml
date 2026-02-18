@@ -17,15 +17,32 @@
             </div>
             <div class="py-2 px-4">
                 <div class="mb-4">
-                    <label for="imageResource">Image Resource</label>
-                    <input type="text" id="imageResource" name="imageResource" value="@Model.ImageResource" />
+                    <label for="mediaUrlButton">Background Image</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="hidden" id="ImageResource" name="ImageResource" value="@Model.ImageResource" />
+                        <button type="button"
+                                id="mediaUrlButton"
+                                class="linkEditorTriggerButton"
+                                onclick="openMediaPicker(this)"
+                                data-media-picker-trigger="true"
+                                data-media-picker-target="ImageResource"
+                                data-media-picker-display="mediaUrlDisplay">
+                            Select media...
+                        </button>
+                    </div>
+                    <p id="mediaUrlDisplay" class="truncate text-xs text-gray-500 ml-1">No media selected.</p>
                     @Html.ValidationMessage("ImageResource", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
-                <div class="mb-4">
-                    <label for="audioResource">Audio Resource</label>
-                    <input type="text" id="audioResource" name="audioResource" value="@Model.AudioResource" />
-                    @Html.ValidationMessage("AudioResource", "", new { @class = "text-red-600 text-sm mt-1 block" })
-                </div>
+                @* <div class="mb-4"> *@
+                @*     <label for="imageResource">Image Resource</label> *@
+                @*     <input type="text" id="imageResource" name="imageResource" value="@Model.ImageResource"/> *@
+                @*     @Html.ValidationMessage("ImageResource", "", new { @class = "text-red-600 text-sm mt-1 block" }) *@
+                @* </div> *@
+                @* <div class="mb-4"> *@
+                @*     <label for="audioResource">Audio Resource</label> *@
+                @*     <input type="text" id="audioResource" name="audioResource" value="@Model.AudioResource" /> *@
+                @*     @Html.ValidationMessage("AudioResource", "", new { @class = "text-red-600 text-sm mt-1 block" }) *@
+                @* </div> *@
             </div>
         </div>
     </div>

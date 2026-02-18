@@ -5,6 +5,7 @@ using FastGooey.Features.Interfaces.AppleTv.Shared.Models.FormModels;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Services;
@@ -35,10 +36,13 @@ public class AppleTvMainController(
         {
             return NotFound();
         }
-        
-        var workspace = await WorkspaceViewModelForInterfaceId(interfaceIdAsGuid);
 
-        return View();
+        var viewModel = new AppleTvInterfaceMainViewModel
+        {
+            Workspace = await WorkspaceViewModelForInterfaceId(interfaceIdAsGuid)
+        };
+        
+        return View(viewModel);
     }
 
     [HttpGet("workspace/{interfaceId}")]
