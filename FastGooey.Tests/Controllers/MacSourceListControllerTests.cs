@@ -24,7 +24,7 @@ public class MacSourceListControllerTests
     [Fact]
     public async Task SaveGroupEditorPanel_ReturnsEditorPanelWithRetargetHeader_WhenModelStateIsInvalid()
     {
-        using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
+        await using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
         var groupId = Guid.NewGuid();
         var workspace = new Workspace { Name = "Test", Slug = "test" };
         var gooeyInterface = new GooeyInterface
@@ -64,7 +64,7 @@ public class MacSourceListControllerTests
     [Fact]
     public async Task SaveItemEditorPanel_ReturnsItemEditorPanelWithRetargetHeader_WhenModelStateIsInvalid()
     {
-        using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
+        await using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
         var workspace = new Workspace
         {
             Name = "Test Workspace",

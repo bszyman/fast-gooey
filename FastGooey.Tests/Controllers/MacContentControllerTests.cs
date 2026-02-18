@@ -25,7 +25,7 @@ public class MacContentControllerTests
     [Fact]
     public async Task SaveHeadline_ReturnsHeadlinePanelWithRetargetHeader_WhenModelStateIsInvalid()
     {
-        using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
+        await using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
         var controller = new MacContentController(
             NullLogger<MacContentController>.Instance,
             new StubKeyValueService(),
@@ -60,7 +60,7 @@ public class MacContentControllerTests
     public async Task SaveLink_ReturnsEditorPanel_WhenModelStateIsInvalid()
     {
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
-        using var dbContext = TestDbContextFactory.Create(clock);
+        await using var dbContext = TestDbContextFactory.Create(clock);
         var controller = new MacContentController(
             NullLogger<MacContentController>.Instance,
             new StubKeyValueService(),
@@ -83,7 +83,7 @@ public class MacContentControllerTests
     {
         // Arrange
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
-        using var dbContext = TestDbContextFactory.Create(clock);
+        await using var dbContext = TestDbContextFactory.Create(clock);
         var keyValueService = new StubKeyValueService();
         var logger = NullLogger<MacContentController>.Instance;
 
@@ -124,7 +124,7 @@ public class MacContentControllerTests
     public async Task SaveText_ReturnsEditorPanel_WhenModelStateIsInvalid()
     {
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
-        using var dbContext = TestDbContextFactory.Create(clock);
+        await using var dbContext = TestDbContextFactory.Create(clock);
         var controller = new MacContentController(
             NullLogger<MacContentController>.Instance,
             new StubKeyValueService(),
