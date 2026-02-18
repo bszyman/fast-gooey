@@ -39,37 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileContent.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileForm.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Interfaces\AppleMobile\AppleMobileList.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldBlankOption.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldCheckboxEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldDateEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldDropDownEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldFileEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldLongTextEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldMultiSelectEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldSelectorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldTextEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormFieldTimeEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Forms\FormSubmissionViewerPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldBlankOption.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldDateEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldDropDownEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldFileEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldLongTextEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldMultiSelectEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldSelectorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldTextEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormFieldTimeEditorPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\Forms\FormSubmissionViewerPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\MacOS\Partials\FormSubmissionViewerPanel.cshtml" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\wwwroot\site.dist.css" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Views\AppleMobileList\Form.cshtml" />
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\AppleMobileList\Form.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\FormSubmissionViewerPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldBlankOption.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml" />
@@ -82,7 +52,7 @@
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldTextEditorPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldTimeEditorPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormSubmissionViewerPanel.cshtml" />
-      <AdditionalFiles Include="Views\WorkspaceManagement\Partials\MediaSourceEditorPanel.cshtml">
+      <AdditionalFiles Include="Features\Workspaces\Management\Views\WorkspaceManagement\Partials\MediaSourceEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
     </ItemGroup>
@@ -96,28 +66,25 @@
       <Content Include="*.handlebars">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-      <Content Update="Views\**\*.cshtml">
+      <Content Update="**\*.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
-      <Content Update="Views\AppleMobile\Partials\NewInterfaceSelectorPanel.cshtml">
+      <Content Update="Features\Interfaces\AppleMobile\Shell\Views\AppleMobile\Partials\NewInterfaceSelectorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
-      <Content Update="Views\MacOS\Partials\InterfaceCreatorPalette.cshtml">
+      <Content Update="Features\Interfaces\Mac\Shell\Views\MacOS\Partials\InterfaceCreatorPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
-      <Content Update="Views\WorkspaceManagement\WorkspaceManagement.cshtml">
-        <Generator>RazorGenerator</Generator>
-      </Content>
-      <Content Update="Views\WorkspaceManagement\Partials\MediaSourceEditor.Panelcshtml">
+      <Content Update="Features\Workspaces\Management\Views\WorkspaceManagement\WorkspaceManagement.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Views\Partials\createInterfaceFloatingPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
-      <Content Update="Views\AppleMobile\Partials\InterfaceCreatorPalette.cshtml">
+      <Content Update="Features\Interfaces\AppleMobile\Shell\Views\AppleMobile\Partials\InterfaceCreatorPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
-      <Content Update="Views\Widgets\Partials\InterfaceCreatorPalette.cshtml">
+      <Content Update="Features\Widgets\Shell\Views\Widgets\Partials\InterfaceCreatorPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>

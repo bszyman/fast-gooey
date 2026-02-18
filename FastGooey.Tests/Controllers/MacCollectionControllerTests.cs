@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using FastGooey.Controllers.Interfaces;
+using FastGooey.Features.Interfaces.Mac.Collection.Controllers;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac;
 using FastGooey.Models;
-using FastGooey.Models.FormModels;
-using FastGooey.Models.JsonDataModels.Mac;
-using FastGooey.Models.ViewModels.Mac;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
@@ -62,7 +62,7 @@ public class MacCollectionControllerTests
 
         var partial = Assert.IsType<PartialViewResult>(result);
         var model = Assert.IsType<MacInterfaceCollectionEditorPanelViewModel>(partial.Model);
-        Assert.Equal("~/Views/MacCollection/Partials/CollectionViewItemEditorPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/CollectionViewItemEditorPanel", partial.ViewName);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
         Assert.Equal(form.ImageUrl, model.Item.ImageUrl);
         Assert.Equal(form.Url, model.Item.Url);

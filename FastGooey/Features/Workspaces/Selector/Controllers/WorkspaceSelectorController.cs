@@ -1,0 +1,137 @@
+using FastGooey.Controllers;
+using FastGooey.Database;
+using FastGooey.Features.Workspaces.Selector.Models.FormModels;
+using FastGooey.Features.Workspaces.Selector.Models.ViewModels.WorkspaceSelector;
+using FastGooey.Models;
+using FastGooey.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Slugify;
+
+namespace FastGooey.Features.Workspaces.Selector.Controllers;
+
+[Authorize]
+[Route("Workspaces")]
+public class WorkspaceSelectorController(
+    IKeyValueService keyValueService,
+    ApplicationDbContext dbContext,
+    UserManager<ApplicationUser> userManager) :
+    BaseStudioController(keyValueService, dbContext)
+{
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser is null)
+        {
+            return Unauthorized();
+        }
+
+        if (currentUser.PasskeyRequired)
+        {
+            var hasPasskey = await dbContext.PasskeyCredentials
+                .AnyAsync(p => p.UserId == currentUser.Id);
+            if (!hasPasskey)
+            {
+                return RedirectToAction(
+                    "Complete",
+                    "SignUp",
+                    new { returnUrl = Url.Action("Index", "WorkspaceSelector") }
+                );
+            }
+        }
+
+        var workspaces = dbContext.Workspaces
+            .Where(x => x.Users.Contains(currentUser))
+            .ToList();
+
+        var viewModel = new WorkspaceSelectorViewModel
+        {
+            Workspaces = workspaces,
+            UserIsConfirmed = currentUser.EmailConfirmed
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpGet("create")]
+    public async Task<IActionResult> CreateWorkspace(Guid workspaceId)
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser is null)
+        {
+            return Unauthorized();
+        }
+
+        if (currentUser.SubscriptionLevel is SubscriptionLevel.Explorer or SubscriptionLevel.Standard)
+        {
+            var hasWorkspace = await dbContext.Workspaces
+                .AnyAsync(workspace => workspace.Users.Any(user => user.Id == currentUser.Id));
+            ViewData["WorkspaceLimitReached"] = hasWorkspace;
+        }
+
+        return View(new CreateWorkspace());
+    }
+
+    [HttpPost("create")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SaveNewWorkspace(Guid workspaceId, CreateWorkspace form)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(form);
+        }
+
+        var currentUser = await userManager.GetUserAsync(User);
+        if (currentUser is null)
+        {
+            return Unauthorized();
+        }
+
+        if (!currentUser.EmailConfirmed)
+        {
+            return RedirectToAction("Index", "WorkspaceSelector");
+        }
+
+        if (currentUser.SubscriptionLevel is SubscriptionLevel.Explorer or SubscriptionLevel.Standard)
+        {
+            var hasWorkspace = await dbContext.Workspaces
+                .AnyAsync(workspace => workspace.Users.Any(user => user.Id == currentUser.Id));
+            if (hasWorkspace)
+            {
+                ViewData["WorkspaceLimitReached"] = true;
+                ModelState.AddModelError(string.Empty, "Your current plan allows only one workspace.");
+                return View(form);
+            }
+        }
+
+        var helper = new SlugHelper();
+        var slug = helper.GenerateSlug(form.WorkspaceName);
+
+        var existingSlug = await dbContext.Workspaces.FirstOrDefaultAsync(w => w.Slug == slug);
+        if (existingSlug is not null)
+        {
+            // Handle duplicate (e.g., append a number or return an error)
+            ModelState.AddModelError("WorkspaceName", "A workspace with a similar name already exists.");
+            return View(form);
+        }
+
+        var workspace = new Workspace
+        {
+            Name = form.WorkspaceName,
+            Slug = slug
+        };
+
+        workspace.Users.Add(currentUser);
+
+        dbContext.Workspaces.Add(workspace);
+        await dbContext.SaveChangesAsync();
+
+        return RedirectToAction(
+            "Index", 
+            "WorkspaceSelector"
+        );
+    }
+}

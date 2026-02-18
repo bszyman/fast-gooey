@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using FastGooey.Controllers.Widgets;
+using FastGooey.Features.Widgets.Clock.Controllers;
+using FastGooey.Features.Widgets.Clock.Models.FormModels;
+using FastGooey.Features.Widgets.Weather.Controllers;
 using FastGooey.Models;
-using FastGooey.Models.FormModels;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
@@ -56,7 +57,7 @@ public class ClockControllerTests
     {
         using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
         var controller = new ClockController(
-            NullLogger<WeatherController>.Instance,
+            NullLogger<ClockController>.Instance,
             new StubKeyValueService(),
             dbContext,
             new StubUserManager());
@@ -69,7 +70,7 @@ public class ClockControllerTests
         var result = await controller.SaveWorkspace(Guid.NewGuid().ToString(), new ClockFormModel());
 
         var partial = Assert.IsType<PartialViewResult>(result);
-        Assert.Equal("~/Views/Clock/Partials/SearchPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/SearchPanel", partial.ViewName);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
     }
 

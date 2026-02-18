@@ -1,0 +1,40 @@
+@using FastGooey.Models.ViewModels
+@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacContentViewModel
+
+<div class="h-full flex flex-col">
+    <div class="workspaceTitleBar">
+        <div class="flex-1 flex items-center">
+            @await Html.PartialAsync("~/Views/Partials/WorkspaceTitleEditor.cshtml", new WorkspaceTitleEditorViewModel
+            {
+                Url = Url.Action(
+                    "UpdateTitle",
+                    "Workspaces",
+                    new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() }
+                ),
+                Title = Model.WorkspaceViewModel!.ContentNode!.Name
+            })
+        </div>
+        <button
+            hx-get="@Url.Action("Workspace", "MacContent", new { workspaceId = Model.WorkspaceViewModel.ContentNode.Workspace.PublicId, interfaceId = Model.WorkspaceViewModel.ContentNode.DocId.ToBase64Url() })"
+            hx-target="#workspaceEditor"
+            type="button"
+            class="sectionButton activeSectionButton" onclick="changeSection(this)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
+            </svg>
+            Page Content
+        </button>
+        @await Html.PartialAsync(
+            "~/Views/Partials/WorkspaceInfoButton.cshtml",
+            Url.Action("Info", "Workspaces", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })
+        )
+    </div>
+
+    <div 
+        id="workspaceEditor" 
+        class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
+        hx-get="@Url.Action("Workspace", "MacContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })" 
+        hx-trigger="refreshWorkspace from:body"> 
+        @await Html.PartialAsync("Workspace.cshtml", Model.WorkspaceViewModel)
+    </div>
+</div>

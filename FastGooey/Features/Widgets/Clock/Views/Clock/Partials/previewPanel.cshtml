@@ -1,0 +1,23 @@
+@model FastGooey.Features.Widgets.Clock.Models.ViewModels.Clock.ClockPreviewPanelViewModel
+
+<div id="previewPanel" class="contentGroup formGroupAddBackground">
+    <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+        <p class="font-semibold">Preview</p>
+    </div>
+    @if (Model.PreviewAvailable)
+    {
+        <div class="p-4">
+            <div id="preview" class="w-72 h-36 rounded-2xl border border-blueMid flex flex-col justify-center items-center bg-gradient-to-t from-blueLight to-blueMid">
+                <p id="previewPanelTime" class="font-bold text-5xl flex-1 flex items-center">@Model.Time</p>
+                <p id="previewPanelDate" class="font-bold text-md mt-[-20px]">@Model.Date</p>
+                <p id="previewPanelLocation" class="h-8 font-medium">@Model.Location</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="p-4 text-center py-6 bg-zinc-100">
+            <p>Preview not available</p>
+        </div>
+    }
+</div>

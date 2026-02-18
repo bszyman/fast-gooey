@@ -1,0 +1,69 @@
+@model FastGooey.Features.Widgets.Clock.Models.ViewModels.Clock.ClockSearchPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Search Results</p>
+    </div>
+</div>
+
+<div id="searchResults" class="py-4 px-4">
+    @Html.ValidationMessage("MapIdentifier", "", new { @class = "text-red-600 text-sm mt-1 block" })
+    @foreach (var location in Model.Results)
+    {
+        <div
+            data-name="@location.Result.Name"
+            data-lat="@location.Result.Coordinate.Latitude"
+            data-lng="@location.Result.Coordinate.Longitude"
+            data-timezone="@location.LocalDateTimeSet.LocalTimezone"
+            data-identifier="@location.Result.Id"
+            data-descriptive-time="@location.LocalDateTimeSet.Formatted()"
+            data-time="@location.LocalDateTimeSet.LocalTime"
+            data-date="@location.LocalDateTimeSet.LocalDate"
+            onclick="selectLocation(this)"
+            class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+            <p class="font-medium mb-1">@location.Result.Name</p>
+            <p class="text-xs font-semibold uppercase text-grayMid mb-1">@location.LocalDateTimeSet.Formatted()</p>
+        </div>
+    }
+</div>
+    
+<div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+    <div class="flex items-center w-1/2"></div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+    </div>
+</div>
+
+<script>
+    function selectLocation(sender) {
+        const locationTextField = document.getElementById("location");
+        const latitudeTextField = document.getElementById("latitude");
+        const longitudeTextField = document.getElementById("longitude");
+        const timezoneTextField = document.getElementById("timezone");
+        const identifierTextField = document.getElementById("mapIdentifier");
+        const descriptiveTimeText = document.getElementById("descriptiveTime");
+
+        locationTextField.value = sender.dataset.name;
+        latitudeTextField.value = sender.dataset.lat;
+        longitudeTextField.value = sender.dataset.lng;
+        timezoneTextField.value = sender.dataset.timezone;
+        identifierTextField.value = sender.dataset.identifier;
+        descriptiveTimeText.innerText = sender.dataset.descriptiveTime;
+
+        updateMapWithLocation(
+            parseFloat(sender.dataset.lat),
+            parseFloat(sender.dataset.lng),
+            sender.dataset.name
+        );
+        
+        const previewPanelTimeField = document.getElementById("previewPanelTime");
+        const previewPanelDateField = document.getElementById("previewPanelDate");
+        const previewPanelLocationField = document.getElementById("previewPanelLocation");
+        
+        previewPanelDateField.innerText = sender.dataset.date;
+        previewPanelTimeField.innerText = sender.dataset.time;
+        previewPanelLocationField.innerText = sender.dataset.name;
+        
+        toggleEditor();
+    }
+</script>

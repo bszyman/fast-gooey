@@ -1,10 +1,12 @@
 using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using FastGooey.Controllers;
+using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
+using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
+using FastGooey.Features.Widgets.Clock.Models.JsonDataModels;
+using FastGooey.Features.Widgets.Map.Models.JsonDataModels;
 using FastGooey.HypermediaResponses;
 using FastGooey.Models;
-using FastGooey.Models.JsonDataModels;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
 using FastGooey.Utils;
@@ -61,7 +63,7 @@ public class HypermediaControllerTests
     }
 
     [Fact]
-    public async Task Get_ReturnsNotSupported_WhenPlatformIsAppleTv()
+    public async Task Get_ReturnsAppleTvMainResponse_WhenPlatformIsAppleTvMain()
     {
         using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
         using var memoryCache = new MemoryCache(new MemoryCacheOptions());
@@ -73,7 +75,22 @@ public class HypermediaControllerTests
             Platform = "AppleTv",
             ViewType = "Main",
             Name = "AppleTv Main",
-            Config = JsonSerializer.SerializeToDocument(new JsonObject())
+            Config = JsonSerializer.SerializeToDocument(new MainJsonDataModel
+            {
+                BackgroundSplash = new BackgroundSplash
+                {
+                    ImageResource = "https://example.com/background.png",
+                    AudioResource = "https://example.com/audio.mp3"
+                },
+                MenuBarButtons =
+                [
+                    new NavigationButtonJsonDataModel
+                    {
+                        Text = "Home",
+                        Link = "https://example.com/home"
+                    }
+                ]
+            })
         };
         dbContext.GooeyInterfaces.Add(gooeyInterface);
         await dbContext.SaveChangesAsync();
@@ -93,7 +110,9 @@ public class HypermediaControllerTests
         var result = await controller.Get(gooeyInterface.DocId.ToBase64Url());
 
         var ok = Assert.IsType<OkObjectResult>(result);
-        Assert.IsType<NotSupported>(ok.Value);
+        var response = Assert.IsType<AppleTvMainHypermediaResponse>(ok.Value);
+        Assert.Equal("AppleTv", response.Platform);
+        Assert.Equal("Main", response.View);
     }
 
     [Fact]

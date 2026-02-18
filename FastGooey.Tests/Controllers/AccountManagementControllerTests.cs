@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using FastGooey.Controllers;
+using FastGooey.Features.Account.Management.Controllers;
 using FastGooey.Models;
 using FastGooey.Models.Media;
 using FastGooey.Services;

@@ -1,0 +1,37 @@
+@model FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv.AppleTvMainBackgroundEditorPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Background</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveBackgroundEditorPanel", "AppleTvMain", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url() })"
+      hx-target="#editorPanel">
+    @Html.AntiForgeryToken()
+    <div class="py-4 px-4">
+        <div class="formGroup formGroupAddBackground mb-4">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Configuration</p>
+            </div>
+            <div class="py-2 px-4">
+                <div class="mb-4">
+                    <label for="imageResource">Image Resource</label>
+                    <input type="text" id="imageResource" name="imageResource" value="@Model.ImageResource" />
+                    @Html.ValidationMessage("ImageResource", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-4">
+                    <label for="audioResource">Audio Resource</label>
+                    <input type="text" id="audioResource" name="audioResource" value="@Model.AudioResource" />
+                    @Html.ValidationMessage("AudioResource", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-end items-center px-6 gap-2">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+        @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+    </div>
+</form>

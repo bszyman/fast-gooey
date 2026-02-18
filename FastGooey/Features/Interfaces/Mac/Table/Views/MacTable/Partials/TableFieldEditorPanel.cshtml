@@ -1,0 +1,180 @@
+@using FastGooey.Models.UtilModels
+@using FastGooey.Models.ViewModels
+@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacInterfaceTableFieldEditorPanelViewModel
+@{
+    var fieldTypes = new List<TableFieldType>
+    {
+        new("textString", "Text String"),
+        new("longText", "Long Text"),
+        new("integer", "Integer"),
+        new("boolean", "Boolean"),
+        new("date", "Date"),
+        new("time", "Time"),
+        new("dateTime", "Date Time"),
+        new("url", "Url"),
+        new("email", "Email"),
+        new("dropdown", "Dropdown"),
+        new("phone", "Phone")
+    };
+    
+    @* <option value="decimal">Decimal</option> *@
+    @* <option value="token">Token</option> *@
+    @* <option value="file">File</option> *@
+    @* <option value="image">Image</option> *@
+    @* <option value="color">Color</option> *@
+    @* <option value="currency">Currency</option> *@
+    @* <option value="percent">Percent</option> *@
+}
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Table Field</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveTableFieldEditorPanel", "MacTable", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), fieldAlias = Model.FieldAlias })"
+      hx-target="#editorPanel">
+    <div class="py-4 px-4">
+        <div class="formGroup formGroupAddBackground mb-4">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Configuration</p>
+            </div>
+            <div class="py-4 px-4">
+                <div class="mb-4">
+                    <label asp-for="FieldName">Field Name</label>
+                    <input asp-for="FieldName" class="w-full" />
+                    @Html.ValidationMessage("FieldName", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-4">
+                    <label asp-for="FieldAlias">Field Alias</label>
+                    <input asp-for="FieldAlias" class="w-full" />
+                    @Html.ValidationMessage("FieldAlias", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-2">
+                    <label asp-for="FieldType">Field Type</label>
+                    <select asp-for="FieldType" 
+                            asp-items="@(new SelectList(fieldTypes, "Name", "Value"))"
+                            onchange="detectDropDownType(event)"
+                    >
+                    </select>
+                    @Html.ValidationMessage("FieldType", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+            </div>
+        </div>
+        
+        <div class="formGroup formGroupAddBackground mb-4 hidden" id="dropdownOptions">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Dropdown Options</p>
+            </div>
+            <div class="py-4 px-4" id="dropdownItemsContainer">
+                <div class="mb-4">
+                    <label for="option1">Option 1</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="option1" name="option1" class="w-full" />
+                        <button type="button" class="w-8" onclick="this.parentElement.parentElement.remove()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+                                <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label for="option2">Option 2</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="option2" name="option2" class="w-full" />
+                        <button type="button" class="w-8" onclick="this.parentElement.parentElement.remove()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+                                <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="py-4 px-4">
+                <button
+                    type="button"
+                    hx-get="@Url.Action("TableFieldEditorNewDropdownPanel", "MacTable", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url() })"
+                    hx-target="#dropdownItemsContainer"
+                    hx-params="none"
+                    hx-swap="beforeend"
+                    hx-on::after-request=""
+                    class="bg-blueMid text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">
+                    Add Dropdown item
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+        <div class="flex gap-2 items-center w-1/2">
+            @if (!string.IsNullOrEmpty(Model.FieldAlias))
+            {
+                @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new DeleteButtonViewModel
+                {
+                    Url = Url.Action(
+                        "DeleteFieldType",
+                        "MacTable",
+                        new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), fieldAlias = Model.FieldAlias }
+                    ),
+                    Target = "#editorPanel"
+                })
+            }
+        </div>
+        <div class="flex gap-2 items-center justify-end w-1/2 text-right">
+            @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+        </div>
+    </div>
+</form>
+
+<script>
+    (function() {
+        const fieldNameInput = document.getElementById('FieldName');
+        const fieldAliasInput = document.getElementById('FieldAlias');
+        let userEditedAlias = false;
+
+        // Function to convert to camelCase slug
+        function toCamelCaseSlug(str) {
+            if (!str) return '';
+
+            // Remove special characters and split by spaces, hyphens, underscores
+            const words = str
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-_]/g, '')
+                .split(/[\s-_]+/)
+                .filter(word => word.length > 0);
+
+            if (words.length === 0) return '';
+
+            // First word lowercase, rest capitalized
+            return words[0] + words.slice(1).map(word =>
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join('');
+        }
+
+        // Track if user manually edited the alias field
+        fieldAliasInput.addEventListener('input', function() {
+            userEditedAlias = true;
+        });
+
+        // Update alias as user types in field name
+        fieldNameInput.addEventListener('input', function() {
+            // Only auto-update if user hasn't manually edited the alias
+            if (!userEditedAlias || fieldAliasInput.value === '') {
+                fieldAliasInput.value = toCamelCaseSlug(this.value);
+                userEditedAlias = false;
+            }
+        });
+    })();
+
+    function detectDropDownType(e) {
+        const dropdownOptions = document.getElementById('dropdownOptions');
+        
+        if (e.target.value === 'dropdown') {
+            dropdownOptions.classList.remove('hidden');
+        } else {
+            dropdownOptions.classList.add('hidden');
+        }
+    }
+</script>

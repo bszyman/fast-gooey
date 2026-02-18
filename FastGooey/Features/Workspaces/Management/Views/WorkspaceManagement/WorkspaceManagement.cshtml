@@ -1,0 +1,69 @@
+@using Microsoft.AspNetCore.Identity
+@model FastGooey.Features.Workspaces.Management.Models.ViewModels.ManageWorkspaceViewModel
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var subscriptionLevel = currentUser?.SubscriptionLevel ?? SubscriptionLevel.Explorer;
+}
+
+<div class="h-full flex flex-col">
+    <div class="bg-white flex h-20 border-b border-b-zinc-300 rounded-tr-l flex-shrink-0">
+        <div class="flex-1 flex items-center">
+            <p class="p-2 mx-6 w-full font-bold">Workspace Configuration</p>
+        </div>
+    </div>
+
+    <div id="workspaceEditor" 
+         class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"> 
+        <form method="post"
+          hx-post="@Url.Action("EditWorkspace", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId })"
+          hx-trigger="blur from:#FormModel_WorkspaceName, keyup[key=='Enter'] changed delay:500ms from:#FormModel_WorkspaceName"
+          hx-target="#workspaceEditor">
+            @Html.AntiForgeryToken()
+            <div id="editor" class="mx-auto max-w-3xl mt-8">
+                <div class="formGroup formGroupAddBackground mb-8">
+                    <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                        <p class="font-semibold">Workspace Details</p>
+                    </div>
+                    <div class="py-2 px-4">
+                        <div class="mb-4">
+                            <label asp-for="FormModel.WorkspaceName"></label>
+                            <input asp-for="FormModel.WorkspaceName"
+                                   type="text"
+                                   class="w-full @(Model.FormModel.IsSaved ? "saved" : "")"/>
+                            <span asp-validation-for="FormModel.WorkspaceName" class="text-red-600 text-sm mt-1 block"></span>
+                        </div>
+                        <div class="mb-4">
+                            <p class="block text-sm font-medium text-gray-700">Service Tier</p>
+                            @if (subscriptionLevel == SubscriptionLevel.Standard)
+                            {
+                                <p>Standard</p>
+                            } else if (subscriptionLevel == SubscriptionLevel.Pro)
+                            {
+                                <p>Pro</p>
+                            } else if (subscriptionLevel == SubscriptionLevel.Agency)
+                            {
+                                <p>Agency</p>
+                            } else
+                            {
+                                <p>Explorer</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formGroup formGroupAddBackground mb-8">
+                    <div class="w-full border-b border-b-zinc-300 py-2 px-4 mb-2">
+                        <p class="font-semibold">Meta</p>
+                    </div>
+                    <div class="py-2 px-4">
+                        <div class="mb-4">
+                            <p class="block text-sm font-medium text-gray-700">Workspace Created</p>
+                            <p>@Model.Workspace.CreatedAt.InUtc().ToString("MMMM d, yyyy hh:mm tt", System.Globalization.CultureInfo.InvariantCulture)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

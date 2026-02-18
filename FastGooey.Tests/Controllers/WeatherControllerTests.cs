@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using FastGooey.Controllers.Widgets;
+using FastGooey.Features.Widgets.Weather.Controllers;
+using FastGooey.Features.Widgets.Weather.Models.FormModels;
 using FastGooey.Models;
-using FastGooey.Models.FormModels;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
@@ -67,7 +67,7 @@ public class WeatherControllerTests
         var result = await controller.WeatherSearchPanel(new WeatherWorkspaceFormModel());
 
         var partial = Assert.IsType<PartialViewResult>(result);
-        Assert.Equal("~/Views/Weather/Partials/WeatherSearchPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/WeatherSearchPanel", partial.ViewName);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"]);
     }
 

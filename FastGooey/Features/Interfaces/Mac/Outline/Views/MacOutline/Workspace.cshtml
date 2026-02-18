@@ -1,0 +1,38 @@
+@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacOutlineWorkspaceViewModel
+@{
+    ViewBag.WorkspaceId = Model.WorkspaceId();
+    ViewBag.InterfaceId = Model.InterfaceId();
+    var url = Url.Action(
+        "CreateEditorPanel",
+        "MacOutline",
+        new { workspaceId = ViewBag.WorkspaceId, interfaceId = ViewBag.InterfaceId, parentId = Model.Data.Identifier }
+    );
+}
+
+<div id="editor" class="mx-auto max-w-3xl mt-8">
+    <div class="contentGroup formGroupAddBackground">
+        <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+            <p class="font-semibold">Outline Items</p>
+        </div>
+        @if (Model.Data.Children.Any())
+        {
+            <div class="px-4 py-4">
+                <ul role="tree">
+                    @foreach (var rootItem in Model.Data.Children)
+                    {
+                        <partial name="Partials/MacOutlineTreeNode" model="rootItem" />
+                    }
+                </ul>
+            </div>
+        }
+        <div class="px-4 py-4">
+            <button type="button" 
+                    class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm" 
+                    onclick="toggleEditor()" 
+                    hx-get="@url" 
+                    hx-target="#editorPanel">
+                Add Root Item...
+            </button>
+        </div>
+    </div>
+</div>

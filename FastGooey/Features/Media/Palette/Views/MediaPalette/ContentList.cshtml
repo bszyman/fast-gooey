@@ -1,0 +1,15 @@
+@model FastGooey.Features.Media.Shared.Models.ViewModels.Media.MediaPaletteViewModel
+
+@if (Model.Sources.Count == 0)
+{
+    <div class="p-4 text-center text-zinc-500 text-sm">
+        No media sources configured yet.
+    </div>
+}
+else
+{
+    @foreach (var source in Model.Sources)
+    {
+        @await Html.PartialAsync("Partials/SourceSection", source)
+    }
+}

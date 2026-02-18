@@ -1,0 +1,70 @@
+@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacInterfaceSourceListGroupItemEditorPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Source List Item</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveItemEditorPanel", "MacSourceList", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), groupId = Model.GroupId, itemId = Model.Identifier })"
+      hx-target="#editorPanel">
+    <div class="py-4 px-4">
+        <div class="formGroup formGroupAddBackground mb-4">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Item</p>
+            </div>
+            <div class="py-4 px-4">
+                <div class="mb-4">
+                    <label asp-for="Title">Title</label>
+                    <input asp-for="Title" />
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                @await Html.PartialAsync(
+                    "~/Views/Partials/iconPickerImageWell.cshtml",
+                    viewData: new ViewDataDictionary(ViewData)
+                    {
+                        ["IconPickerInputId"] = "Icon",
+                        ["IconPickerInputName"] = "Icon",
+                        ["IconPickerLabel"] = "Icon (optional)",
+                        ["IconPickerValue"] = Model.Icon
+                    }
+                )
+                <div class="mb-4">
+                    <label for="urlLinkButton">Url (optional)</label>
+                    <input asp-for="Url" type="hidden" id="Url" />
+                    <button type="button"
+                            id="urlLinkButton"
+                            class="linkEditorTriggerButton"
+                            onclick="openLinkEditor(this)"
+                            data-link-editor-trigger="true"
+                            data-link-editor-target="Url"
+                            data-link-editor-display="urlLinkDisplay">
+                        Select link...
+                    </button>
+                    <p id="urlLinkDisplay" class="truncate text-xs text-gray-500 mt-2 ml-1">No link selected.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+        <div class="flex gap-2 items-center w-1/2">
+            @if (!Model.GroupId.Equals(Guid.Empty))
+            {
+                <button
+                    hx-delete="@Url.Action("DeleteItem", "MacSourceList", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), groupId = Model.GroupId, itemId = Model.Identifier })"
+                    hx-target="#workspaceEditor"
+                    hx-params="none"
+                    type="button"
+                    class="bg-rose-700 text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+                    Delete
+                </button>
+            }
+        </div>
+        <div class="flex gap-2 items-center justify-end w-1/2 text-right">
+            @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+        </div>
+    </div>
+</form>

@@ -1,0 +1,55 @@
+@model FastGooey.Features.Auth.SignUp.Models.ViewModels.SignUpCompleteViewModel
+@{ Layout = "PublicLayout"; }
+
+<div class="w-screen h-screen bg-blueDark font-mont">
+    <div class="p-6 flex items-center">
+        <a href="@Url.Action("Index", "Home")">
+            <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md flex-1">FastGooey</h1>
+        </a>
+    </div>
+    <div class="max-w-2xl mx-auto pt-24 text-white">
+        <h1 class="font-exo text-5xl md:text-7xl font-bold italic tracking-tighter text-shadow-md mb-6">
+            Create your passkey
+        </h1>
+
+        <p class="mb-6">
+            You're almost there. Add a passkey to secure your account and sign in without passwords.
+        </p>
+
+        <div class="border border-white shadow-md rounded-xl text-white p-6 mb-6">
+            @Html.AntiForgeryToken()
+            <label for="passkeyDisplayName" class="block mb-2">Passkey name</label>
+            <div class="flex flex-col md:flex-row gap-3">
+                <input id="passkeyDisplayName"
+                       type="text"
+                       placeholder="e.g. MacBook Pro"
+                       class="w-full flex-1" />
+                <button type="button"
+                        class="text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer bg-gradient-to-b from-nuclearGreenLighter to-nuclearGreenDarker border border-white/10 shadow-md"
+                        data-passkey-register-url="@Url.Action("BeginPasskeyRegistration", "Auth")"
+                        data-passkey-register-complete-url="@Url.Action("CompletePasskeyRegistration", "Auth")"
+                        data-passkey-display-name-id="passkeyDisplayName">
+                    Add passkey
+                </button>
+            </div>
+            <p class="text-sm text-white/70 mt-4">
+                Passkeys are stored on your device or password manager. We never see the private key.
+            </p>
+        </div>
+
+        <div class="rounded-lg border border-white/20 p-4 text-white/80">
+            <p class="text-sm">If your browser doesn't support passkeys, you can continue with magic links for now and add a passkey later.</p>
+            <form asp-action="SkipPasskey" asp-controller="SignUp" method="post" class="mt-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl"/>
+                <button type="submit" class="text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer border border-white/30">
+                    Continue with magic links
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/passkeys.js"></script>
+}

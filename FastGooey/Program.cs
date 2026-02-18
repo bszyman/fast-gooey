@@ -1,5 +1,6 @@
 using FastGooey.Composers;
 using FastGooey.Database;
+using FastGooey.Features.Shared.Razor;
 using FastGooey.Models;
 using FastGooey.Models.Configuration;
 using FastGooey.Services;
@@ -15,6 +16,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationExpanders.Add(new FeatureViewLocationExpander());
+    })
 #if DEBUG
     .AddRazorRuntimeCompilation()
 #endif

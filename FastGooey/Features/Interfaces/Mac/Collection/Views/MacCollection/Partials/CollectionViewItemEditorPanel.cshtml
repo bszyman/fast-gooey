@@ -1,0 +1,80 @@
+@using FastGooey.Models.ViewModels
+@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacInterfaceCollectionEditorPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Collection Item</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("CollectionViewItemEditorPanelWithItem", "MacCollection", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), itemId = Model.Item!.Identifier })"
+      hx-target="#editorPanel">
+    @Html.AntiForgeryToken()
+    <div class="py-4 px-4 text-sm">
+        <div class="formGroup formGroupAddBackground mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Item</p>
+            </div>
+            <div class="py-4 px-4">
+                <div class="mb-4">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" value="@Model.Item!.Title" />
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-4">
+                    <label for="imageUrlButton">Image</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="hidden" id="imageUrl" name="imageUrl" value="@Model.Item!.ImageUrl" />
+                        <button type="button"
+                                id="imageUrlButton"
+                                class="linkEditorTriggerButton"
+                                onclick="openMediaPicker(this)"
+                                data-media-picker-trigger="true"
+                                data-media-picker-target="imageUrl"
+                                data-media-picker-display="imageUrlDisplay">
+                            Select media...
+                        </button>
+                    </div>
+                    <p id="imageUrlDisplay" class="truncate text-xs text-gray-500 ml-1">No media selected.</p>
+                </div>
+                <div>
+                    <label for="urlLinkButton">Url</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="hidden" id="url" name="url" value="@Model.Item!.Url" />
+                        <button type="button"
+                                id="urlLinkButton"
+                                class="linkEditorTriggerButton"
+                                onclick="openLinkEditor(this)"
+                                data-link-editor-trigger="true"
+                                data-link-editor-target="url"
+                                data-link-editor-display="urlLinkDisplay">
+                            Select link...
+                        </button>
+                    </div>
+                    <p id="urlLinkDisplay" class="truncate text-xs text-gray-500 ml-1">No link selected.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+        <div class="flex items-center w-1/2">
+            @if (!Model.Item!.Identifier.Equals(Guid.Empty))
+            {
+                @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new DeleteButtonViewModel
+                {
+                    Url = Url.Action(
+                        "DeleteItem",
+                        "MacCollection",
+                        new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), itemId = Model.Item.Identifier }
+                    )
+                })
+            }
+        </div>
+        <div class="flex items-center justify-end w-1/2 text-right gap-2">
+            @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+        </div>
+    </div>
+</form>

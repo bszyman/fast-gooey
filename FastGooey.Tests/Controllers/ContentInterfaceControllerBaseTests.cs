@@ -1,9 +1,8 @@
 using System.Text.Json;
-using FastGooey.Controllers.Interfaces;
 using FastGooey.Database;
+using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Models.Common;
-using FastGooey.Models.JsonDataModels;
 using FastGooey.Tests.Support;
 using FastGooey.Services;
 using Microsoft.AspNetCore.Http;
@@ -41,7 +40,7 @@ public class ContentInterfaceControllerBaseTests
     {
         protected override string Platform => "TestPlatform";
         protected override string ViewType => "TestView";
-        protected override string BaseViewPath => "~/Views/Test";
+        // protected override string BaseViewPath => "~/Views/Test";
 
         public async Task<IActionResult> SaveItem(Guid interfaceId, Guid? itemId, string value)
         {

@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using FastGooey.Controllers.Interfaces;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+using FastGooey.Features.Interfaces.Mac.Table.Controllers;
 using FastGooey.Models;
-using FastGooey.Models.FormModels;
-using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
@@ -50,7 +50,7 @@ public class MacTableControllerTests
         var result = await controller.SaveTableFieldEditorPanel(gooeyInterface.DocId.ToString(), null, new MacTableFieldConfigPanelFormModel());
 
         var partial = Assert.IsType<PartialViewResult>(result);
-        Assert.Equal("~/Views/MacTable/Partials/TableFieldEditorPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/TableFieldEditorPanel", partial.ViewName);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
     }
 

@@ -1,0 +1,55 @@
+@model FastGooey.Features.Interfaces.AppleMobile.Shared.Models.ViewModels.AppleMobileInterface.AppleMobileTextConfigurationPanelViewModel
+
+@{
+    var url = Model.Content.Identifier.Equals(Guid.Empty)
+        ? Url.Action("SaveText", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
+        : Url.Action("SaveText", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier });
+}
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Text</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@url"
+      hx-target="#workspaceEditor">
+    @Html.AntiForgeryToken()
+    <div class="py-4 px-4">
+        <div class="formGroup formGroupAddBackground mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Edit Content</p>
+            </div>
+            <div class="py-4 px-4">
+                <div>
+                    <label for="text">Text</label>
+                    <div class="flex gap-2">
+                        <textarea id="text" name="Text" rows="8">@Model.Content.Text</textarea>
+                    </div>
+                    @Html.ValidationMessage("Text", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+        <div class="flex items-center w-1/2">
+            @if (!Model.Content.Identifier.Equals(Guid.Empty))
+            {
+                @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new FastGooey.Models.ViewModels.DeleteButtonViewModel
+                {
+                    Url = Url.Action(
+                        "DeleteItem",
+                        "AppleMobileContent",
+                        new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier }
+                    )
+                })
+            }
+        </div>
+        <div class="flex items-center justify-end w-1/2 text-right gap-2">
+            @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+        </div>
+    </div>
+</form>

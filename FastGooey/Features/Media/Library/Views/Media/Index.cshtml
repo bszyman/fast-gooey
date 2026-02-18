@@ -1,0 +1,33 @@
+@model FastGooey.Features.Media.Shared.Models.ViewModels.Media.MediaIndexViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Media";
+}
+
+<partial name="~/Views/NavigationBar/MetalNavBar.cshtml" model="@Model.NavBarViewModel" />
+
+<div class="flex-1 min-h-0 px-2 pb-2">
+    <div class="relative w-full h-full shadow grid grid-cols-5 grid-rows-1 max-h-full">
+        <div
+            hx-get="@Url.Action("SourceList", "Media", new { workspaceId = Model.Workspace.PublicId })"
+            hx-trigger="load, refreshMediaSources from:body"
+            id="interfacesPanel"
+            class="relative bg-indigo-100 border-r border-r-blue-400/50 col-span-1 rounded-l-lg overflow-y-auto overflow-x-clip min-h-0">
+            Loading media sources...
+        </div>
+        <div id="workspace" class="bg-stone-200 col-span-4 rounded-r-lg min-h-0 overflow-hidden">
+            <div class="h-full flex flex-col">
+                <div class="bg-white flex h-20 border-b border-b-zinc-300 rounded-tr-l flex-shrink-0">
+                    <div class="flex-1 flex items-center">
+                        <p class="p-2 mx-6 w-full font-bold">Media</p>
+                    </div>
+                </div>
+                <div id="workspaceEditor" class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+                    <div class="flex justify-center items-center h-full w-full text-sm text-zinc-600">
+                        Select a source or folder to get started.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

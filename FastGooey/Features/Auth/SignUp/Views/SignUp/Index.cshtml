@@ -1,0 +1,78 @@
+@model FastGooey.Features.Auth.SignUp.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Sign-Up";
+    Layout = "PublicLayout";
+}
+
+<div class="w-screen h-screen bg-blueDark font-mont">
+    <div class="p-6 flex items-center">
+        <a href="@Url.Action("Index", "Home")">
+            <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md flex-1">FastGooey</h1>
+        </a>
+    </div>
+    <div class="max-w-2xl mx-auto pt-24">
+        <h1 class="text-white font-exo text-5xl md:text-7xl font-bold italic tracking-tighter text-shadow-md mb-6">
+            Sign-Up
+        </h1>
+        
+        <p class="text-white mb-6">
+            Creating an account is free. You'll automatically be given access to FastGooey and the ability
+            to create a single free content node to get introduced to the system. Ready for production use.
+        </p>
+        
+        <form asp-action="Index" asp-controller="SignUp" method="post">
+            <div class="border border-white shadow-md rounded-xl text-white p-4 mb-6">
+                <div class="formGroup formGroupNoBackground">
+                    <div class="mb-4">
+                        <label asp-for="FirstName">First Name</label>
+                        <input asp-for="FirstName" type="text" class="w-full"/>
+                        <span asp-validation-for="FirstName" class="text-red-600 text-sm"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="LastName">Last Name</label>
+                        <input asp-for="LastName" type="text" class="w-full"/>
+                        <span asp-validation-for="LastName" class="text-red-600 text-sm"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="Email">Email Address</label>
+                        <input asp-for="Email" type="email" class="w-full"/>
+                        <span asp-validation-for="Email" class="text-red-600 text-sm"></span>
+                    </div>
+                    <div class="mb-4 text-sm text-white/80">
+                        After you create your account, you'll add a passkey to sign in securely without passwords.
+                    </div>
+                </div>
+                
+                <partial name="~/Views/Partials/cloudflareTurnstileFormEmbed.cshtml" />
+                
+                <button type="submit" class="text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer bg-gradient-to-b from-nuclearGreenLighter to-nuclearGreenDarker border border-white/10 shadow-md">
+                    Register
+                </button>
+            </div>
+        </form>
+        
+        <div class="mx-auto w-2xl bg-stone-100/35 border border-stone-100/40 text-white p-4 rounded-lg shadow-md bg-blend-color-dodge">
+            <h2 class="font-mont font-semibold text-md mb-2">Already have an account?</h2>
+            <p class="text-sm">
+                Click here to return to login.
+                <a href="@Url.Action("Index", "Home")">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 inline-block align-middle">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="rounded-2xl fixed bottom-0 m-6 p-6 bg-rose-400 shadow max-w-lg">
+        <h3 class="mb-2 font-semibold">We ran into the following errors while attempting to create your account:</h3>
+        <div asp-validation-summary="ModelOnly"></div>
+    </div>
+}
+
+@* @section Scripts { *@
+@*     <partial name="_ValidationScriptsPartial" /> *@
+@* } *@

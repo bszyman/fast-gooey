@@ -1,13 +1,11 @@
 using System.Text.Json;
-using FastGooey.Controllers.Interfaces;
 using FastGooey.Database;
+using FastGooey.Features.Interfaces.Shared.Controllers;
+using FastGooey.Features.Workspaces.Home.Models.ViewModels;
 using FastGooey.Models;
-using FastGooey.Models.ViewModels;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
-using Microsoft.EntityFrameworkCore;
 using NodaTime;
-using Xunit;
 
 namespace FastGooey.Tests.Controllers;
 

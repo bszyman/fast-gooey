@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using FastGooey.Controllers.Widgets;
-using FastGooey.Models;
-using FastGooey.Models.FormModels;
-using FastGooey.Models.ViewModels.Map;
+using FastGooey.Features.Widgets.Map.Controllers;
+using FastGooey.Features.Widgets.Map.Models.FormModels;
+using FastGooey.Features.Widgets.Map.Models.ViewModels.Map;
+using FastGooey.Features.Widgets.Weather.Controllers;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +39,7 @@ public class MapControllerTests
         var result = controller.AddLocationEntry(new MapAddLocationEntryFormModel());
 
         var partial = Assert.IsType<PartialViewResult>(result);
-        Assert.Equal("~/Views/Map/Partials/SearchPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/SearchPanel", partial.ViewName);
         Assert.IsType<MapSearchPanelViewModel>(partial.Model);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
     }

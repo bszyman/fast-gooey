@@ -1,4 +1,4 @@
-using FastGooey.Models.JsonDataModels;
+using FastGooey.Features.Widgets.Weather.Models.JsonDataModels;
 
 namespace FastGooey.HypermediaResponses;
 

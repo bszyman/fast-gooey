@@ -1,4 +1,4 @@
-using FastGooey.Models.JsonDataModels;
+using FastGooey.Features.Widgets.Clock.Models.JsonDataModels;
 using FastGooey.Models.UtilModels;
 
 namespace FastGooey.HypermediaResponses;

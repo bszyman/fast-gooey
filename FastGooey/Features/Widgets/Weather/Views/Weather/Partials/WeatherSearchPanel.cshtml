@@ -1,0 +1,59 @@
+@model FastGooey.Features.Widgets.Weather.Models.ViewModels.Weather.WeatherSearchPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Search Results</p>
+    </div>
+</div>
+
+<div id="searchResults" class="py-4 px-4">
+    @Html.ValidationMessage("Location", "", new { @class = "text-red-600 text-sm mt-1 block" })
+    @if (Model.Results?.Results is not null)
+    {
+        @foreach (var location in Model.Results.Results)
+        {
+            <div
+                data-name="@location.Name"
+                data-lat="@location.Coordinate.Latitude"
+                data-lng="@location.Coordinate.Longitude"
+                data-coords="@location.Coordinate.CoordinateDisplay()"
+                data-identifier="@location.Id"
+                onclick="selectLocation(this)"
+                class="bg-white cursor-pointer rounded-xl shadow py-2 px-4 mb-4 border-3 border-white hover:underline hover:border-blueMid">
+                <p class="font-medium mb-1">@location.Name</p>
+                <p class="text-xs font-semibold uppercase text-grayMid mb-1">@location.Coordinate.CoordinateDisplay()</p>
+            </div>
+        }
+    }
+</div>
+    
+<div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+    <div class="flex items-center w-1/2"></div>
+    <div class="flex items-center justify-end w-1/2 text-right">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+    </div>
+</div>
+
+<script>
+    function selectLocation(sender) {
+        const locationTextField = document.getElementById("location");
+        const latitudeTextField = document.getElementById("latitude");
+        const longitudeTextField = document.getElementById("longitude");
+        const coordinatesTextField = document.getElementById("coordinates");
+        const descriptiveCoordinates = document.getElementById("descriptiveCoords");
+
+        locationTextField.value = sender.dataset.name;
+        latitudeTextField.value = sender.dataset.lat;
+        longitudeTextField.value = sender.dataset.lng;
+        coordinatesTextField.value = sender.dataset.coords;
+        descriptiveCoordinates.innerText = sender.dataset.coords;
+
+        updateMapWithLocation(
+            parseFloat(sender.dataset.lat),
+            parseFloat(sender.dataset.lng),
+            sender.dataset.name
+        );
+        
+        toggleEditor();
+    }
+</script>

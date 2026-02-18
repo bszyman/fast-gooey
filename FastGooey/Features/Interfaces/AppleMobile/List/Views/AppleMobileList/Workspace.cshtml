@@ -1,0 +1,43 @@
+@model FastGooey.Features.Interfaces.AppleMobile.Shared.Models.ViewModels.AppleMobileInterface.AppleMobileInterfaceListWorkspaceViewModel
+
+<div id="editor" class="mx-auto max-w-4xl mt-8">
+    <div
+        hx-get="@Url.Action("ListWorkspace", "AppleMobileList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+        hx-trigger="refreshWorkspace from:body">
+        <div class="mx-6 mb-2 xl:mx-auto text-right">
+            <button
+                hx-get="@Url.Action("ListItemEditorPanel", "AppleMobileList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                hx-target="#editorPanel"
+                type="button"
+                onclick="toggleEditor()" 
+                class="bg-blueMid text-white font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+                Add New Item...
+            </button>
+        </div>
+        
+        <div id="list" class="mx-6 xl:mx-auto max-w-5xl">
+            <div class="contentGroup formGroupAddBackground mb-8">
+                <div class="flex gap-2 border-b border-b-zinc-300 py-2 px-4">
+                    <p class="font-semibold flex-1">Title</p>
+                    <p class="font-semibold w-90">Url</p>
+                </div>
+                @foreach (var item in Model.Data.Items)
+                {
+                    <div class="flex gap-2 border-b border-b-zinc-300 py-2 px-4">
+                        <div class="flex-1">
+                            <button
+                                type="button"
+                                hx-get="@Url.Action("ListItemEditorPanel", "AppleMobileList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = item.Identifier })"
+                                hx-target="#editorPanel"
+                                onclick="toggleEditor()"
+                                class="hover:bg-zinc-200 text-zinc-700 font-semibold rounded px-4 py-2 cursor-pointer text-sm">
+                                @item.Title
+                            </button>
+                        </div>
+                        <input type="url" value="@item.Url" disabled="disabled" class="w-90"/>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

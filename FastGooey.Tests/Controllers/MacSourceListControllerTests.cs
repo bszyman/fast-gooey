@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using FastGooey.Controllers.Interfaces;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+using FastGooey.Features.Interfaces.Mac.SourceList.Controllers;
 using FastGooey.Models;
-using FastGooey.Models.FormModels;
-using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
@@ -57,7 +57,7 @@ public class MacSourceListControllerTests
             new MacSourceListGroupPanelFormModel());
 
         var partial = Assert.IsType<PartialViewResult>(result);
-        Assert.Equal("~/Views/MacSourceList/Partials/SourceListEditorPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/SourceListEditorPanel", partial.ViewName);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
     }
     
@@ -110,7 +110,7 @@ public class MacSourceListControllerTests
         var result = await controller.SaveItemEditorPanel(interfaceId.ToString(), groupId, null, new MacSourceListGroupItemPanelFormModel());
 
         var partial = Assert.IsType<PartialViewResult>(result);
-        Assert.Equal("~/Views/MacSourceList/Partials/SourceListItemEditorPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/SourceListItemEditorPanel", partial.ViewName);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
     }
 

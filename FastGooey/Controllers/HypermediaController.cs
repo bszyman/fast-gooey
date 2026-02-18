@@ -4,10 +4,16 @@ using System.Globalization;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using FastGooey.Database;
+using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
+using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+using FastGooey.Features.Widgets.Clock.Models.JsonDataModels;
+using FastGooey.Features.Widgets.Map.Models.JsonDataModels;
+using FastGooey.Features.Widgets.RssFeed.Models.JsonDataModels;
+using FastGooey.Features.Widgets.Weather.Models.JsonDataModels;
 using FastGooey.HypermediaResponses;
 using FastGooey.Models;
 using FastGooey.Models.JsonDataModels;
-using FastGooey.Models.JsonDataModels.Mac;
 using FastGooey.Services;
 using FastGooey.Utils;
 using Flurl;
@@ -154,9 +160,37 @@ public class HypermediaController(
     {
         switch (gooeyInterface.ViewType)
         {
+            case "Main":
+                return GenerateAppleTvMain(gooeyInterface);
             default:
                 return NotSupported();
         }
+    }
+
+    private AppleTvMainHypermediaResponse GenerateAppleTvMain(GooeyInterface gooeyInterface)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        var config = gooeyInterface.Config.Deserialize<MainJsonDataModel>(options) ?? new MainJsonDataModel();
+        var menuBarButtons = config.MenuBarButtons
+            .Select(x => new NavigationButtonJsonDataModel
+            {
+                Text = x.Text,
+                Link = UnfurlFastGooeyLink(x.Link, gooeyInterface.Workspace.PublicId)
+            }).ToList();
+
+        return new AppleTvMainHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            BackgroundSplash = new BackgroundSplash
+            {
+                ImageResource = UnfurlFastGooeyLink(config.BackgroundSplash.ImageResource, gooeyInterface.Workspace.PublicId),
+                AudioResource = UnfurlFastGooeyLink(config.BackgroundSplash.AudioResource, gooeyInterface.Workspace.PublicId)
+            },
+            MenuBarButtons = menuBarButtons
+        };
     }
 
     private NotSupported NotSupported()

@@ -1,4 +1,4 @@
-using FastGooey.Models.JsonDataModels.Mac;
+using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
 
 namespace FastGooey.HypermediaResponses;
 

@@ -1,0 +1,77 @@
+@using FastGooey.Models.ViewModels
+@model FastGooey.Features.Interfaces.AppleMobile.Shared.Models.ViewModels.AppleMobileInterface.AppleMobileInterfaceListEditorViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit List Item</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("ListItemEditorPanelWithItem", "AppleMobileList", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), itemId = Model.Item.Identifier })"
+      hx-target="#editorPanel">
+    @Html.AntiForgeryToken()
+    <div class="py-4 px-4">
+        <div class="formGroup formGroupAddBackground mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Edit Content</p>
+            </div>
+            <div class="py-4 px-4">
+                <div class="mb-3">
+                    <label for="title">Title</label>
+                    <div class="flex gap-2">
+                        <input 
+                            type="text" 
+                            id="title" 
+                            name="title" 
+                            value="@Model.Item.Title"
+                        />
+                    </div>
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-3">
+                    <label for="subtitle">Subtitle</label>
+                    <div class="flex gap-2">
+                        <textarea name="subtitle" id="subtitle" cols="30" rows="10">@Model.Item.Subtitle</textarea>
+                    </div>
+                </div>
+                <div>
+                    <label for="urlLinkButton">Url</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="hidden" id="url" name="url" value="@Model.Item.Url" />
+                        <button type="button"
+                                id="urlLinkButton"
+                                class="linkEditorTriggerButton"
+                                onclick="openLinkEditor(this)"
+                                data-link-editor-trigger="true"
+                                data-link-editor-target="url"
+                                data-link-editor-display="urlLinkDisplay">
+                            Select link...
+                        </button>
+                    </div>
+                    <p id="urlLinkDisplay" class="truncate text-xs text-gray-500 ml-1">No link selected.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-between items-center px-6">
+        <div class="flex items-center w-1/2">
+            @if (!Model.Item.Identifier.Equals(Guid.Empty))
+            {
+                @await Html.PartialAsync("~/Views/Partials/DeleteButton.cshtml", new DeleteButtonViewModel
+                {
+                    Url = Url.Action(
+                        "DeleteItem",
+                        "AppleMobileList",
+                        new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), itemId = Model.Item.Identifier }
+                    )
+                })
+            }
+        </div>
+        <div class="flex items-center justify-end w-1/2 text-right gap-2">
+            @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+            @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+        </div>
+    </div>
+</form>

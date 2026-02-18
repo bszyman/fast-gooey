@@ -1,5 +1,3 @@
-using FastGooey.Controllers.Interfaces;
-using FastGooey.Models.FormModels;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using NodaTime;
 using System.ComponentModel.DataAnnotations;
+using FastGooey.Features.Interfaces.AppleMobile.Content.Controllers;
+using FastGooey.Features.Interfaces.AppleMobile.Shared.Models.FormModels;
 
 namespace FastGooey.Tests.Controllers;
 
@@ -35,7 +35,7 @@ public class AppleMobileContentControllerTests
         var result = await controller.SaveHeadline(Guid.NewGuid(), Guid.NewGuid().ToString(), null, new HeadlineContentFormModel());
 
         var partial = Assert.IsType<PartialViewResult>(result);
-        Assert.Equal("~/Views/AppleMobileContent/Partials/ContentHeadlineConfigurationPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/ContentHeadlineConfigurationPanel", partial.ViewName);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"]);
     }
 
@@ -70,7 +70,7 @@ public class AppleMobileContentControllerTests
         var result = await controller.SaveText(Guid.NewGuid(), Guid.NewGuid().ToString(), null, new TextContentFormModel());
 
         var partial = Assert.IsType<PartialViewResult>(result);
-        Assert.Equal("~/Views/AppleMobileContent/Partials/ContentTextConfigurationPanel.cshtml", partial.ViewName);
+        Assert.Equal("Partials/ContentTextConfigurationPanel", partial.ViewName);
         Assert.Equal("#editorPanel", controller.Response.Headers["HX-Retarget"].ToString());
     }
 }
