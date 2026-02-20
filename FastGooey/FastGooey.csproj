@@ -87,5 +87,8 @@
       <Content Update="Features\Widgets\Shell\Views\Widgets\Partials\InterfaceCreatorPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
+      <Content Update="Features\Interfaces\AppleTv\List\Views\AppleTvList\ListContents.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
     </ItemGroup>
 </Project>

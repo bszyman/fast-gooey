@@ -1,0 +1,89 @@
+@model FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv.AppleTvListBannerEditorPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Banner</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveBannerEditorPanel", "AppleTvList", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url() })"
+      hx-target="#editorPanel">
+    @Html.AntiForgeryToken()
+
+    <div class="py-4 px-4">
+        <div class="formGroup formGroupAddBackground mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Banner Properties</p>
+            </div>
+            <div class="py-4 px-4">
+                <div class="mb-3">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" value="@Model.Title" />
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-3">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4">@Model.Description</textarea>
+                    @Html.ValidationMessage("Description", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                @* <div class="mb-3"> *@
+                @*     <label for="button">Button</label> *@
+                @*     <input type="text" id="button" name="button" value="@Model.Button" /> *@
+                @* </div> *@
+                @* <div class="mb-3"> *@
+                @*     <label for="background">Background</label> *@
+                @*     <input type="hidden" id="background" name="background" value="@Model.Background" /> *@
+                @*     <button type="button" *@
+                @*             class="linkEditorTriggerButton" *@
+                @*             onclick="openMediaPicker(this)" *@
+                @*             data-media-picker-trigger="true" *@
+                @*             data-media-picker-target="background" *@
+                @*             data-media-picker-display="backgroundDisplay"> *@
+                @*         Select media... *@
+                @*     </button> *@
+                @*     <p id="backgroundDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">No media selected.</p> *@
+                @* </div> *@
+                @* <div class="mb-3"> *@
+                @*     <label for="heroImg">Hero Image</label> *@
+                @*     <input type="hidden" id="heroImg" name="heroImg" value="@Model.HeroImg" /> *@
+                @*     <button type="button" *@
+                @*             class="linkEditorTriggerButton" *@
+                @*             onclick="openMediaPicker(this)" *@
+                @*             data-media-picker-trigger="true" *@
+                @*             data-media-picker-target="heroImg" *@
+                @*             data-media-picker-display="heroImgDisplay"> *@
+                @*         Select media... *@
+                @*     </button> *@
+                @*     <p id="heroImgDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">No media selected.</p> *@
+                @* </div> *@
+                @* <div class="mb-3"> *@
+                @*     <label for="img">Image</label> *@
+                @*     <input type="hidden" id="img" name="img" value="@Model.Img" /> *@
+                @*     <button type="button" *@
+                @*             class="linkEditorTriggerButton" *@
+                @*             onclick="openMediaPicker(this)" *@
+                @*             data-media-picker-trigger="true" *@
+                @*             data-media-picker-target="img" *@
+                @*             data-media-picker-display="imgDisplay"> *@
+                @*         Select media... *@
+                @*     </button> *@
+                @*     <p id="imgDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">No media selected.</p> *@
+                @* </div> *@
+                @* <div class="mb-3"> *@
+                @*     <label for="row">Row</label> *@
+                @*     <input type="text" id="row" name="row" value="@Model.Row" /> *@
+                @* </div> *@
+                @* <div> *@
+                @*     <label for="stack">Stack</label> *@
+                @*     <input type="text" id="stack" name="stack" value="@Model.Stack" /> *@
+                @* </div> *@
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-end items-center px-6 gap-2">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+        @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+    </div>
+</form>

@@ -162,6 +162,8 @@ public class HypermediaController(
         {
             case "Main":
                 return GenerateAppleTvMain(gooeyInterface);
+            case "List":
+                return GenerateAppleTvList(gooeyInterface);
             default:
                 return NotSupported();
         }
@@ -190,6 +192,27 @@ public class HypermediaController(
                 AudioResource = UnfurlFastGooeyLink(config.BackgroundSplash.AudioResource, gooeyInterface.Workspace.PublicId)
             },
             MenuBarButtons = menuBarButtons
+        };
+    }
+
+    private AppleTvListHypermediaResponse GenerateAppleTvList(GooeyInterface gooeyInterface)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var config = gooeyInterface.Config.Deserialize<ListJsonDataModel>(options) ?? new ListJsonDataModel();
+        var configNode = JsonSerializer.SerializeToNode(config);
+        var unfurledConfig = UnfurlFastGooeyLinksAndReturn(configNode, gooeyInterface.Workspace.PublicId)?
+            .Deserialize<ListJsonDataModel>(options) ?? new ListJsonDataModel();
+
+        return new AppleTvListHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Banner = unfurledConfig.Banner,
+            Header = unfurledConfig.Header,
+            ListItems = unfurledConfig.ListItems
         };
     }
 

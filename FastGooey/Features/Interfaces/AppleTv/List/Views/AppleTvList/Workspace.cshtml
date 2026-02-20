@@ -1,3 +1,53 @@
-<div class="h-full w-full flex items-center justify-center text-zinc-500 text-sm">
-    Apple TV List workspace is not implemented yet.
+@model FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv.AppleTvListWorkspaceViewModel
+
+<div id="editor" class="h-full w-full flex items-center justify-center py-8 px-4">
+    <div class="w-full max-w-5xl">
+        <div id="interactiveEditor" class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900">
+            <div class="grid grid-cols-2 grid-rows-[1fr_3fr] h-full">
+                <button type="button"
+                        hx-get="@Url.Action("BannerEditorPanel", "AppleTvList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                        hx-target="#editorPanel"
+                        onclick="toggleEditor()"
+                        class="col-span-2 border-b border-zinc-500/70 bg-zinc-700/50 hover:bg-zinc-700/70 transition cursor-pointer text-zinc-100 px-5 py-4 text-center">
+                    <p class="text-xs uppercase tracking-wide text-zinc-300">Banner</p>
+                    @if (string.IsNullOrWhiteSpace(Model.Data.Banner.Title))
+                    {
+                        <p class="text-sm mt-1 text-zinc-200">Click to edit banner</p>
+                    }
+                    else
+                    {
+                        <p class="text-sm mt-1 text-zinc-100 font-semibold truncate">@Model.Data.Banner.Title</p>
+                    }
+                </button>
+
+                
+                <div class="border-r border-zinc-500/70 bg-zinc-800/70 p-5 flex items-center justify-center">
+                    <div class="text-center">
+                        <p class="text-xs uppercase tracking-wide text-zinc-400">Related Content</p>
+                        <p class="text-sm text-zinc-200 mt-1">Related Content</p>
+                    </div>
+                </div>
+
+                <button type="button"
+                        hx-get="@Url.Action("ListEditorPanel", "AppleTvList", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                        hx-target="#editorPanel"
+                        onclick="toggleEditor()"
+                        class="bg-zinc-800/30 hover:bg-zinc-800/50 transition cursor-pointer text-zinc-100 p-5 text-center">
+                    <p class="text-xs uppercase tracking-wide text-zinc-400">List Header</p>
+                    @if (string.IsNullOrWhiteSpace(Model.Data.Header.Title))
+                    {
+                        <p class="text-sm mt-1 text-zinc-200">Click to edit list header</p>
+                    }
+                    else
+                    {
+                        <p class="text-sm mt-1 text-zinc-100 font-semibold truncate">@Model.Data.Header.Title</p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Data.Header.Description))
+                    {
+                        <p class="text-xs mt-2 text-zinc-300 line-clamp-2">@Model.Data.Header.Description</p>
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

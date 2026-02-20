@@ -2,7 +2,7 @@
 
 <div id="editor" class="h-full w-full flex items-center justify-center py-8 px-4">
     <div class="w-full max-w-5xl">
-        <div class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900">
+        <div id="interactiveEditor" class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900">
             <button type="button"
                     hx-get="@Url.Action("BackgroundEditorPanel", "AppleTvMain", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
                     hx-target="#editorPanel"

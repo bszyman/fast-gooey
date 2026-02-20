@@ -50,7 +50,11 @@ public class LinkEditorController(
             MacNodes = nodes!
                 .Where(x => x.Platform.Equals("Mac"))
                 .OrderBy(x => x.Name)
-                .ToList()
+                .ToList(),
+            AppleTvNodes = nodes!
+            .Where(x => x.Platform.Equals("AppleTv"))
+            .OrderBy(x => x.Name)
+            .ToList()
         };
 
         return PartialView("ContentList", viewModel);
