@@ -1,3 +1,69 @@
-<div class="h-full w-full flex items-center justify-center text-zinc-500 text-sm">
-    Apple TV Descriptive Alert workspace is not implemented yet.
-</div>
+@model FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models.DescriptiveAlertWorkspaceViewModel
+
+<form method="post"
+      hx-post="@Url.Action("SaveWorkspace", "AppleTvDescriptiveAlert", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+      hx-trigger="blur from:#descriptiveAlertTitle, keyup[key=='Enter'] changed delay:500ms from:#descriptiveAlertTitle, blur from:#descriptiveAlertCancelButtonText, keyup[key=='Enter'] changed delay:500ms from:#descriptiveAlertCancelButtonText, blur from:#descriptiveAlertConfirmButtonText, keyup[key=='Enter'] changed delay:500ms from:#descriptiveAlertConfirmButtonText"
+      hx-target="#workspaceEditor"
+      onsubmit="return false;">
+    @Html.AntiForgeryToken()
+
+    <div id="editor" class="h-full w-full flex items-center justify-center py-8 px-4">
+        <div class="w-full max-w-5xl">
+            <div id="interactiveEditor" class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900 flex flex-col gap-4 p-6">
+                <div>
+                    <label for="descriptiveAlertTitle" class="text-xs uppercase tracking-wide text-zinc-400 block mb-2">Title</label>
+                    <input type="text"
+                           id="descriptiveAlertTitle"
+                           name="Title"
+                           value="@Model.Data.Title"
+                           placeholder="Click to edit title..."
+                           class="w-full rounded-md border border-zinc-500 bg-zinc-800 text-zinc-100 px-3 py-2" />
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-400 text-sm mt-1 block" })
+                </div>
+
+                <button type="button"
+                        hx-get="@Url.Action("DescriptiveContentPanel", "AppleTvDescriptiveAlert", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                        hx-target="#editorPanel"
+                        onclick="toggleEditor()"
+                        class="w-full flex-1 min-h-40 border border-zinc-500/70 bg-zinc-800/70 hover:bg-zinc-800/90 transition cursor-pointer text-zinc-100 px-5 py-4 text-left rounded-md">
+                    <div>
+                        <p class="text-xs uppercase tracking-wide text-zinc-400">Descriptive Content</p>
+                        @if (Model.Data.DescriptiveContent.Count == 0)
+                        {
+                            <p class="text-sm mt-2 text-zinc-200">Click to edit descriptive content...</p>
+                        }
+                        else
+                        {
+                            <p class="text-sm mt-2 text-zinc-100 font-semibold">@Model.Data.DescriptiveContent.Count content node(s)</p>
+                            <p class="text-xs mt-2 text-zinc-300 line-clamp-2">@Model.Data.DescriptiveContent[0].Content</p>
+                        }
+                    </div>
+                </button>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="descriptiveAlertCancelButtonText" class="text-xs uppercase tracking-wide text-zinc-400 block mb-2">Cancel Button Text</label>
+                        <input type="text"
+                               id="descriptiveAlertCancelButtonText"
+                               name="CancelButtonText"
+                               value="@Model.Data.CancelButtonText"
+                               placeholder="Click to edit cancel button text..."
+                               class="w-full rounded-md border border-zinc-500 bg-zinc-800 text-zinc-100 px-3 py-2" />
+                        @Html.ValidationMessage("CancelButtonText", "", new { @class = "text-red-400 text-sm mt-1 block" })
+                    </div>
+
+                    <div>
+                        <label for="descriptiveAlertConfirmButtonText" class="text-xs uppercase tracking-wide text-zinc-400 block mb-2">Confirm Button Text</label>
+                        <input type="text"
+                               id="descriptiveAlertConfirmButtonText"
+                               name="ConfirmButtonText"
+                               value="@Model.Data.ConfirmButtonText"
+                               placeholder="Click to edit confirm button text..."
+                               class="w-full rounded-md border border-zinc-500 bg-zinc-800 text-zinc-100 px-3 py-2" />
+                        @Html.ValidationMessage("ConfirmButtonText", "", new { @class = "text-red-400 text-sm mt-1 block" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,141 @@
+@using FastGooey.Utils
+@model FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models.DescriptiveAlertDescriptiveContentViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Descriptive Content</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveDescriptiveContentPanel", "AppleTvDescriptiveAlert", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url() })"
+      hx-target="#editorPanel">
+    @Html.AntiForgeryToken()
+
+    <div class="py-4 px-4 pb-24">
+        <div class="formGroup formGroupAddBackground mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Nodes</p>
+            </div>
+
+            <div class="py-4 px-4">
+                @Html.ValidationSummary(false, "", new { @class = "text-red-600 text-sm mb-4" })
+
+                <div id="descriptiveContentRows" class="space-y-3">
+                    @for (var i = 0; i < Model.DescriptiveContent.Count; i++)
+                    {
+                        <div class="border border-zinc-300 rounded p-3" data-node-row="true">
+                            <div class="mb-3">
+                                <label for="descriptiveContentType_@i">Type</label>
+                                <select id="descriptiveContentType_@i" name="DescriptiveContent[@i].Type" class="w-full">
+                                    <option value="">Select type...</option>
+                                    <option value="Headline" selected="@(Model.DescriptiveContent[i].Type == "Headline")">Headline</option>
+                                    <option value="BodyCopy" selected="@(Model.DescriptiveContent[i].Type == "BodyCopy")">BodyCopy</option>
+                                </select>
+                                @Html.ValidationMessage($"DescriptiveContent[{i}].Type", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                            </div>
+                            <div class="mb-3">
+                                <label for="descriptiveContentBody_@i">Content</label>
+                                <textarea id="descriptiveContentBody_@i" name="DescriptiveContent[@i].Content" rows="3">@Model.DescriptiveContent[i].Content</textarea>
+                                @Html.ValidationMessage($"DescriptiveContent[{i}].Content", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                            </div>
+                            <div class="text-right">
+                                <button type="button"
+                                        class="bg-rose-700 text-white font-semibold rounded px-3 py-2 cursor-pointer text-sm"
+                                        onclick="removeDescriptiveContentRow(this)">
+                                    Delete Node
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <template id="descriptiveContentRowTemplate">
+                    <div class="border border-zinc-300 rounded p-3" data-node-row="true">
+                        <div class="mb-3">
+                            <label>Type</label>
+                            <select data-node-input="type" class="w-full">
+                                <option value="">Select type...</option>
+                                <option value="Headline">Headline</option>
+                                <option value="BodyCopy">BodyCopy</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Content</label>
+                            <textarea data-node-input="content" rows="3"></textarea>
+                        </div>
+                        <div class="text-right">
+                            <button type="button"
+                                    class="bg-rose-700 text-white font-semibold rounded px-3 py-2 cursor-pointer text-sm"
+                                    onclick="removeDescriptiveContentRow(this)">
+                                Delete Node
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <button type="button"
+                        class="bg-blueMid text-white font-semibold rounded px-4 py-2 mt-2 cursor-pointer text-sm"
+                        onclick="addDescriptiveContentRow()">
+                    Add Node
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-end items-center px-6 gap-2">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+        @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+    </div>
+</form>
+
+<script>
+    function renumberDescriptiveContentRows() {
+        const rows = document.querySelectorAll('#descriptiveContentRows [data-node-row="true"]');
+
+        rows.forEach((row, index) => {
+            const typeInput = row.querySelector('[name$=".Type"]') || row.querySelector('[data-node-input="type"]');
+            const contentInput = row.querySelector('[name$=".Content"]') || row.querySelector('[data-node-input="content"]');
+
+            if (typeInput) {
+                typeInput.name = `DescriptiveContent[${index}].Type`;
+                typeInput.id = `descriptiveContentType_${index}`;
+            }
+
+            if (contentInput) {
+                contentInput.name = `DescriptiveContent[${index}].Content`;
+                contentInput.id = `descriptiveContentBody_${index}`;
+            }
+
+            const labels = row.querySelectorAll('label');
+            if (labels.length >= 2) {
+                labels[0].setAttribute('for', `descriptiveContentType_${index}`);
+                labels[1].setAttribute('for', `descriptiveContentBody_${index}`);
+            }
+        });
+    }
+
+    function addDescriptiveContentRow() {
+        const template = document.getElementById('descriptiveContentRowTemplate');
+        const container = document.getElementById('descriptiveContentRows');
+        if (!template || !container) {
+            return;
+        }
+
+        const fragment = template.content.cloneNode(true);
+        container.appendChild(fragment);
+        renumberDescriptiveContentRows();
+    }
+
+    function removeDescriptiveContentRow(button) {
+        const row = button.closest('[data-node-row="true"]');
+        if (!row) {
+            return;
+        }
+
+        row.remove();
+        renumberDescriptiveContentRows();
+    }
+
+    renumberDescriptiveContentRows();
+</script>

@@ -5,6 +5,7 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using FastGooey.Database;
 using FastGooey.Features.Interfaces.AppleTv.Alert.Models;
+using FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
@@ -167,6 +168,8 @@ public class HypermediaController(
                 return GenerateAppleTvList(gooeyInterface);
             case "Alert":
                 return GenerateAppleTvAlert(gooeyInterface);
+            case "DescriptiveAlert":
+                return GenerateAppleTvDescriptiveAlert(gooeyInterface);
             default:
                 return NotSupported();
         }
@@ -240,6 +243,29 @@ public class HypermediaController(
             UpperButtonLink = unfurledConfig.UpperButtonLink,
             LowerButtonText = unfurledConfig.LowerButtonText,
             LowerButtonLink = unfurledConfig.LowerButtonLink
+        };
+    }
+
+    private AppleTvDescriptiveAlertHypermediaResponse GenerateAppleTvDescriptiveAlert(GooeyInterface gooeyInterface)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var config = gooeyInterface.Config.Deserialize<DescriptiveAlertContentJsonDataModel>(options) ??
+                     new DescriptiveAlertContentJsonDataModel();
+        var configNode = JsonSerializer.SerializeToNode(config);
+        var unfurledConfig = UnfurlFastGooeyLinksAndReturn(configNode, gooeyInterface.Workspace.PublicId)?
+            .Deserialize<DescriptiveAlertContentJsonDataModel>(options) ?? new DescriptiveAlertContentJsonDataModel();
+
+        return new AppleTvDescriptiveAlertHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Title = unfurledConfig.Title,
+            CancelButtonText = unfurledConfig.CancelButtonText,
+            ConfirmButtonText = unfurledConfig.ConfirmButtonText,
+            DescriptiveContent = unfurledConfig.DescriptiveContent
         };
     }
 
