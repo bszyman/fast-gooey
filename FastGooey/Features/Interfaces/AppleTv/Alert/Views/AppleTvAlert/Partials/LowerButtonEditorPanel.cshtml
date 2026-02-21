@@ -1,0 +1,47 @@
+@model FastGooey.Features.Interfaces.AppleTv.Alert.Models.AppleTvAlertLowerButtonEditorPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Lower Button</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveLowerButtonEditorPanel", "AppleTvAlert", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url() })"
+      hx-target="#editorPanel">
+    @Html.AntiForgeryToken()
+
+    <div class="py-4 px-4">
+        <div class="formGroup formGroupAddBackground mb-8">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Lower Button Properties</p>
+            </div>
+            <div class="py-4 px-4">
+                <div class="mb-3">
+                    <label for="lowerButtonText">Text</label>
+                    <input type="text" id="lowerButtonText" name="LowerButtonText" value="@Model.LowerButtonText" />
+                    @Html.ValidationMessage("LowerButtonText", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div>
+                    <label for="lowerButtonLink">Link</label>
+                    <input type="hidden" id="lowerButtonLink" name="LowerButtonLink" value="@Model.LowerButtonLink" />
+                    <button type="button"
+                            class="linkEditorTriggerButton"
+                            onclick="openLinkEditor(this)"
+                            data-link-editor-trigger="true"
+                            data-link-editor-target="lowerButtonLink"
+                            data-link-editor-display="lowerButtonLinkDisplay">
+                        Select link...
+                    </button>
+                    <p id="lowerButtonLinkDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">No link selected.</p>
+                    @Html.ValidationMessage("LowerButtonLink", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-end items-center px-6 gap-2">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+        @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+    </div>
+</form>

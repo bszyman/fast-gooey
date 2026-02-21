@@ -4,6 +4,7 @@ using System.Globalization;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using FastGooey.Database;
+using FastGooey.Features.Interfaces.AppleTv.Alert.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
@@ -164,6 +165,8 @@ public class HypermediaController(
                 return GenerateAppleTvMain(gooeyInterface);
             case "List":
                 return GenerateAppleTvList(gooeyInterface);
+            case "Alert":
+                return GenerateAppleTvAlert(gooeyInterface);
             default:
                 return NotSupported();
         }
@@ -213,6 +216,30 @@ public class HypermediaController(
             Banner = unfurledConfig.Banner,
             Header = unfurledConfig.Header,
             ListItems = unfurledConfig.ListItems
+        };
+    }
+
+    private AppleTvAlertHypermediaResponse GenerateAppleTvAlert(GooeyInterface gooeyInterface)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var config = gooeyInterface.Config.Deserialize<AlertContentJsonDataModel>(options) ?? new AlertContentJsonDataModel();
+        var configNode = JsonSerializer.SerializeToNode(config);
+        var unfurledConfig = UnfurlFastGooeyLinksAndReturn(configNode, gooeyInterface.Workspace.PublicId)?
+            .Deserialize<AlertContentJsonDataModel>(options) ?? new AlertContentJsonDataModel();
+
+        return new AppleTvAlertHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Title = unfurledConfig.Title,
+            Description = unfurledConfig.Description,
+            UpperButtonText = unfurledConfig.UpperButtonText,
+            UpperButtonLink = unfurledConfig.UpperButtonLink,
+            LowerButtonText = unfurledConfig.LowerButtonText,
+            LowerButtonLink = unfurledConfig.LowerButtonLink
         };
     }
 

@@ -1,3 +1,69 @@
-<div class="h-full w-full flex items-center justify-center text-zinc-500 text-sm">
-    Apple TV Alert workspace is not implemented yet.
-</div>
+@model FastGooey.Features.Interfaces.AppleTv.Alert.Models.AppleTvAlertWorkspaceViewModel
+
+<form method="post"
+      hx-post="@Url.Action("SaveWorkspace", "AppleTvAlert", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+      hx-trigger="blur from:#alertTitle, keyup[key=='Enter'] from:#alertTitle, blur from:#alertDescription, keyup[key=='Enter'] from:#alertDescription"
+      hx-target="#workspaceEditor"
+      onsubmit="return false;">
+    @Html.AntiForgeryToken()
+
+    <div id="editor" class="h-full w-full flex items-center justify-center py-8 px-4">
+        <div class="w-full max-w-5xl">
+            <div id="interactiveEditor" class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900 flex flex-col items-center justify-center gap-4 p-6">
+                <div class="w-full">
+                    <label for="alertTitle" class="text-xs uppercase tracking-wide text-zinc-400 block mb-2">Title</label>
+                    <input type="text"
+                           id="alertTitle"
+                           name="Title"
+                           value="@Model.Data.Title"
+                           placeholder="Enter alert title"
+                           class="w-full rounded-md border border-zinc-500 bg-zinc-800 text-zinc-100 px-3 py-2" />
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-400 text-sm mt-1 block" })
+                </div>
+
+                <div class="w-full">
+                    <label for="alertDescription" class="text-xs uppercase tracking-wide text-zinc-400 block mb-2">Description</label>
+                    <input type="text"
+                           id="alertDescription"
+                           name="Description"
+                           value="@Model.Data.Description"
+                           placeholder="Enter alert description"
+                           class="w-full rounded-md border border-zinc-500 bg-zinc-800 text-zinc-100 px-3 py-2" />
+                    @Html.ValidationMessage("Description", "", new { @class = "text-red-400 text-sm mt-1 block" })
+                </div>
+
+                <button type="button"
+                        hx-get="@Url.Action("UpperButtonEditorPanel", "AppleTvAlert", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                        hx-target="#editorPanel"
+                        onclick="toggleEditor()"
+                        class="w-full border border-zinc-500/70 bg-zinc-800/70 hover:bg-zinc-800/90 transition cursor-pointer text-zinc-100 px-4 py-4 text-left rounded-md">
+                    <p class="text-xs uppercase tracking-wide text-zinc-400">Upper Button</p>
+                    @if (string.IsNullOrWhiteSpace(Model.Data.UpperButtonText))
+                    {
+                        <p class="text-sm mt-1 text-zinc-200">Click to configure upper button</p>
+                    }
+                    else
+                    {
+                        <p class="text-sm mt-1 text-zinc-100 font-semibold truncate">@Model.Data.UpperButtonText</p>
+                    }
+                </button>
+
+                <button type="button"
+                        hx-get="@Url.Action("LowerButtonEditorPanel", "AppleTvAlert", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                        hx-target="#editorPanel"
+                        onclick="toggleEditor()"
+                        class="w-full border border-zinc-500/70 bg-zinc-800/70 hover:bg-zinc-800/90 transition cursor-pointer text-zinc-100 px-4 py-4 text-left rounded-md">
+                    <p class="text-xs uppercase tracking-wide text-zinc-400">Lower Button</p>
+                    @if (string.IsNullOrWhiteSpace(Model.Data.LowerButtonText))
+                    {
+                        <p class="text-sm mt-1 text-zinc-200">Click to configure lower button</p>
+                    }
+                    else
+                    {
+                        <p class="text-sm mt-1 text-zinc-100 font-semibold truncate">@Model.Data.LowerButtonText</p>
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
