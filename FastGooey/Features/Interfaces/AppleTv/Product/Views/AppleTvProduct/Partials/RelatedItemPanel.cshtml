@@ -1,0 +1,64 @@
+@using FastGooey.Models.ViewModels
+@model FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv.RelatedItemPanelViewModel
+
+<div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
+    <div class="flex-1 flex items-center">
+        <p class="mx-6 font-bold">Edit Related Item</p>
+    </div>
+</div>
+
+<form method="post"
+      hx-post="@Url.Action("SaveRelatedItemPanel", "AppleTvProduct", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), relatedItemId = Model.RelatedItemId == Guid.Empty ? (Guid?)null : Model.RelatedItemId })"
+      hx-target="#editorPanel">
+    @Html.AntiForgeryToken()
+
+    <div class="py-4 px-4">
+        <div class="formGroup formGroupAddBackground mb-4">
+            <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                <p class="font-semibold text-sm">Related Item</p>
+            </div>
+            <div class="py-2 px-4">
+                <div class="mb-3">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="Title" value="@Model.Title" />
+                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-3">
+                    <label for="linkButton">Link</label>
+                    <input type="hidden" id="Link" name="Link" value="@Model.Link" />
+                    <button type="button"
+                            id="linkButton"
+                            class="linkEditorTriggerButton"
+                            onclick="openLinkEditor(this)"
+                            data-link-editor-trigger="true"
+                            data-link-editor-target="Link"
+                            data-link-editor-display="linkDisplay">
+                        Select link...
+                    </button>
+                    <p id="linkDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">No link selected.</p>
+                    @Html.ValidationMessage("Link", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div class="mb-3">
+                    <label for="mediaUrlButton">Media Url</label>
+                    <input type="hidden" id="MediaUrl" name="MediaUrl" value="@Model.MediaUrl" />
+                    <button type="button"
+                            id="mediaUrlButton"
+                            class="linkEditorTriggerButton"
+                            onclick="openMediaPicker(this)"
+                            data-media-picker-trigger="true"
+                            data-media-picker-target="MediaUrl"
+                            data-media-picker-display="mediaUrlDisplay">
+                        Select media...
+                    </button>
+                    <p id="mediaUrlDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">No media selected.</p>
+                    @Html.ValidationMessage("MediaUrl", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 bg-white w-full h-16 border-t border-t-zinc-300 flex justify-end items-center px-6 gap-2">
+        @await Html.PartialAsync("~/Views/Partials/CancelButton.cshtml")
+        @await Html.PartialAsync("~/Views/Partials/SubmitButton.cshtml")
+    </div>
+</form>

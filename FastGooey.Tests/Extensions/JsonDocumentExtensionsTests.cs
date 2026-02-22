@@ -22,4 +22,24 @@ public class JsonDocumentExtensionsTests
         Assert.Equal("Gooey", result!.Name);
         Assert.Equal(3, result.Count);
     }
+
+    [Fact]
+    public void HasImage_ReturnsTrue_WhenPreviewMediaUrlExists()
+    {
+        using var document = JsonDocument.Parse("{\"PreviewMediaUrl\":\"https://images.fastgooey.com/preview.png\"}");
+
+        var hasImage = document.HasImage();
+
+        Assert.True(hasImage);
+    }
+
+    [Fact]
+    public void HasImage_ReturnsFalse_WhenImageFieldsAreMissing()
+    {
+        using var document = JsonDocument.Parse("{\"Title\":\"Featured\",\"Description\":\"A product\"}");
+
+        var hasImage = document.HasImage();
+
+        Assert.False(hasImage);
+    }
 }
