@@ -45,11 +45,22 @@
         if (!createUrl) return;
 
         const targetSelector = button?.dataset?.interfaceCreateTarget || '#workspace';
+        const token = palette.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
         if (window.htmx && window.htmx.ajax) {
-            window.htmx.ajax('POST', createUrl, {
+            const requestOptions = {
                 target: targetSelector,
                 swap: 'innerHTML'
+            };
+
+            if (token) {
+                requestOptions.headers = {
+                    RequestVerificationToken: token
+                };
+            }
+
+            window.htmx.ajax('POST', createUrl, {
+                ...requestOptions
             });
         } else {
             window.location.href = createUrl;

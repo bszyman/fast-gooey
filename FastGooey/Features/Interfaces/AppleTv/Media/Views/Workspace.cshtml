@@ -1,0 +1,39 @@
+@model FastGooey.Features.Interfaces.AppleTv.Media.Models.MediaWorkspaceViewModel
+
+<form method="post"
+      hx-post="@Url.Action("SaveWorkspace", "AppleTvMedia", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+      hx-trigger="change from:#appleTvMediaUrl"
+      hx-target="#workspaceEditor"
+      onsubmit="return false;">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" id="appleTvMediaUrl" name="MediaUrl" value="@Model.Data.MediaUrl" />
+
+    <div id="editor" class="h-full w-full flex items-center justify-center py-8 px-4">
+        <div class="w-full max-w-5xl">
+            <div id="interactiveEditor" class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900">
+                <div class="w-full h-full">
+                    <button type="button"
+                            onclick="openMediaPicker(this)"
+                            data-media-picker-trigger="true"
+                            data-media-picker-target="appleTvMediaUrl"
+                            data-media-picker-display="appleTvMediaUrlDisplay"
+                            class="w-full h-full bg-zinc-900/70 hover:bg-zinc-800/70 transition cursor-pointer text-zinc-100 px-5 py-4 text-center flex flex-col items-center justify-center">
+                        <p class="text-xs uppercase tracking-wide text-zinc-400">Media</p>
+                        <p id="appleTvMediaUrlDisplay" class="text-sm mt-2 text-zinc-100 font-semibold line-clamp-2">
+                            @if (string.IsNullOrWhiteSpace(Model.Data.MediaUrl))
+                            {
+                                @:Click to edit media...
+                            }
+                            else
+                            {
+                                @Model.Data.MediaUrl
+                            }
+                        </p>
+                    </button>
+                </div>
+            </div>
+            @Html.ValidationMessage("MediaUrl", "", new { @class = "text-red-400 text-sm mt-2 block text-center" })
+        </div>
+    </div>
+</form>
