@@ -6,6 +6,7 @@ using System.Xml;
 using FastGooey.Database;
 using FastGooey.Features.Interfaces.AppleTv.Alert.Models;
 using FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models;
+using FastGooey.Features.Interfaces.AppleTv.Media.Models;
 using FastGooey.Features.Interfaces.AppleTv.Product.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
@@ -171,6 +172,8 @@ public class HypermediaController(
                 return GenerateAppleTvAlert(gooeyInterface);
             case "DescriptiveAlert":
                 return GenerateAppleTvDescriptiveAlert(gooeyInterface);
+            case "Media":
+                return GenerateAppleTvMedia(gooeyInterface);
             case "Product":
                 return GenerateAppleTvProduct(gooeyInterface);
             default:
@@ -271,7 +274,7 @@ public class HypermediaController(
             DescriptiveContent = unfurledConfig.DescriptiveContent
         };
     }
-
+    
     private AppleTvProductHypermediaResponse GenerateAppleTvProduct(GooeyInterface gooeyInterface)
     {
         static string ReadString(JsonElement element, params string[] names)
@@ -323,6 +326,18 @@ public class HypermediaController(
                 Link = UnfurlFastGooeyLink(x.Link, gooeyInterface.Workspace.PublicId),
                 MediaUrl = UnfurlFastGooeyLink(x.MediaUrl, gooeyInterface.Workspace.PublicId)
             }).ToList()
+        };
+    }
+
+    private AppleTvMediaHypermediaResponse GenerateAppleTvMedia(GooeyInterface gooeyInterface)
+    {
+        var config = gooeyInterface.Config.Deserialize<AppleTvMediaJsonDataModel>() ?? new AppleTvMediaJsonDataModel();
+        var mediaUrl = UnfurlFastGooeyLink(config.MediaUrl, gooeyInterface.Workspace.PublicId);
+
+        return new AppleTvMediaHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            MediaUrl = mediaUrl
         };
     }
 

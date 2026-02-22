@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 using FastGooey.Controllers;
+using FastGooey.Features.Interfaces.AppleTv.Media.Models;
 using FastGooey.Features.Interfaces.AppleTv.Product.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
@@ -117,6 +118,46 @@ public class HypermediaControllerTests
     }
 
     [Fact]
+    public async Task Get_ReturnsAppleTvMediaResponse_WhenPlatformIsAppleTvMedia()
+    {
+        using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
+        using var memoryCache = new MemoryCache(new MemoryCacheOptions());
+
+        var workspace = new Workspace { Name = "Test", Slug = "test" };
+        var gooeyInterface = new GooeyInterface
+        {
+            DocId = Guid.NewGuid(),
+            Workspace = workspace,
+            Platform = "AppleTv",
+            ViewType = "Media",
+            Name = "AppleTv Media",
+            Config = JsonSerializer.SerializeToDocument(new AppleTvMediaJsonDataModel())
+        };
+        dbContext.GooeyInterfaces.Add(gooeyInterface);
+        await dbContext.SaveChangesAsync();
+
+        var controller = new HypermediaController(
+            dbContext,
+            memoryCache,
+            new StubKeyValueService(),
+            NullLogger<HypermediaController>.Instance);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        controller.HttpContext.Request.Scheme = "https";
+        controller.HttpContext.Request.Host = new HostString("example.com");
+
+        var result = await controller.Get(gooeyInterface.DocId.ToBase64Url());
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<AppleTvMediaHypermediaResponse>(ok.Value);
+        Assert.Equal("AppleTv", response.Platform);
+        Assert.Equal("Media", response.View);
+        Assert.Equal(string.Empty, response.MediaUrl);
+    }
+  
+      [Fact]
     public async Task Get_ReturnsAppleTvProductResponse_WhenPlatformIsAppleTvProduct()
     {
         using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
