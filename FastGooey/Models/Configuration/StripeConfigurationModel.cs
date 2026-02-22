@@ -4,4 +4,5 @@ public class StripeConfigurationModel
 {
     public string? SecretKey { get; set; }
     public Dictionary<string, string>? Prices { get; set; }
+    public Dictionary<string, string>? CheckoutLinks { get; set; }
 }

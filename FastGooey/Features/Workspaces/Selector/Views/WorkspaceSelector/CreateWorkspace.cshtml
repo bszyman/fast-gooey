@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Identity
+@using FastGooey.Features.Workspaces.Selector.Models
 @model FastGooey.Features.Workspaces.Selector.Models.FormModels.CreateWorkspace
 @inject UserManager<ApplicationUser> UserManager
 @{
@@ -6,6 +7,7 @@
     Layout = "~/Views/Shared/PublicLayout.cshtml";
     var currentUser = await UserManager.GetUserAsync(User);
     var workspaceLimitReached = ViewData["WorkspaceLimitReached"] as bool? ?? false;
+    var workspacePlan = Model.WorkspacePlan;
 }
 
 <div class="w-screen h-screen bg-blueDark font-mont">
@@ -18,7 +20,7 @@
     </div>
     <div class="max-w-2xl mx-auto pt-24">
         <h1 class="text-white font-exo text-5xl md:text-7xl font-bold italic tracking-tighter text-shadow-md mb-6">
-            Create Workspace
+            Create @(workspacePlan == WorkspacePlan.Explorer ? "Explorer" : "Standard") Workspace
         </h1>
         
         @if (workspaceLimitReached)
@@ -27,7 +29,9 @@
                 <div class="rounded-xl shadow p-4">
                     <p class="font-medium mb-1 text-shadow-md">Workspace limit reached.</p>
                     <p class="text-xs font-medium text-shadow-md mb-1">
-                        Your current plan allows one workspace, and you already have one.
+                        @(workspacePlan == WorkspacePlan.Explorer
+                            ? "You already have your free Explorer workspace."
+                            : "You do not have any available Standard workspace slots yet.")
                     </p>
                 </div>
             </div>
@@ -35,6 +39,7 @@
         else if (currentUser.EmailConfirmed)
         {
             <form asp-action="SaveNewWorkspace" asp-controller="WorkspaceSelector" method="post" hx-boost="true">
+                <input asp-for="WorkspacePlan" type="hidden" />
                 <div class="border border-white shadow-md rounded-xl text-white p-4">
                     <div class="text-red-600 text-sm font-semibold mb-2">
                         @Html.ValidationSummary()
@@ -52,6 +57,12 @@
                         <div class="mb-4">
                             <p class="font-mont block text-sm font-medium mb-2">For account:</p>
                             <p class="font-mont block text-sm font-semibold mb-2">@User.Identity.Name</p>
+                        </div>
+                        <div class="mb-4">
+                            <p class="font-mont block text-sm font-medium mb-2">Plan:</p>
+                            <p class="font-mont block text-sm font-semibold mb-2">
+                                @(workspacePlan == WorkspacePlan.Explorer ? "Explorer (1 content node)" : "Standard (unlimited content nodes)")
+                            </p>
                         </div>
                     </div>
                 

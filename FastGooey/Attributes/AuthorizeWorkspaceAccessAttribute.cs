@@ -32,10 +32,11 @@ public class AuthorizeWorkspaceAccessAttribute : Attribute, IAsyncActionFilter
         var dbContext = context.HttpContext.RequestServices
             .GetRequiredService<ApplicationDbContext>();
 
-        // Check if the user has access to this workspace
-        var hasAccess = await dbContext.Users
-            .Where(u => u.Id == userId)
-            .AnyAsync(u => u.Workspace != null && u.Workspace.PublicId == workspaceId);
+        // Check if the user has access to this workspace.
+        // The owner check is the current model; the legacy relation fallback keeps older data working.
+        var hasAccess = await dbContext.Workspaces.AnyAsync(w =>
+            w.PublicId == workspaceId &&
+            (w.OwnerUserId == userId || w.Users.Any(u => u.Id == userId)));
 
         if (!hasAccess)
         {

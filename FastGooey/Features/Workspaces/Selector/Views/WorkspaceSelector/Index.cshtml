@@ -12,64 +12,115 @@
         <p class="text-white font-mont text-shadow-md font-medium flex-1">@User.Identity.Name</p>
         <a href="@Url.Action("Logout", "Auth")" class="text-white font-mont text-shadow-md font-medium">Logout</a>
     </div>
-    <div class="max-w-xl mx-auto pt-24">
+    <div id="workspacesList" class="max-w-xl mx-auto pt-24">
         <h1 class="text-white font-exo text-5xl md:text-7xl font-bold italic tracking-tighter text-shadow-md mb-6">Workspaces</h1>
-        
-        @if (Model.Workspaces.Any())
+    
+        @if (Model.UserIsConfirmed)
         {
-            <div class="border border-white shadow-md rounded-xl text-white">
-                @foreach (var workspace in Model.Workspaces)
-                {
-                    var borderStyles = workspace.Equals(Model.Workspaces.Last()) ? "border-b-0" : "border-b";
-                    
-                    <a href="@Url.Action("Home", "Workspaces", new { workspaceId = workspace.PublicId })">
-                        <div class="p-4 @borderStyles border-white hover:underline">
-                            <p class="font-medium mb-1 text-shadow-md">@workspace.Name</p>
+            if (Model.ExplorerWorkspace is null && Model.CanCreateExplorerWorkspace)
+            {
+                <div class="border border-white shadow-md rounded-xl text-white divide-y divide-white mb-6">
+                    <a asp-action="CreateWorkspace" asp-controller="WorkspaceSelector" asp-route-workspacePlan="Explorer">
+                        <div class="cursor-pointer p-4 hover:underline">
+                            <p class="font-medium mb-1 text-shadow-md">Create your free Explorer workspace</p>
                             <p class="text-xs font-medium mb-1 text-shadow-md">
-                                Open workspace &rarr;
+                                One free workspace with one content node &rarr;
                             </p>
                         </div>
                     </a>
-                }
-            </div>
+                </div>
+            }
+
+            if (Model.ExplorerWorkspace is not null)
+            {
+                <div class="border border-white shadow-md rounded-xl text-white divide-y divide-white mb-6">
+                    <a href="@Url.Action("Home", "Workspaces", new { workspaceId = Model.ExplorerWorkspace.PublicId })">
+                        <div class="p-4 hover:underline">
+                            <p class="font-medium mb-1 text-shadow-md">@Model.ExplorerWorkspace.Name</p>
+                            <p class="text-xs font-medium mb-1 text-shadow-md">
+                                Open Explorer workspace &rarr;
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            }
+            
+            foreach (var workspace in Model.StandardWorkspaces)
+            {
+                <div class="border border-white shadow-md rounded-xl text-white divide-y divide-white mb-6">
+                    <a href="@Url.Action("Home", "Workspaces", new { workspaceId = workspace.PublicId })">
+                        <div class="p-4 hover:underline">
+                            <p class="font-medium mb-1 text-shadow-md">@workspace.Name</p>
+                            <p class="text-xs font-medium mb-1 text-shadow-md">
+                                Open Standard workspace &rarr;
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            }
+            
+            for (var i = 0; i < Model.RemainingStandardWorkspaceSlots; i++)
+            {
+                var slotNumber = Model.StandardWorkspaces.Count() + i + 1;
+                <div class="border border-white shadow-md rounded-xl text-white divide-y divide-white mb-6">
+                    <a asp-action="CreateWorkspace" asp-controller="WorkspaceSelector" asp-route-workspacePlan="Standard">
+                        <div class="cursor-pointer p-4 hover:underline">
+                            <p class="font-medium mb-1 text-shadow-md">Create Standard workspace #@slotNumber</p>
+                            <p class="text-xs font-medium mb-1 text-shadow-md">
+                                Unlimited content nodes &rarr;
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            }
         }
         else
         {
-            @if (Model.UserIsConfirmed)
-            {
-                <div class="border border-white shadow-md rounded-xl text-white">
-                    <a asp-action="CreateWorkspace" asp-controller="WorkspaceSelector">
-                        <div class="cursor-pointer rounded-xl shadow p-4 hover:underline">
-                            <p class="font-medium mb-1 text-shadow-md">You don't have any workspaces.</p>
-                            <p class="text-xs font-medium mb-1 text-shadow-md">
-                                Create one now &rarr;
-                            </p>
-                        </div>
-                    </a>
+            <div class="border border-white shadow-md rounded-xl text-white divide-y divide-white">
+                <div class="p-4">
+                    <p class="font-medium mb-1 text-shadow-md">Verify your email to create workspaces.</p>
+                    <p class="text-xs font-medium text-shadow-md mb-6">
+                        Your email address must be verified before you can create an Explorer or Standard workspace.
+                    </p>
+                    <button
+                        hx-post="@Url.Action("SendEmailValidation", "Auth")"
+                        hx-target="#validationRequestResult"
+                        type="button"
+                        class="text-white text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer border-3 border-nuclearGreenLighter shadow-md">
+                        Request validation
+                    </button>
+                    <div id="validationRequestResult" class="text-xs font-medium text-shadow-md"></div>
                 </div>
-            }
-            else
-            {
-                <div class="border border-white shadow-md rounded-xl text-white mb-6">
-                    <div class="rounded-xl shadow p-4">
-                        <p class="font-medium mb-1 text-shadow-md">You don't have any workspaces.</p>
-                        <p class="text-xs font-medium text-shadow-md mb-6">
-                            Your email address must be verified before you can create a workspace. You should have
-                            received an email on sign-up, but you can request another one using the button below.
-                        </p>
-                        
-                        <button 
-                            hx-post="@Url.Action("SendEmailValidation", "Auth")"
-                            hx-target="#validationRequestResult"
-                            type="button" 
-                            class="text-white text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer border-3 border-nuclearGreenLighter shadow-md">
-                            Request validation
-                        </button>
-                        
-                        <div id="validationRequestResult" class="text-xs font-medium text-shadow-md"></div>
-                    </div>
-                </div>
-            }
+            </div>
         }
+        
+        <div class="border border-white shadow-md rounded-xl text-white mt-6 p-4">
+            <p class="font-medium mb-1 text-shadow-md">
+                @(Model.HasAnyStandardPurchase ? "Purchase another Standard workspace" : "Need more than one content node?")
+            </p>
+            <p class="text-xs font-medium text-shadow-md mb-4">
+                @(Model.HasAnyStandardPurchase ? 
+                    "Purchase another Standard workspace to keep your content organized." : 
+                    "Purchase a Standard workspace to unlock unlimited content nodes for that workspace.")
+            </p>
+            @if (!string.IsNullOrWhiteSpace(Model.StandardCheckoutUrl))
+            {
+                <a href="@Model.StandardCheckoutUrl"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="inline-block text-white text-sm font-semibold py-2 px-4 mb-2 rounded-lg cursor-pointer border-3 border-nuclearGreenLighter shadow-md mr-3">
+                    @(Model.HasAnyStandardPurchase ? "Purchase another Standard workspace" : "Purchase Standard workspace")
+                </a>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.AgencyCheckoutUrl))
+            {
+                <a href="@Model.AgencyCheckoutUrl"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="inline-block text-white text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer border-3 border-white/60 shadow-md mt-3 md:mt-0">
+                    Purchase Agency (unlimited workspaces)
+                </a>
+            }
+        </div>
     </div>
 </div>

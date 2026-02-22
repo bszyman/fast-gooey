@@ -33,6 +33,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .WithMany(w => w.Users)
             .HasForeignKey(u => u.WorkspaceId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Workspace>()
+            .HasOne(w => w.OwnerUser)
+            .WithMany(u => u.OwnedWorkspaces)
+            .HasForeignKey(w => w.OwnerUserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<PasskeyCredential>()
             .HasOne(p => p.User)

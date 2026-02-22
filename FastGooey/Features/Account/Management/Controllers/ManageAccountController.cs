@@ -124,10 +124,13 @@ public class AccountManagementController(
                 dbContext.Users.Remove(currentUser);
             }
 
-            if (currentUser.WorkspaceId.HasValue)
+            var ownedWorkspaces = await dbContext.Workspaces
+                .Where(x => x.OwnerUserId == currentUser.Id)
+                .ToListAsync();
+
+            if (ownedWorkspaces.Count != 0)
             {
-                var workspace = await dbContext.Workspaces.FirstOrDefaultAsync(x => x.Id == currentUser.WorkspaceId.Value);
-                if (workspace is not null)
+                foreach (var workspace in ownedWorkspaces)
                 {
                     var workspaceKey = workspace.PublicId.ToString();
                     dbContext.KeyValueStores.RemoveRange(dbContext.KeyValueStores.Where(x =>
@@ -136,15 +139,25 @@ public class AccountManagementController(
                         x.Key.EndsWith($":{workspaceKey}")));
                     dbContext.Workspaces.Remove(workspace);
                 }
-                else
-                {
-                    RemoveUserScopedData();
-                }
             }
             else
             {
-                RemoveUserScopedData();
+                if (currentUser.WorkspaceId.HasValue)
+                {
+                    var legacyWorkspace = await dbContext.Workspaces.FirstOrDefaultAsync(x => x.Id == currentUser.WorkspaceId.Value);
+                    if (legacyWorkspace is not null)
+                    {
+                        var workspaceKey = legacyWorkspace.PublicId.ToString();
+                        dbContext.KeyValueStores.RemoveRange(dbContext.KeyValueStores.Where(x =>
+                            x.Key == workspaceKey ||
+                            x.Key.StartsWith($"{workspaceKey}:") ||
+                            x.Key.EndsWith($":{workspaceKey}")));
+                        dbContext.Workspaces.Remove(legacyWorkspace);
+                    }
+                }
             }
+            
+            RemoveUserScopedData();
             await dbContext.SaveChangesAsync();
 
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);

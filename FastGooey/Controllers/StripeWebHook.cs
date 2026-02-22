@@ -142,7 +142,8 @@ public class StripeWebHook(
             LastName = lastName,
             StripeCustomerId = customerId,
             StripeSubscriptionId = subscription.Id,
-            SubscriptionLevel = MapPlanToLevel(subscription.Items.Data[0].Price.Id)
+            SubscriptionLevel = MapPlanToLevel(subscription.Items.Data[0].Price.Id),
+            StandardWorkspaceAllowance = GetStandardWorkspaceAllowance(subscription)
         };
 
         var result = await userManager.CreateAsync(newUser, password);
@@ -181,6 +182,7 @@ public class StripeWebHook(
         user.StripeCustomerId = subscription.CustomerId;
         user.StripeSubscriptionId = subscription.Id;
         user.SubscriptionLevel = MapPlanToLevel(subscription.Items.Data[0].Price.Id);
+        user.StandardWorkspaceAllowance = GetStandardWorkspaceAllowance(subscription);
         user.UpdatedAt = SystemClock.Instance.GetCurrentInstant();
         await userManager.UpdateAsync(user);
     }
@@ -189,6 +191,7 @@ public class StripeWebHook(
     {
         user.SubscriptionLevel = SubscriptionLevel.Explorer;
         user.StripeSubscriptionId = null;
+        user.StandardWorkspaceAllowance = 0;
         user.UpdatedAt = SystemClock.Instance.GetCurrentInstant();
         await userManager.UpdateAsync(user);
     }
@@ -207,6 +210,37 @@ public class StripeWebHook(
         return Enum.TryParse<SubscriptionLevel>(levelName, out var level) ?
             level :
             SubscriptionLevel.Explorer;
+    }
+
+    private int GetStandardWorkspaceAllowance(Subscription subscription)
+    {
+        var subscriptionLevel = MapPlanToLevel(subscription.Items.Data[0].Price.Id);
+        if (subscriptionLevel == SubscriptionLevel.Agency)
+        {
+            return 0;
+        }
+
+        if (subscriptionLevel != SubscriptionLevel.Standard)
+        {
+            return 0;
+        }
+
+        var standardPriceId = _config?.Prices?.GetValueOrDefault(nameof(SubscriptionLevel.Standard));
+        if (string.IsNullOrWhiteSpace(standardPriceId))
+        {
+            return 1;
+        }
+
+        var standardItem = subscription.Items.Data.FirstOrDefault(item =>
+            item.Price?.Id == standardPriceId);
+        
+        if (standardItem is null)
+        {
+            return 1;
+        }
+
+        var quantity = standardItem.Quantity > 1 ? standardItem.Quantity : 1;
+        return quantity <= 0 ? 1 : (int)quantity;
     }
 
     private static (string FirstName, string LastName) SplitName(string? fullName, string email)

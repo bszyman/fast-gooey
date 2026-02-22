@@ -11,9 +11,7 @@ namespace FastGooey.Controllers;
 
 public class HomeController(
     SignInManager<ApplicationUser> signInManager,
-    UserManager<ApplicationUser> userManager,
-    ITurnstileValidatorService turnstileValidator,
-    ILogger<HomeController> logger) : 
+    ITurnstileValidatorService turnstileValidator) : 
     Controller
 {
     public IActionResult Index()

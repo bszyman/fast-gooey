@@ -32,6 +32,9 @@ public class ApplicationUser : IdentityUser
     public string? StripeSubscriptionId { get; set; }
 
     public SubscriptionLevel SubscriptionLevel { get; set; } = SubscriptionLevel.Explorer;
+    public int StandardWorkspaceAllowance { get; set; }
+
+    public ICollection<Workspace> OwnedWorkspaces { get; set; } = new List<Workspace>();
 
     public ICollection<PasskeyCredential> PasskeyCredentials { get; set; } = new List<PasskeyCredential>();
     public ICollection<MagicLinkToken> MagicLinkTokens { get; set; } = new List<MagicLinkToken>();

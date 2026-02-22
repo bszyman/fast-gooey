@@ -7,6 +7,7 @@ namespace FastGooey.Models;
 
 [Index(nameof(PublicId), IsUnique = true)]
 [Index(nameof(Slug), IsUnique = true)]
+[Index(nameof(OwnerUserId))]
 public class Workspace
 {
     [Key]
@@ -23,6 +24,12 @@ public class Workspace
     [Required]
     [MaxLength(100)]
     public string Slug { get; set; } = string.Empty;
+    
+    public bool IsExplorer { get; set; }
+
+    [MaxLength(450)]
+    public string? OwnerUserId { get; set; }
+    public ApplicationUser? OwnerUser { get; set; }
 
     // Collection navigation properties
     public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
