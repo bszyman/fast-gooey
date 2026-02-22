@@ -11,6 +11,7 @@
         // new { Name = "Form", Controller = "AppleTvForm" },
         new { Name = "List", Controller = "AppleTvList" },
         // new { Name = "Loading", Controller = "AppleTvLoading" },
+        new { Name = "Media", Controller = "AppleTvMedia" },
         new { Name = "Main", Controller = "AppleTvMain" },
         // new { Name = "Menu Bar", Controller = "AppleTvMenuBar" },
         // new { Name = "OneUp", Controller = "AppleTvOneUp" },
@@ -25,6 +26,7 @@
 }
 
 <div class="w-2xl h-2xl mx-auto rounded-lg bg-white">
+    @Html.AntiForgeryToken()
     <div class="flex justify-baseline items-center p-2">
         <h2 class="flex-1 font-semibold text-lg">Create Interface</h2>
         <button type="button" class="cursor-pointer" onclick="toggleInterfaceCreatePalette()">
