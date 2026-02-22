@@ -1,0 +1,45 @@
+@model FastGooey.Features.Interfaces.AppleTv.MediaGrid.Models.MediaWorkspaceViewModel
+
+<form method="post"
+      hx-post="@Url.Action("SaveWorkspace", "AppleTvMediaGrid", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+      hx-trigger="blur from:#title, keyup[key=='Enter'] changed delay:500ms from:#title"
+      hx-target="#workspaceEditor"
+      onsubmit="return false;">
+    @Html.AntiForgeryToken()
+
+    <div id="editor" class="h-full w-full flex items-center justify-center py-8 px-4">
+        <div class="w-full max-w-5xl">
+            <div id="interactiveEditor" class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900 p-4">
+                <div class="w-full mb-4">
+                    <label for="title" class="text-xs uppercase tracking-wide text-zinc-300">Title</label>
+                    <input id="title" name="Title" value="@Model.Data.Title" class="mt-1 w-full bg-zinc-800 text-zinc-100 border border-zinc-700 rounded px-3 py-2" placeholder="Click to edit title..." />
+                </div>
+
+                <div class="w-full grid grid-cols-5 gap-2">
+                    <button type="button"
+                            hx-get="@Url.Action("MediaGridItemPanel", "AppleTvMediaGrid", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                            hx-target="#editorPanel"
+                            onclick="toggleEditor()"
+                            class="aspect-square rounded-md border border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                    @foreach (var item in Model.Data.MediaItems)
+                    {
+                        <button type="button"
+                                hx-get="@Url.Action("MediaGridItemPanel", "AppleTvMediaGrid", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), itemId = item.Guid })"
+                                hx-target="#editorPanel"
+                                onclick="toggleEditor()"
+                                class="aspect-square rounded-md border border-zinc-700 bg-zinc-800 text-left p-2 hover:bg-zinc-700 transition">
+                            <p class="text-zinc-100 text-xs font-semibold truncate">@(string.IsNullOrWhiteSpace(item.Title) ? "Click to edit title..." : item.Title)</p>
+                            <p class="text-zinc-400 text-[10px] truncate mt-1">@(string.IsNullOrWhiteSpace(item.LinkTo) ? "Click to edit link..." : item.LinkTo)</p>
+                            <p class="text-zinc-500 text-[10px] truncate mt-1">@(string.IsNullOrWhiteSpace(item.PreviewMedia) ? "Click to edit media..." : item.PreviewMedia)</p>
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
