@@ -6,5 +6,3 @@ public class ProductWorkspaceFormModel
     public string Description { get; set; } = string.Empty;
     public string PreviewMediaUrl { get; set; } = string.Empty;
 }
-
-public class ProducttWorkspaceFormModel : ProductWorkspaceFormModel;
