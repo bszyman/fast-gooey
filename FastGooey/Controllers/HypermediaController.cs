@@ -6,6 +6,7 @@ using System.Xml;
 using FastGooey.Database;
 using FastGooey.Features.Interfaces.AppleTv.Alert.Models;
 using FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models;
+using FastGooey.Features.Interfaces.AppleTv.MediaGrid.Models;
 using FastGooey.Features.Interfaces.AppleTv.Product.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
@@ -173,6 +174,8 @@ public class HypermediaController(
                 return GenerateAppleTvDescriptiveAlert(gooeyInterface);
             case "Product":
                 return GenerateAppleTvProduct(gooeyInterface);
+            case "MediaGrid":
+                return GenerateAppleTvMediaGrid(gooeyInterface);
             default:
                 return NotSupported();
         }
@@ -322,6 +325,29 @@ public class HypermediaController(
                 Title = UnfurlFastGooeyLink(x.Title, gooeyInterface.Workspace.PublicId),
                 Link = UnfurlFastGooeyLink(x.Link, gooeyInterface.Workspace.PublicId),
                 MediaUrl = UnfurlFastGooeyLink(x.MediaUrl, gooeyInterface.Workspace.PublicId)
+            }).ToList()
+        };
+    }
+
+    private AppleTvMediaGridHypermediaResponse GenerateAppleTvMediaGrid(GooeyInterface gooeyInterface)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var config = gooeyInterface.Config.Deserialize<AppleTvMediaGridJsonDataModel>(options) ?? new AppleTvMediaGridJsonDataModel();
+
+        return new AppleTvMediaGridHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Title = config.Title,
+            MediaItems = config.MediaItems.Select(x => new AppleTvMediaGridItemJsonDataModel
+            {
+                Guid = x.Guid,
+                Title = x.Title,
+                LinkTo = UnfurlFastGooeyLink(x.LinkTo, gooeyInterface.Workspace.PublicId),
+                PreviewMedia = UnfurlFastGooeyLink(x.PreviewMedia, gooeyInterface.Workspace.PublicId)
             }).ToList()
         };
     }
