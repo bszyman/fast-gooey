@@ -1,4 +1,45 @@
+@using FastGooey.Extensions
 @model FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv.AppleTvProductWorkspaceViewModel
+
+@{
+    var previewMediaValue = Model.Data.PreviewMediaUrl?.Trim() ?? string.Empty;
+    var hasPreviewImage = Model.ContentNode?.Config.HasImage() == true && !string.IsNullOrWhiteSpace(previewMediaValue);
+    var initialPreviewSrc = string.Empty;
+    const string mediaPrefix = "fastgooey:media:";
+
+    if (hasPreviewImage)
+    {
+        if (previewMediaValue.StartsWith(mediaPrefix, StringComparison.OrdinalIgnoreCase))
+        {
+            var remainder = previewMediaValue[mediaPrefix.Length..];
+            var separatorIndex = remainder.IndexOf(':');
+
+            if (separatorIndex > 0 && separatorIndex < remainder.Length - 1)
+            {
+                var sourceId = remainder[..separatorIndex];
+                var encodedPath = remainder[(separatorIndex + 1)..];
+                var decodedPath = encodedPath;
+
+                try
+                {
+                    decodedPath = Uri.UnescapeDataString(encodedPath);
+                }
+                catch
+                {
+                }
+
+                initialPreviewSrc = Url.Action(
+                    "Preview",
+                    "Media",
+                    new { workspaceId = Model.WorkspaceId(), sourceId, path = decodedPath }) ?? string.Empty;
+            }
+        }
+        else
+        {
+            initialPreviewSrc = previewMediaValue;
+        }
+    }
+}
 
 <form method="post"
       hx-post="@Url.Action("SaveWorkspace", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
@@ -20,17 +61,26 @@
                         <textarea id="description" name="Description" rows="4" class="mt-1 w-full bg-zinc-800 text-zinc-100 border border-zinc-700 rounded px-3 py-2" placeholder="Click to edit description...">@Model.Data.Description</textarea>
                     </div>
                     <div>
-                        <label for="previewMediaUrlButton" class="text-xs uppercase tracking-wide text-zinc-300">Preview Media</label>
-                        <input type="hidden" id="previewMediaUrl" name="PreviewMediaUrl" value="@Model.Data.PreviewMediaUrl" />
-                        <button type="button"
-                                id="previewMediaUrlButton"
-                                class="linkEditorTriggerButton mt-1"
-                                onclick="openMediaPicker(this)"
-                                data-media-picker-trigger="true"
-                                data-media-picker-target="previewMediaUrl"
-                                data-media-picker-display="previewMediaUrlDisplay">
-                            Select media...
-                        </button>
+                        <label for="previewMediaPicker" class="text-xs uppercase tracking-wide text-zinc-300">Preview Media</label>
+                        <div>
+                            <input type="hidden" id="previewMediaUrl" name="PreviewMediaUrl" value="@Model.Data.PreviewMediaUrl" />
+                            <button type="button"
+                                    id="previewMediaPicker"
+                                    class="mt-1 relative w-full max-w-48 aspect-square rounded-md border border-zinc-700 bg-zinc-800 overflow-hidden cursor-pointer"
+                                    onclick="openMediaPicker(this)"
+                                    data-media-picker-trigger="true"
+                                    data-media-picker-target="previewMediaUrl"
+                                    data-media-picker-display="previewMediaUrlDisplay">
+                                <img id="previewMediaUrlImage"
+                                     alt="Preview media"
+                                     src="@initialPreviewSrc"
+                                     class="@(string.IsNullOrWhiteSpace(initialPreviewSrc) ? "hidden h-full w-full object-cover" : "h-full w-full object-cover")" />
+                                <div id="previewMediaUrlPlaceholder" class="@(string.IsNullOrWhiteSpace(initialPreviewSrc) ? "absolute inset-0 flex items-center justify-center text-zinc-300 text-sm px-4 text-center" : "hidden absolute inset-0 items-center justify-center text-zinc-300 text-sm px-4 text-center")">
+                                    Click to select preview media...
+                                </div>
+                            </button>
+                        </div>
+                        
                         <p id="previewMediaUrlDisplay" class="truncate text-xs text-zinc-400 ml-1 mt-1">Click to edit preview media...</p>
                     </div>
                 </div>
@@ -76,3 +126,69 @@
         </div>
     </div>
 </form>
+
+<script>
+    (() => {
+        const mediaPickerSchemePrefix = 'fastgooey:media:';
+        const workspaceId = '@Model.WorkspaceId()';
+        const input = document.getElementById('previewMediaUrl');
+        const image = document.getElementById('previewMediaUrlImage');
+        const placeholder = document.getElementById('previewMediaUrlPlaceholder');
+
+        if (!input || !image || !placeholder || !workspaceId) {
+            return;
+        }
+
+        function tryBuildFastGooeyMediaPreviewUrl(value) {
+            const trimmed = (value || '').trim();
+            if (!trimmed.toLowerCase().startsWith(mediaPickerSchemePrefix)) {
+                return null;
+            }
+
+            const remainder = trimmed.slice(mediaPickerSchemePrefix.length);
+            const separatorIndex = remainder.indexOf(':');
+            if (separatorIndex < 0) {
+                return null;
+            }
+
+            const sourceId = remainder.slice(0, separatorIndex);
+            const encodedPath = remainder.slice(separatorIndex + 1);
+            if (!sourceId || !encodedPath) {
+                return null;
+            }
+
+            let decodedPath = encodedPath;
+            try {
+                decodedPath = decodeURIComponent(encodedPath);
+            } catch {
+            }
+
+            return '/Workspaces/' + workspaceId + '/Media/preview/' + sourceId + '?path=' + encodeURIComponent(decodedPath);
+        }
+
+        function updatePreviewMediaTile() {
+            const value = (input.value || '').trim();
+            if (!value) {
+                image.removeAttribute('src');
+                image.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                return;
+            }
+
+            const fastGooeyPreviewUrl = tryBuildFastGooeyMediaPreviewUrl(value);
+            const previewUrl = fastGooeyPreviewUrl || value;
+
+            image.src = previewUrl;
+            image.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        }
+
+        image.addEventListener('error', () => {
+            image.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        });
+
+        input.addEventListener('change', updatePreviewMediaTile);
+        updatePreviewMediaTile();
+    })();
+</script>

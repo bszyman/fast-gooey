@@ -301,27 +301,10 @@ public class HypermediaController(
                 return [];
             }
 
-            var result = new List<AppleTvProductRelatedItemJsonModel>();
-            foreach (var item in items.EnumerateArray())
-            {
-                if (item.ValueKind != JsonValueKind.Object)
-                {
-                    continue;
-                }
-
-                result.Add(new AppleTvProductRelatedItemJsonModel
-                {
-                    Id = item.TryGetProperty("Id", out var idValue) && idValue.ValueKind == JsonValueKind.String &&
-                         Guid.TryParse(idValue.GetString(), out var id)
-                        ? id
-                        : Guid.Empty,
-                    Title = ReadString(item, "Title", "title"),
-                    Link = ReadString(item, "Link", "link"),
-                    MediaUrl = ReadString(item, "MediaUrl", "mediaUrl")
-                });
-            }
-
-            return result;
+            return items.EnumerateArray()
+                .Where(item => item.ValueKind == JsonValueKind.Object)
+                .Select(item => new AppleTvProductRelatedItemJsonModel(item))
+                .ToList();
         }
 
         var root = gooeyInterface.Config.RootElement;
