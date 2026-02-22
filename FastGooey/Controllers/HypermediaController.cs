@@ -6,6 +6,7 @@ using System.Xml;
 using FastGooey.Database;
 using FastGooey.Features.Interfaces.AppleTv.Alert.Models;
 using FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models;
+using FastGooey.Features.Interfaces.AppleTv.Product.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
@@ -170,6 +171,8 @@ public class HypermediaController(
                 return GenerateAppleTvAlert(gooeyInterface);
             case "DescriptiveAlert":
                 return GenerateAppleTvDescriptiveAlert(gooeyInterface);
+            case "Product":
+                return GenerateAppleTvProduct(gooeyInterface);
             default:
                 return NotSupported();
         }
@@ -266,6 +269,60 @@ public class HypermediaController(
             CancelButtonText = unfurledConfig.CancelButtonText,
             ConfirmButtonText = unfurledConfig.ConfirmButtonText,
             DescriptiveContent = unfurledConfig.DescriptiveContent
+        };
+    }
+
+    private AppleTvProductHypermediaResponse GenerateAppleTvProduct(GooeyInterface gooeyInterface)
+    {
+        static string ReadString(JsonElement element, params string[] names)
+        {
+            foreach (var name in names)
+            {
+                if (element.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String)
+                {
+                    return value.GetString() ?? string.Empty;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        static List<AppleTvProductRelatedItemJsonModel> ReadRelatedItems(JsonElement element)
+        {
+            if (!element.TryGetProperty("RelatedProducts", out var items) &&
+                !element.TryGetProperty("relatedProducts", out items) &&
+                !element.TryGetProperty("relatedItems", out items))
+            {
+                return [];
+            }
+
+            if (items.ValueKind != JsonValueKind.Array)
+            {
+                return [];
+            }
+
+            return items.EnumerateArray()
+                .Where(item => item.ValueKind == JsonValueKind.Object)
+                .Select(item => new AppleTvProductRelatedItemJsonModel(item))
+                .ToList();
+        }
+
+        var root = gooeyInterface.Config.RootElement;
+        var relatedItems = ReadRelatedItems(root);
+
+        return new AppleTvProductHypermediaResponse
+        {
+            InterfaceId = gooeyInterface.DocId,
+            Title = UnfurlFastGooeyLink(ReadString(root, "Title", "title"), gooeyInterface.Workspace.PublicId),
+            Description = UnfurlFastGooeyLink(ReadString(root, "Description", "description"), gooeyInterface.Workspace.PublicId),
+            PreviewMediaUrl = UnfurlFastGooeyLink(ReadString(root, "PreviewMediaUrl", "previewMediaUrl"), gooeyInterface.Workspace.PublicId),
+            RelatedItems = relatedItems.Select(x => new AppleTvProductRelatedItemJsonModel
+            {
+                Id = x.Id,
+                Title = UnfurlFastGooeyLink(x.Title, gooeyInterface.Workspace.PublicId),
+                Link = UnfurlFastGooeyLink(x.Link, gooeyInterface.Workspace.PublicId),
+                MediaUrl = UnfurlFastGooeyLink(x.MediaUrl, gooeyInterface.Workspace.PublicId)
+            }).ToList()
         };
     }
 
