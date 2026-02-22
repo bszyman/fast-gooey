@@ -1,3 +1,78 @@
-<div class="h-full w-full flex items-center justify-center text-zinc-500 text-sm">
-    Apple TV Product workspace is not implemented yet.
-</div>
+@model FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv.AppleTvProductWorkspaceViewModel
+
+<form method="post"
+      hx-post="@Url.Action("SaveWorkspace", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+      hx-trigger="blur from:#title, keyup[key=='Enter'] changed delay:500ms from:#title, blur from:#description, keyup[key=='Enter'] changed delay:500ms from:#description, change from:#previewMediaUrl"
+      hx-target="#workspaceEditor"
+      onsubmit="return false;">
+    @Html.AntiForgeryToken()
+    <div id="editor" class="h-full w-full flex items-center justify-center py-8 px-4">
+        <div class="w-full max-w-5xl">
+            <div id="interactiveEditor" class="relative mx-auto w-full max-w-4xl aspect-video border border-zinc-300 rounded-lg overflow-hidden shadow-sm bg-zinc-900 p-4">
+                <div class="w-full mb-4">
+                    <label for="title" class="text-xs uppercase tracking-wide text-zinc-300">Title</label>
+                    <input id="title" name="Title" value="@Model.Data.Title" class="mt-1 w-full bg-zinc-800 text-zinc-100 border border-zinc-700 rounded px-3 py-2" placeholder="Click to edit title..." />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="description" class="text-xs uppercase tracking-wide text-zinc-300">Description</label>
+                        <textarea id="description" name="Description" rows="4" class="mt-1 w-full bg-zinc-800 text-zinc-100 border border-zinc-700 rounded px-3 py-2" placeholder="Click to edit description...">@Model.Data.Description</textarea>
+                    </div>
+                    <div>
+                        <label for="previewMediaUrlButton" class="text-xs uppercase tracking-wide text-zinc-300">Preview Media</label>
+                        <input type="hidden" id="previewMediaUrl" name="PreviewMediaUrl" value="@Model.Data.PreviewMediaUrl" />
+                        <button type="button"
+                                id="previewMediaUrlButton"
+                                class="linkEditorTriggerButton mt-1"
+                                onclick="openMediaPicker(this)"
+                                data-media-picker-trigger="true"
+                                data-media-picker-target="previewMediaUrl"
+                                data-media-picker-display="previewMediaUrlDisplay">
+                            Select media...
+                        </button>
+                        <p id="previewMediaUrlDisplay" class="truncate text-xs text-zinc-400 ml-1 mt-1">Click to edit preview media...</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-3">
+                    <p class="text-xs uppercase tracking-wide text-zinc-300">Related Items</p>
+                    <button type="button"
+                            hx-get="@Url.Action("RelatedItemPanel", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                            hx-target="#editorPanel"
+                            onclick="toggleEditor()"
+                            class="text-zinc-100 hover:text-white cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="w-full overflow-x-scroll">
+                    <div class="flex gap-3 min-w-max">
+                        @if (Model.Data.RelatedProducts.Count == 0)
+                        {
+                            <div class="border border-dashed border-zinc-600 rounded-md px-3 py-2 text-zinc-300 text-xs">
+                                Click to edit related items...
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var relatedItem in Model.Data.RelatedProducts)
+                            {
+                                <button type="button"
+                                        hx-get="@Url.Action("RelatedItemPanel", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), relatedItemId = relatedItem.Id })"
+                                        hx-target="#editorPanel"
+                                        onclick="toggleEditor()"
+                                        class="w-48 text-left rounded-md border border-zinc-700 bg-zinc-800 p-3 hover:bg-zinc-700 transition">
+                                    <p class="text-zinc-100 text-sm font-semibold truncate">@(string.IsNullOrWhiteSpace(relatedItem.Title) ? "Click to edit title..." : relatedItem.Title)</p>
+                                    <p class="text-zinc-400 text-xs truncate">@(string.IsNullOrWhiteSpace(relatedItem.Link) ? "Click to edit link..." : relatedItem.Link)</p>
+                                </button>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
