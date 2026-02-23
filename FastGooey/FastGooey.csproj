@@ -40,6 +40,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Features\Account\Management\Views\Workspaces\AccountManagement.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Features\Interfaces\AppleMobile\Collection\Views\Partials\CollectionViewItemEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
@@ -103,6 +106,15 @@
       <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Workspaces\FormEntriesWorkspace.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\Shell\Views\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\Shell\Views\Partials\InterfaceSelector.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\Shell\Views\Partials\NewInterfaceSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Features\Interfaces\AppleTv\Alert\Views\Partials\LowerButtonEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
@@ -125,6 +137,12 @@
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
       <AdditionalFiles Include="Features\Interfaces\AppleTv\Main\Views\Partials\menubarEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleTv\Shell\Views\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleTv\Shell\Views\Partials\InterfaceSelector.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
       <AdditionalFiles Include="Features\Interfaces\Mac\Collection\Views\Partials\CollectionViewItemEditorPanel.cshtml">
@@ -154,6 +172,12 @@
       <AdditionalFiles Include="Features\Interfaces\Mac\Outline\Views\Partials\OutlineViewItemEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\Mac\Shell\Views\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\Mac\Shell\Views\Partials\MacInterfaceSelector.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Features\Interfaces\Mac\SourceList\Views\Partials\SourceListEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
@@ -172,6 +196,42 @@
       <AdditionalFiles Include="Features\Interfaces\Mac\Table\Views\Partials\TableItemOptionRow.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
+      <AdditionalFiles Include="Features\Media\Palette\Views\Partials\SourceSection.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Clock\Views\Partials\previewPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Clock\Views\Partials\SearchPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Map\Views\Partials\CityEntry.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Map\Views\Partials\SearchPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\RssFeed\Views\Partials\PreviewPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Shell\Views\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Shell\Views\Partials\InterfaceSelector.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Shell\Views\Partials\NewWidgetPartialView.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Weather\Views\Partials\weatherPreviewPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Widgets\Weather\Views\Partials\WeatherSearchPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Workspaces\Selector\Views\Partials\WorkspaceList.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Views\MacForms\Partials\FormSubmissionViewerPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldBlankOption.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml" />
@@ -184,9 +244,6 @@
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldTextEditorPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldTimeEditorPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormSubmissionViewerPanel.cshtml" />
-      <AdditionalFiles Include="Features\Workspaces\Management\Views\WorkspaceManagement\Partials\MediaSourceEditorPanel.cshtml">
-        <Generator>RazorGenerator</Generator>
-      </AdditionalFiles>
     </ItemGroup>
 
     <ItemGroup>
@@ -205,9 +262,6 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Features\Interfaces\Mac\Shell\Views\MacOS\Partials\InterfaceCreatorPalette.cshtml">
-        <Generator>RazorGenerator</Generator>
-      </Content>
-      <Content Update="Features\Workspaces\Management\Views\WorkspaceManagement\WorkspaceManagement.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Views\Partials\createInterfaceFloatingPalette.cshtml">
@@ -538,6 +592,171 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Features\Interfaces\AppleMobile\List\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Account\Management\Views\Workspaces\AccountManagement.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Account\Management\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Account\Management\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Selector\Views\Partials\WorkspaceList.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Selector\Views\CreateWorkspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Selector\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Management\Views\Partials\MediaSourceEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Management\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Management\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Management\Views\MediaSourceConfiguration.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Management\Views\WorkspaceManagement.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Home\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Home\Views\Home.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Workspaces\Home\Views\Info.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Auth\SignUp\Views\Complete.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Auth\SignUp\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Auth\Login\Views\Login.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Auth\Login\Views\LoginSucceeded.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Clock\Views\Partials\previewPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Clock\Views\Partials\SearchPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Clock\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Clock\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Clock\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Map\Views\Partials\CityEntry.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Map\Views\Partials\SearchPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Map\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Map\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Map\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\RssFeed\Views\Partials\PreviewPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\RssFeed\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\RssFeed\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\RssFeed\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Weather\Views\Partials\weatherPreviewPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Weather\Views\Partials\WeatherSearchPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Weather\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Weather\Views\Weather.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Weather\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Shell\Views\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Shell\Views\Partials\InterfaceSelector.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Shell\Views\Partials\NewWidgetPartialView.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Shell\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Widgets\Shell\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Shell\Views\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Shell\Views\Partials\MacInterfaceSelector.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Shell\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Shell\Views\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Shell\Views\Partials\InterfaceSelector.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Shell\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\Shell\Views\Partials\InterfaceCreatorPalette.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\Shell\Views\Partials\InterfaceSelector.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\Shell\Views\Partials\NewInterfaceSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\Shell\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Media\Palette\Views\Partials\SourceSection.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Media\Palette\Views\ContentList.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Media\LinkEditor\Views\ContentList.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>
