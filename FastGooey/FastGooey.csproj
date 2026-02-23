@@ -61,7 +61,48 @@
       <AdditionalFiles Include="Features\Interfaces\AppleMobile\Content\Views\Partials\ContentVideoConfigurationPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
-      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\AppleMobileList\Form.cshtml" />
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldBlankOption.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldDateEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldDropDownEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldFileEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldLongTextEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldMultiSelectEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldTextEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldTimeEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormSubmissionViewerPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Partials\ListItemEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Workspaces\Form.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\Workspaces\FormEntriesWorkspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Features\Interfaces\AppleTv\Alert\Views\Partials\LowerButtonEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
@@ -443,6 +484,60 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Features\Interfaces\AppleMobile\Content\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldBlankOption.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldDateEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldDropDownEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldFileEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldLongTextEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldMultiSelectEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldTextEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormFieldTimeEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\Forms\FormSubmissionViewerPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Partials\ListItemEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Workspaces\Form.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Workspaces\FormEntriesWorkspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Form.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\List\Views\Workspace.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>

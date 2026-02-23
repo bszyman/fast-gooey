@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastGooey.Features.Interfaces.AppleMobile.Shared.Models.FormModels;
+namespace FastGooey.Features.Interfaces.AppleMobile.List.Models;
 
 public class AppleMobileListEditorPanelFormModel
 {

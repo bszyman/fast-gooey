@@ -1,11 +1,9 @@
 using System.Text.Json;
 using FastGooey.Attributes;
 using FastGooey.Database;
-using FastGooey.Features.Interfaces.AppleMobile.Shared.Models.FormModels;
-using FastGooey.Features.Interfaces.AppleMobile.Shared.Models.ViewModels.AppleMobileInterface;
+using FastGooey.Features.Interfaces.AppleMobile.List.Models;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
-using FastGooey.Models.JsonDataModels;
 using FastGooey.Services;
 using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +16,6 @@ namespace FastGooey.Features.Interfaces.AppleMobile.List.Controllers;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/AppleMobile/List")]
 public class AppleMobileListController(
-    ILogger<AppleMobileListController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
     BaseInterfaceController(keyValueService, dbContext)

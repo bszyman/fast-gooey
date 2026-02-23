@@ -2,12 +2,10 @@ using FastGooey.Services;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging.Abstractions;
 using NodaTime;
 using System.ComponentModel.DataAnnotations;
 using FastGooey.Features.Interfaces.AppleMobile.Content.Controllers;
 using FastGooey.Features.Interfaces.AppleMobile.Content.Models;
-using FastGooey.Features.Interfaces.AppleMobile.Shared.Models.FormModels;
 
 namespace FastGooey.Tests.Controllers;
 
