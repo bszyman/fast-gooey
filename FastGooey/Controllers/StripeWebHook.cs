@@ -94,13 +94,14 @@ public class StripeWebHook(
         {
             case EventTypes.CustomerSubscriptionCreated:
             case EventTypes.CustomerSubscriptionResumed:
-                await UpdateUserSubscriptionAsync(user, subscription);
-                logger.LogInformation($"Activated/resumed subscription for user {user.Id}");
+            case EventTypes.CustomerSubscriptionUpdated:
+                await RecalculateUserSubscriptionAsync(user, subscription.CustomerId, subscription.Id);
+                logger.LogInformation($"Recalculated subscription entitlements for user {user.Id}");
                 break;
             case EventTypes.CustomerSubscriptionPaused:
             case EventTypes.CustomerSubscriptionDeleted:
-                await CancelUserSubscriptionAsync(user);
-                logger.LogInformation($"Paused/deleted subscription for user {user.Id}");
+                await RecalculateUserSubscriptionAsync(user, subscription.CustomerId);
+                logger.LogInformation($"Recalculated subscription entitlements after pause/delete for user {user.Id}");
                 break;
             default:
                 logger.LogWarning($"Unhandled Stripe event type: {stripeEvent.Type}");
@@ -141,9 +142,9 @@ public class StripeWebHook(
             FirstName = firstName,
             LastName = lastName,
             StripeCustomerId = customerId,
-            StripeSubscriptionId = subscription.Id,
-            SubscriptionLevel = MapPlanToLevel(subscription.Items.Data[0].Price.Id),
-            StandardWorkspaceAllowance = GetStandardWorkspaceAllowance(subscription)
+            StripeSubscriptionId = null,
+            SubscriptionLevel = SubscriptionLevel.Explorer,
+            StandardWorkspaceAllowance = 0
         };
 
         var result = await userManager.CreateAsync(newUser, password);
@@ -177,21 +178,57 @@ public class StripeWebHook(
         return await customerService.GetAsync(subscription.CustomerId);
     }
 
-    private async Task UpdateUserSubscriptionAsync(ApplicationUser user, Subscription subscription)
+    private async Task RecalculateUserSubscriptionAsync(ApplicationUser user, string customerId, string? preferredSubscriptionId = null)
     {
-        user.StripeCustomerId = subscription.CustomerId;
-        user.StripeSubscriptionId = subscription.Id;
-        user.SubscriptionLevel = MapPlanToLevel(subscription.Items.Data[0].Price.Id);
-        user.StandardWorkspaceAllowance = GetStandardWorkspaceAllowance(subscription);
-        user.UpdatedAt = SystemClock.Instance.GetCurrentInstant();
-        await userManager.UpdateAsync(user);
-    }
+        var subscriptionService = new SubscriptionService();
+        var subscriptions = subscriptionService.ListAutoPaging(new SubscriptionListOptions
+        {
+            Customer = customerId,
+            Status = "all",
+            Limit = 100
+        }).ToList();
 
-    private async Task CancelUserSubscriptionAsync(ApplicationUser user)
-    {
-        user.SubscriptionLevel = SubscriptionLevel.Explorer;
-        user.StripeSubscriptionId = null;
-        user.StandardWorkspaceAllowance = 0;
+        var entitlementSubscriptions = subscriptions
+            .Where(HasEntitlementStatus)
+            .ToList();
+
+        var highestLevel = SubscriptionLevel.Explorer;
+        var standardWorkspaceAllowance = 0;
+        string? selectedSubscriptionId = null;
+
+        foreach (var stripeSubscription in entitlementSubscriptions)
+        {
+            var itemLevels = GetItemLevels(stripeSubscription).ToList();
+            if (itemLevels.Count == 0)
+            {
+                continue;
+            }
+
+            var subscriptionLevel = itemLevels.Max();
+            if (subscriptionLevel > highestLevel)
+            {
+                highestLevel = subscriptionLevel;
+                selectedSubscriptionId = stripeSubscription.Id;
+            }
+
+            standardWorkspaceAllowance += GetStandardWorkspaceAllowance(stripeSubscription);
+        }
+
+        if (highestLevel == SubscriptionLevel.Agency)
+        {
+            standardWorkspaceAllowance = 0;
+        }
+
+        if (!string.IsNullOrWhiteSpace(preferredSubscriptionId) &&
+            entitlementSubscriptions.Any(x => x.Id == preferredSubscriptionId))
+        {
+            selectedSubscriptionId = preferredSubscriptionId;
+        }
+
+        user.StripeCustomerId = customerId;
+        user.StripeSubscriptionId = selectedSubscriptionId;
+        user.SubscriptionLevel = highestLevel;
+        user.StandardWorkspaceAllowance = standardWorkspaceAllowance;
         user.UpdatedAt = SystemClock.Instance.GetCurrentInstant();
         await userManager.UpdateAsync(user);
     }
@@ -212,9 +249,37 @@ public class StripeWebHook(
             SubscriptionLevel.Explorer;
     }
 
+    private IEnumerable<SubscriptionLevel> GetItemLevels(Subscription subscription)
+    {
+        foreach (var item in subscription.Items?.Data ?? [])
+        {
+            var priceId = item.Price?.Id;
+            if (string.IsNullOrWhiteSpace(priceId))
+            {
+                continue;
+            }
+
+            yield return MapPlanToLevel(priceId);
+        }
+    }
+
+    private static bool HasEntitlementStatus(Subscription subscription)
+    {
+        return subscription.Status == "active" ||
+               subscription.Status == "trialing" ||
+               subscription.Status == "past_due" ||
+               subscription.Status == "unpaid";
+    }
+
     private int GetStandardWorkspaceAllowance(Subscription subscription)
     {
-        var subscriptionLevel = MapPlanToLevel(subscription.Items.Data[0].Price.Id);
+        var itemLevels = GetItemLevels(subscription).ToList();
+        if (itemLevels.Count == 0)
+        {
+            return 0;
+        }
+
+        var subscriptionLevel = itemLevels.Max();
         if (subscriptionLevel == SubscriptionLevel.Agency)
         {
             return 0;
@@ -231,7 +296,8 @@ public class StripeWebHook(
             return 1;
         }
 
-        var standardItem = subscription.Items.Data.FirstOrDefault(item =>
+        var standardItem = (subscription.Items?.Data ?? [])
+            .FirstOrDefault(item =>
             item.Price?.Id == standardPriceId);
         
         if (standardItem is null)
