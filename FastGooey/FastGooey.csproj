@@ -169,6 +169,12 @@
       <Content Update="Features\Interfaces\AppleTv\Product\Views\Workspace.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
+      <Content Update="Features\Interfaces\AppleTv\MenuBar\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\MenuBar\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
