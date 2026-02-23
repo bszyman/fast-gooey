@@ -764,5 +764,6 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Features\Interfaces\AppleTv\Alert\Views\AppleTvAlert\Partials\LowerButtonEditorPanel.cshtml" />
       <_ContentIncludedByDefault Remove="Features\Interfaces\AppleTv\Alert\Views\AppleTvAlert\Partials\UpperButtonEditorPanel.cshtml" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\vue\vue_3_5_22.js" />
     </ItemGroup>
 </Project>
