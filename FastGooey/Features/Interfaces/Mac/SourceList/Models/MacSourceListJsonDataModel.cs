@@ -1,6 +1,6 @@
 using FastGooey.Models.Common;
 
-namespace FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+namespace FastGooey.Features.Interfaces.Mac.SourceList.Models;
 
 public class MacSourceListJsonDataModel
 {

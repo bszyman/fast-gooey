@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
+namespace FastGooey.Features.Interfaces.Mac.SourceList.Models;
 
 public class MacSourceListGroupItemPanelFormModel
 {
@@ -10,4 +10,10 @@ public class MacSourceListGroupItemPanelFormModel
     public string? Icon { get; set; } = string.Empty;
 
     public string? Url { get; set; } = string.Empty;
+}
+
+public class MacSourceListGroupPanelFormModel
+{
+    [Required]
+    public string GroupName { get; set; } = string.Empty;
 }

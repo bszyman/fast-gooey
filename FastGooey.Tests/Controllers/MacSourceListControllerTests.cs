@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
 using FastGooey.Features.Interfaces.Mac.SourceList.Controllers;
+using FastGooey.Features.Interfaces.Mac.SourceList.Models;
 using FastGooey.Models;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
@@ -42,7 +41,6 @@ public class MacSourceListControllerTests
         await dbContext.SaveChangesAsync();
 
         var controller = new MacSourceListController(
-            NullLogger<MacSourceListController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext
@@ -98,7 +96,6 @@ public class MacSourceListControllerTests
         await dbContext.SaveChangesAsync();
 
         var controller = new MacSourceListController(
-            NullLogger<MacSourceListController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext

@@ -1,9 +1,7 @@
 using System.Text.Json;
 using FastGooey.Attributes;
 using FastGooey.Database;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac;
+using FastGooey.Features.Interfaces.Mac.SourceList.Models;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Services;
@@ -18,7 +16,6 @@ namespace FastGooey.Features.Interfaces.Mac.SourceList.Controllers;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/interfaces/mac/sourcelist")]
 public class MacSourceListController(
-    ILogger<MacSourceListController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
     BaseInterfaceController(keyValueService, dbContext)
