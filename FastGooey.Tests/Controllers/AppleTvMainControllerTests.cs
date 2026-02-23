@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using FastGooey.Features.Interfaces.AppleTv.Main.Controllers;
-using FastGooey.Features.Interfaces.AppleTv.Shared.Models.FormModels;
-using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
+using FastGooey.Features.Interfaces.AppleTv.Main.Models;
 using FastGooey.Models;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
@@ -51,7 +50,6 @@ public class AppleTvMainControllerTests
         await dbContext.SaveChangesAsync();
 
         var controller = new AppleTvMainController(
-            NullLogger<AppleTvMainController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext

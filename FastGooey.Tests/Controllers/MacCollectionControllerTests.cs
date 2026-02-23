@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using FastGooey.Features.Interfaces.Mac.Collection.Controllers;
+using FastGooey.Features.Interfaces.Mac.Collection.Models;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac;
@@ -39,7 +40,6 @@ public class MacCollectionControllerTests
         await dbContext.SaveChangesAsync();
 
         var controller = new MacCollectionController(
-            NullLogger<MacCollectionController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext

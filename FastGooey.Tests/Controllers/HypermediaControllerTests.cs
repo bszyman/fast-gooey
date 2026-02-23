@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 using FastGooey.Controllers;
+using FastGooey.Features.Interfaces.AppleTv.Main.Models;
 using FastGooey.Features.Interfaces.AppleTv.Media.Models;
 using FastGooey.Features.Interfaces.AppleTv.Product.Models;
 using FastGooey.Features.Interfaces.AppleTv.MediaGrid.Models;

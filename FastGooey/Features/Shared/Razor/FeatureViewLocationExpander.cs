@@ -25,7 +25,7 @@ public sealed class FeatureViewLocationExpander : IViewLocationExpander
             ["Weather"] = "Widgets/Weather/Views/Weather",
             ["MacOS"] = "Interfaces/Mac/Shell/Views/MacOS",
             ["MacTable"] = "Interfaces/Mac/Table/Views/MacTable",
-            ["MacCollection"] = "Interfaces/Mac/Collection/Views/MacCollection",
+            ["MacCollection"] = "Interfaces/Mac/Collection/Views",
             ["MacContent"] = "Interfaces/Mac/Content/Views/MacContent",
             ["MacOutline"] = "Interfaces/Mac/Outline/Views/MacOutline",
             ["MacSourceList"] = "Interfaces/Mac/SourceList/Views/MacSourceList",

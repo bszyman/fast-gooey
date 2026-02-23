@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
+namespace FastGooey.Features.Interfaces.Mac.Collection.Models;
 
 public class MacCollectionEditorPanelFormModel
 {
