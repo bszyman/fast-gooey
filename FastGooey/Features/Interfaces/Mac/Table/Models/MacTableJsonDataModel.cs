@@ -1,5 +1,5 @@
 
-namespace FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+namespace FastGooey.Features.Interfaces.Mac.Table.Models;
 
 public class MacTableJsonDataModel
 {

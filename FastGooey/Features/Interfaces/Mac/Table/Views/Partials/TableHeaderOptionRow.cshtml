@@ -1,4 +1,4 @@
-@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.TableItemOptionRowViewModel
+@model FastGooey.Features.Interfaces.Mac.Table.Models.TableItemOptionRowViewModel
 @{
     var idString = $"header{Model.OptionRowCounter.ToString() ?? Guid.NewGuid().ToString()}";
     var columnText = Model.OptionRowCounter.HasValue ? $"Column {Model.OptionRowCounter.Value}" : "New Column";

@@ -16,6 +16,7 @@ using FastGooey.Features.Interfaces.Mac.Collection.Models;
 using FastGooey.Features.Interfaces.Mac.Outline.Models;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
 using FastGooey.Features.Interfaces.Mac.SourceList.Models;
+using FastGooey.Features.Interfaces.Mac.Table.Models;
 using FastGooey.Features.Widgets.Clock.Models.JsonDataModels;
 using FastGooey.Features.Widgets.Map.Models.JsonDataModels;
 using FastGooey.Features.Widgets.RssFeed.Models.JsonDataModels;

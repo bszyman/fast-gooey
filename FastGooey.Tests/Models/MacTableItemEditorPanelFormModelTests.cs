@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModel;
+using FastGooey.Features.Interfaces.Mac.Table.Models;
 
 namespace FastGooey.Tests.Models;
 

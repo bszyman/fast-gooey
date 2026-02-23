@@ -1,4 +1,4 @@
-@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacInterfaceTableItemEditorPanelViewModel
+@model FastGooey.Features.Interfaces.Mac.Table.Models.MacInterfaceTableItemEditorPanelViewModel
 @{
     var formUrl = Model.Content.Identifier.Equals(Guid.Empty)
         ? Url.Action("SaveTableItemEditorPanel", "MacTable", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })

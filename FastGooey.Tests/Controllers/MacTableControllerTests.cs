@@ -3,6 +3,7 @@ using System.Text.Json;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
 using FastGooey.Features.Interfaces.Mac.Table.Controllers;
+using FastGooey.Features.Interfaces.Mac.Table.Models;
 using FastGooey.Models;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
@@ -38,7 +39,6 @@ public class MacTableControllerTests
         await dbContext.SaveChangesAsync();
 
         var controller = new MacTableController(
-            NullLogger<MacTableController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext

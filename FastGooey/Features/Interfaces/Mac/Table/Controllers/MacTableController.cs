@@ -2,10 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using FastGooey.Attributes;
 using FastGooey.Database;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModel;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac;
+using FastGooey.Features.Interfaces.Mac.Table.Models;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Services;
@@ -13,6 +10,7 @@ using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MacTableStructureWorkspaceFormModel = FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.MacTableStructureWorkspaceFormModel;
 
 namespace FastGooey.Features.Interfaces.Mac.Table.Controllers;
 
@@ -20,7 +18,6 @@ namespace FastGooey.Features.Interfaces.Mac.Table.Controllers;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/interfaces/mac/table")]
 public class MacTableController(
-    ILogger<MacTableController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
     BaseInterfaceController(keyValueService, dbContext)
