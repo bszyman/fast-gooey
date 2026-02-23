@@ -1,11 +1,10 @@
 using System.Text.Json;
 using FastGooey.Attributes;
 using FastGooey.Database;
-using FastGooey.Features.Interfaces.AppleTv.Shared.Models.FormModels;
+using FastGooey.Features.Interfaces.AppleTv.Main.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Services;
@@ -19,7 +18,6 @@ namespace FastGooey.Features.Interfaces.AppleTv.Main.Controllers;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/tvOS/Main")]
 public class AppleTvMainController(
-    ILogger<AppleTvMainController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
     BaseInterfaceController(keyValueService, dbContext)

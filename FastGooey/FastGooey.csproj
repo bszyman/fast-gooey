@@ -58,6 +58,12 @@
       <AdditionalFiles Include="Features\Interfaces\AppleTv\List\Views\Partials\ListItemEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleTv\Main\Views\Partials\backgroundEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleTv\Main\Views\Partials\menubarEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Views\MacForms\Partials\FormSubmissionViewerPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldBlankOption.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml" />
@@ -142,6 +148,18 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Features\Interfaces\AppleTv\List\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Main\Views\Partials\backgroundEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Main\Views\Partials\menubarEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Main\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Main\Views\Workspace.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>

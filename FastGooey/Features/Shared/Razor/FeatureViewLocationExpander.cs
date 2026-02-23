@@ -45,7 +45,7 @@ public sealed class FeatureViewLocationExpander : IViewLocationExpander
             ["AppleTvMediaGrid"] = "Interfaces/AppleTv/MediaGrid/Views",
             ["AppleTvLoading"] = "Interfaces/AppleTv/Loading/Views/AppleTvLoading",
             ["AppleTvMedia"] = "Interfaces/AppleTv/Media/Views",
-            ["AppleTvMain"] = "Interfaces/AppleTv/Main/Views/AppleTvMain",
+            ["AppleTvMain"] = "Interfaces/AppleTv/Main/Views",
             ["AppleTvMenuBar"] = "Interfaces/AppleTv/MenuBar/Views/AppleTvMenuBar",
             ["AppleTvOneUp"] = "Interfaces/AppleTv/OneUp/Views/AppleTvOneUp",
             ["AppleTvParade"] = "Interfaces/AppleTv/Parade/Views/AppleTvParade",
