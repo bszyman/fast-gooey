@@ -1,13 +1,13 @@
-@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacContentHeadlineConfigurationPanelViewModel
+@model FastGooey.Features.Interfaces.Mac.Content.Models.MacContentTextConfigurationPanelViewModel
 @{
     var url = Model.Content.Identifier.Equals(Guid.Empty)
-        ? Url.Action("SaveHeadline", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
-        : Url.Action("SaveHeadline", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier });
+        ? Url.Action("SaveText", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
+        : Url.Action("SaveText", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier });
 }
 
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
     <div class="flex-1 flex items-center">
-        <p class="mx-6 font-bold">Edit Headline</p>
+        <p class="mx-6 font-bold">Edit Text</p>
     </div>
 </div>
 
@@ -22,16 +22,11 @@
             </div>
             <div class="py-4 px-4">
                 <div>
-                    <label for="headline">Headline</label>
+                    <label for="text">Text</label>
                     <div class="flex gap-2">
-                        <input 
-                            type="text" 
-                            id="headline" 
-                            name="headline" 
-                            value="@Model.Content.Headline"
-                        />
+                        <textarea id="text" name="Text" rows="8">@Model.Content.Text</textarea>
                     </div>
-                    @Html.ValidationMessage("Headline", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                    @Html.ValidationMessage("Text", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
             </div>
         </div>

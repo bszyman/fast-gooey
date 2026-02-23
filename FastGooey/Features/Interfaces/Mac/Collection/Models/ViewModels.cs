@@ -1,4 +1,3 @@
-using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
 using FastGooey.Models;
 using FastGooey.Utils;
 

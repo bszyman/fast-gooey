@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using FastGooey.Models.Common;
 
-namespace FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+namespace FastGooey.Features.Interfaces.Mac.Content.Models;
 
 public class MacContentJsonDataModel : IContentDataModel<MacContentItemJsonDataModel>
 {

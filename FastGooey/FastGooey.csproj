@@ -68,6 +68,24 @@
       <AdditionalFiles Include="Features\Interfaces\Mac\Collection\Views\Partials\CollectionViewItemEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\Mac\Content\Views\Partials\ContentHeadlineConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\Mac\Content\Views\Partials\ContentImageConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\Mac\Content\Views\Partials\ContentLinkConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\Mac\Content\Views\Partials\ContentTextConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\Mac\Content\Views\Partials\ContentTypeSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\Mac\Content\Views\Partials\ContentVideoConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Features\Interfaces\Mac\Outline\Views\Partials\MacOutlineTreeNode.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
@@ -338,6 +356,33 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Features\Interfaces\Mac\Table\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\Partials\ContentHeadlineConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\Partials\ContentImageConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\Partials\ContentLinkConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\Partials\ContentTextConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\Partials\ContentTypeSelectorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\Partials\ContentVideoConfigurationPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\Mac\Content\Views\Workspace.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>

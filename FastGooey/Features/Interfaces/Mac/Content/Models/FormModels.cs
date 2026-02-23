@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using FastGooey.Models.Common;
 
-namespace FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.Mac;
+namespace FastGooey.Features.Interfaces.Mac.Content.Models;
 
 public class HeadlineContentFormModel : ContentItemBase
 {
@@ -33,4 +33,8 @@ public class VideoContentFormModel : ContentItemBase
 {
     public string Url { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
+}
+
+public class MacContentWorkspaceFormModel : ContentWorkspaceFormModelBase
+{
 }

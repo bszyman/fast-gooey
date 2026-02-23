@@ -10,7 +10,7 @@ using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MacTableStructureWorkspaceFormModel = FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.MacTableStructureWorkspaceFormModel;
+using MacTableStructureWorkspaceFormModel = FastGooey.Features.Interfaces.Mac.Table.Models.MacTableStructureWorkspaceFormModel;
 
 namespace FastGooey.Features.Interfaces.Mac.Table.Controllers;
 

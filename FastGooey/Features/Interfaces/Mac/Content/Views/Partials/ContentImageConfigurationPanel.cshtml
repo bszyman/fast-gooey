@@ -1,4 +1,4 @@
-@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacContentImageConfigurationPanelViewModel
+@model FastGooey.Features.Interfaces.Mac.Content.Models.MacContentImageConfigurationPanelViewModel
 @{
     var url = Model.Content.Identifier.Equals(Guid.Empty)
         ? Url.Action("SaveImage", "MacContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })

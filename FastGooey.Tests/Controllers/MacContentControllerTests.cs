@@ -5,12 +5,10 @@ using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
 using NodaTime;
 using System.ComponentModel.DataAnnotations;
 using FastGooey.Features.Interfaces.Mac.Content.Controllers;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.Mac;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+using FastGooey.Features.Interfaces.Mac.Content.Models;
 
 namespace FastGooey.Tests.Controllers;
 
@@ -27,7 +25,6 @@ public class MacContentControllerTests
     {
         await using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
         var controller = new MacContentController(
-            NullLogger<MacContentController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext
@@ -62,7 +59,6 @@ public class MacContentControllerTests
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
         await using var dbContext = TestDbContextFactory.Create(clock);
         var controller = new MacContentController(
-            NullLogger<MacContentController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext
@@ -85,7 +81,6 @@ public class MacContentControllerTests
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
         await using var dbContext = TestDbContextFactory.Create(clock);
         var keyValueService = new StubKeyValueService();
-        var logger = NullLogger<MacContentController>.Instance;
 
         var itemId = Guid.NewGuid();
         var dataModel = new MacContentJsonDataModel  // Use Mac-specific model for realism
@@ -104,7 +99,7 @@ public class MacContentControllerTests
         dbContext.GooeyInterfaces.Add(gooeyInterface);
         await dbContext.SaveChangesAsync();
 
-        var controller = new MacContentController(logger, keyValueService, dbContext);  // Use MacContentController
+        var controller = new MacContentController(keyValueService, dbContext);  // Use MacContentController
         controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()
@@ -126,7 +121,6 @@ public class MacContentControllerTests
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
         await using var dbContext = TestDbContextFactory.Create(clock);
         var controller = new MacContentController(
-            NullLogger<MacContentController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext

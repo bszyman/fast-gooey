@@ -2,9 +2,7 @@ using System.Text.Json;
 using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Extensions;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.Mac;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
-using FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac;
+using FastGooey.Features.Interfaces.Mac.Content.Models;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
@@ -13,14 +11,14 @@ using FastGooey.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HeadlineContentFormModel = FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.Mac.HeadlineContentFormModel;
-using HeadlineContentItem = FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac.HeadlineContentItem;
-using ImageContentFormModel = FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.Mac.ImageContentFormModel;
-using ImageContentItem = FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac.ImageContentItem;
-using LinkContentFormModel = FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.Mac.LinkContentFormModel;
-using LinkContentItem = FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac.LinkContentItem;
-using TextContentFormModel = FastGooey.Features.Interfaces.Mac.Shared.Models.FormModels.Mac.TextContentFormModel;
-using TextContentItem = FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac.TextContentItem;
+using HeadlineContentFormModel = FastGooey.Features.Interfaces.Mac.Content.Models.HeadlineContentFormModel;
+using HeadlineContentItem = FastGooey.Features.Interfaces.Mac.Content.Models.HeadlineContentItem;
+using ImageContentFormModel = FastGooey.Features.Interfaces.Mac.Content.Models.ImageContentFormModel;
+using ImageContentItem = FastGooey.Features.Interfaces.Mac.Content.Models.ImageContentItem;
+using LinkContentFormModel = FastGooey.Features.Interfaces.Mac.Content.Models.LinkContentFormModel;
+using LinkContentItem = FastGooey.Features.Interfaces.Mac.Content.Models.LinkContentItem;
+using TextContentFormModel = FastGooey.Features.Interfaces.Mac.Content.Models.TextContentFormModel;
+using TextContentItem = FastGooey.Features.Interfaces.Mac.Content.Models.TextContentItem;
 
 namespace FastGooey.Features.Interfaces.Mac.Content.Controllers;
 
@@ -28,7 +26,6 @@ namespace FastGooey.Features.Interfaces.Mac.Content.Controllers;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/interfaces/mac/content")]
 public class MacContentController(
-    ILogger<MacContentController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
     ContentInterfaceControllerBase<MacContentJsonDataModel, MacContentItemJsonDataModel, MacContentWorkspaceViewModel, MacContentWorkspaceFormModel>(keyValueService, dbContext)
