@@ -1,10 +1,9 @@
 using System.Text.Json;
 using FastGooey.Attributes;
 using FastGooey.Database;
-using FastGooey.Features.Interfaces.AppleTv.Shared.Models.FormModels;
+using FastGooey.Features.Interfaces.AppleTv.List.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
-using FastGooey.Features.Interfaces.AppleTv.Shared.Models.ViewModels.AppleTv;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Services;

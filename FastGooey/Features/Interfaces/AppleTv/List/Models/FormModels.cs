@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastGooey.Features.Interfaces.AppleTv.Shared.Models.FormModels;
+namespace FastGooey.Features.Interfaces.AppleTv.List.Models;
 
 public class AppleTvListBannerEditorPanelFormModel
 {
@@ -15,3 +15,19 @@ public class AppleTvListBannerEditorPanelFormModel
     [Required]
     public string Title { get; set; } = string.Empty;
 }
+
+public class AppleTvListHeaderEditorPanelFormModel
+{
+    [Required]
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; } = string.Empty;
+}
+
+public class AppleTvListItemEditorPanelFormModel
+{
+    [Required]
+    public string Title { get; set; } = string.Empty;
+    public string PosterImage { get; set; } = string.Empty;
+    public string LinkToUrl { get; set; } = string.Empty;
+}
+

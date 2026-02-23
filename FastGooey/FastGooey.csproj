@@ -49,6 +49,15 @@
       <AdditionalFiles Include="Features\Interfaces\AppleTv\DescriptiveAlert\Views\Partials\DescriptiveContentPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleTv\List\Views\Partials\BannerEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleTv\List\Views\Partials\ListEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Features\Interfaces\AppleTv\List\Views\Partials\ListItemEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Views\MacForms\Partials\FormSubmissionViewerPanel.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldBlankOption.cshtml" />
       <AdditionalFiles Include="Views\MacForms\Partials\Forms\FormFieldCheckboxEditorPanel.cshtml" />
@@ -96,9 +105,6 @@
       <Content Update="Features\Widgets\Shell\Views\Widgets\Partials\InterfaceCreatorPalette.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
-      <Content Update="Features\Interfaces\AppleTv\List\Views\AppleTvList\ListContents.cshtml">
-        <Generator>RazorGenerator</Generator>
-      </Content>
       <Content Update="Features\Interfaces\AppleTv\Alert\Views\Partials\LowerButtonEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
@@ -118,6 +124,24 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Features\Interfaces\AppleTv\DescriptiveAlert\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\List\Views\Partials\BannerEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\List\Views\Partials\ListEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\List\Views\Partials\ListItemEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\List\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\List\Views\ListContents.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\List\Views\Workspace.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>
