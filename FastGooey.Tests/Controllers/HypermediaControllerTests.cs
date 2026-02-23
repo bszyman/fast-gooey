@@ -3,6 +3,7 @@ using System.Text.Json;
 using FastGooey.Controllers;
 using FastGooey.Features.Interfaces.AppleTv.Media.Models;
 using FastGooey.Features.Interfaces.AppleTv.Product.Models;
+using FastGooey.Features.Interfaces.AppleTv.MediaGrid.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
 using FastGooey.Features.Widgets.Clock.Models.JsonDataModels;
@@ -210,6 +211,59 @@ public class HypermediaControllerTests
         Assert.Equal("Product", response.View);
         Assert.Equal(gooeyInterface.DocId, response.InterfaceId);
         Assert.NotNull(response.RelatedItems);
+    }
+
+    [Fact]
+    public async Task Get_ReturnsAppleTvMediaGridResponse_WhenPlatformIsAppleTvMediaGrid()
+    {
+        using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
+        using var memoryCache = new MemoryCache(new MemoryCacheOptions());
+
+        var workspace = new Workspace { Name = "Test", Slug = "test" };
+        var gooeyInterface = new GooeyInterface
+        {
+            Workspace = workspace,
+            Platform = "AppleTv",
+            ViewType = "MediaGrid",
+            Name = "AppleTv Media Grid",
+            Config = JsonSerializer.SerializeToDocument(new AppleTvMediaGridJsonDataModel
+            {
+                Title = "Featured Grid",
+                MediaItems =
+                [
+                    new AppleTvMediaGridItemJsonDataModel
+                    {
+                        Guid = Guid.NewGuid().ToString(),
+                        Title = "Item 1",
+                        LinkTo = "https://example.com/item-1",
+                        PreviewMedia = "https://example.com/item-1.png"
+                    }
+                ]
+            })
+        };
+        dbContext.GooeyInterfaces.Add(gooeyInterface);
+        await dbContext.SaveChangesAsync();
+
+        var controller = new HypermediaController(
+            dbContext,
+            memoryCache,
+            new StubKeyValueService(),
+            NullLogger<HypermediaController>.Instance);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        controller.HttpContext.Request.Scheme = "https";
+        controller.HttpContext.Request.Host = new HostString("example.com");
+
+        var result = await controller.Get(gooeyInterface.DocId.ToBase64Url());
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<AppleTvMediaGridHypermediaResponse>(ok.Value);
+        Assert.Equal("AppleTv", response.Platform);
+        Assert.Equal("MediaGrid", response.View);
+        Assert.Equal(gooeyInterface.DocId, response.InterfaceId);
+        Assert.NotNull(response.MediaItems);
     }
 
     [Fact]

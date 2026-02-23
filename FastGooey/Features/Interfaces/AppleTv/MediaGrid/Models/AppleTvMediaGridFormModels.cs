@@ -1,15 +1,20 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace FastGooey.Features.Interfaces.AppleTv.MediaGrid.Models;
 
-public class AppleTvMediaGridJsonDataModel
+public class MediaWorkspaceFormModel
 {
     public string Title { get; set; } = string.Empty;
-    public List<AppleTvMediaGridItemJsonDataModel> MediaItems { get; set; } = [];
 }
 
-public class AppleTvMediaGridItemJsonDataModel
+public class MediaGridItemPanelFormModel
 {
-    public string Guid { get; set; } = string.Empty;
+    [Required]
     public string Title { get; set; } = string.Empty;
+
+    [Required]
     public string LinkTo { get; set; } = string.Empty;
+
+    [Required]
     public string PreviewMedia { get; set; } = string.Empty;
 }
