@@ -6,6 +6,7 @@ using System.Xml;
 using FastGooey.Database;
 using FastGooey.Features.Interfaces.AppleTv.Alert.Models;
 using FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models;
+using FastGooey.Features.Interfaces.AppleTv.Main.Models;
 using FastGooey.Features.Interfaces.AppleTv.Media.Models;
 using FastGooey.Features.Interfaces.AppleTv.MediaGrid.Models;
 using FastGooey.Features.Interfaces.AppleTv.Product.Models;
@@ -190,6 +191,7 @@ public class HypermediaController(
         {
             PropertyNameCaseInsensitive = true
         };
+        
         var config = gooeyInterface.Config.Deserialize<MainJsonDataModel>(options) ?? new MainJsonDataModel();
         var menuBarButtons = config.MenuBarButtons
             .Select(x => new NavigationButtonJsonDataModel
