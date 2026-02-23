@@ -38,7 +38,7 @@ public sealed class FeatureViewLocationExpander : IViewLocationExpander
             ["AppleTvAlert"] = "Interfaces/AppleTv/Alert/Views",
             ["AppleTvCatalog"] = "Interfaces/AppleTv/Catalog/Views/AppleTvCatalog",
             ["AppleTvCompilation"] = "Interfaces/AppleTv/Compilation/Views/AppleTvCompilation",
-            ["AppleTvDescriptiveAlert"] = "Interfaces/AppleTv/DescriptiveAlert/Views/AppleTvDescriptiveAlert",
+            ["AppleTvDescriptiveAlert"] = "Interfaces/AppleTv/DescriptiveAlert/Views",
             ["AppleTvDiv"] = "Interfaces/AppleTv/Div/Views/AppleTvDiv",
             ["AppleTvForm"] = "Interfaces/AppleTv/Form/Views/AppleTvForm",
             ["AppleTvList"] = "Interfaces/AppleTv/List/Views/AppleTvList",
