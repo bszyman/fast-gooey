@@ -27,7 +27,7 @@ public sealed class FeatureViewLocationExpander : IViewLocationExpander
             ["MacTable"] = "Interfaces/Mac/Table/Views/MacTable",
             ["MacCollection"] = "Interfaces/Mac/Collection/Views",
             ["MacContent"] = "Interfaces/Mac/Content/Views/MacContent",
-            ["MacOutline"] = "Interfaces/Mac/Outline/Views/MacOutline",
+            ["MacOutline"] = "Interfaces/Mac/Outline/Views",
             ["MacSourceList"] = "Interfaces/Mac/SourceList/Views/MacSourceList",
             ["AppleMobile"] = "Interfaces/AppleMobile/Shell/Views/AppleMobile",
             ["AppleMobileList"] = "Interfaces/AppleMobile/List/Views/AppleMobileList",

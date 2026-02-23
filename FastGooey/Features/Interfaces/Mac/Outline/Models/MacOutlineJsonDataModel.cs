@@ -1,4 +1,4 @@
-namespace FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
+namespace FastGooey.Features.Interfaces.Mac.Outline.Models;
 
 public class MacOutlineJsonDataModel
 {

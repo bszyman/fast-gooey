@@ -1,4 +1,4 @@
-@model FastGooey.Features.Interfaces.Mac.Shared.Models.ViewModels.Mac.MacOutlineEditorPanelViewModel
+@model FastGooey.Features.Interfaces.Mac.Outline.Models.MacOutlineEditorPanelViewModel
 @{
     var url = Model.Identifier.Equals(Guid.Empty)
         ? Url.Action("SaveEditorPanel", "MacOutline", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url() })

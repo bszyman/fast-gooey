@@ -13,6 +13,7 @@ using FastGooey.Features.Interfaces.AppleTv.Product.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
 using FastGooey.Features.Interfaces.Mac.Collection.Models;
+using FastGooey.Features.Interfaces.Mac.Outline.Models;
 using FastGooey.Features.Interfaces.Mac.Shared.Models.JsonDataModels.Mac;
 using FastGooey.Features.Widgets.Clock.Models.JsonDataModels;
 using FastGooey.Features.Widgets.Map.Models.JsonDataModels;
