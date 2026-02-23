@@ -15,7 +15,6 @@ namespace FastGooey.Features.Interfaces.AppleTv.Alert.Controllers;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/tvOS/Alert")]
 public class AppleTvAlertController(
-    ILogger<AppleTvAlertController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
     BaseInterfaceController(keyValueService, dbContext)
