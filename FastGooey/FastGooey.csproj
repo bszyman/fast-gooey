@@ -40,6 +40,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Features\Interfaces\AppleMobile\Collection\Views\Partials\CollectionViewItemEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </AdditionalFiles>
       <AdditionalFiles Include="Features\Interfaces\AppleMobile\List\Views\AppleMobileList\Form.cshtml" />
       <AdditionalFiles Include="Features\Interfaces\AppleTv\Alert\Views\Partials\LowerButtonEditorPanel.cshtml">
         <Generator>RazorGenerator</Generator>
@@ -383,6 +386,18 @@
         <Generator>RazorGenerator</Generator>
       </Content>
       <Content Update="Features\Interfaces\Mac\Content\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\Collection\Views\Partials\CollectionViewItemEditorPanel.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\Collection\Views\_ViewStart.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\Collection\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleMobile\Collection\Views\Workspace.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
     </ItemGroup>

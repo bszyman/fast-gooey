@@ -4,6 +4,7 @@ using System.Globalization;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using FastGooey.Database;
+using FastGooey.Features.Interfaces.AppleMobile.Collection.Models;
 using FastGooey.Features.Interfaces.AppleTv.Alert.Models;
 using FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models;
 using FastGooey.Features.Interfaces.AppleTv.Main.Models;

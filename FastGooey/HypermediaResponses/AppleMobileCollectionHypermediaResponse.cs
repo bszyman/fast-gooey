@@ -1,4 +1,4 @@
-using FastGooey.Models.JsonDataModels;
+using FastGooey.Features.Interfaces.AppleMobile.Collection.Models;
 
 namespace FastGooey.HypermediaResponses;
 

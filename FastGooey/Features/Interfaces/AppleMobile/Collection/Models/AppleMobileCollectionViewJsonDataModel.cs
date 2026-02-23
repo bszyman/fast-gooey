@@ -1,6 +1,6 @@
 using FastGooey.Models.Common;
 
-namespace FastGooey.Models.JsonDataModels;
+namespace FastGooey.Features.Interfaces.AppleMobile.Collection.Models;
 
 public class AppleMobileCollectionViewJsonDataModel
 {
