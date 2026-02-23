@@ -175,6 +175,78 @@
       <Content Update="Features\Interfaces\AppleTv\MenuBar\Views\Workspace.cshtml">
         <Generator>RazorGenerator</Generator>
       </Content>
+      <Content Update="Features\Interfaces\AppleTv\OneUp\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\OneUp\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Parade\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Parade\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\ProductBundle\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\ProductBundle\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Rating\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Rating\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Search\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Search\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Loading\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Loading\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Showcase\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Showcase\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Stack\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Stack\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Form\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Form\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Div\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Div\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Compilation\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Compilation\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Catalog\Views\Workspace.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
+      <Content Update="Features\Interfaces\AppleTv\Catalog\Views\Index.cshtml">
+        <Generator>RazorGenerator</Generator>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
