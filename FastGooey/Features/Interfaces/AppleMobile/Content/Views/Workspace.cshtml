@@ -1,5 +1,5 @@
 @using FastGooey.Models.JsonDataModels
-@model FastGooey.Features.Interfaces.AppleMobile.Shared.Models.ViewModels.AppleMobileInterface.AppleMobileContentWorkspaceViewModel
+@model FastGooey.Features.Interfaces.AppleMobile.Content.Models.AppleMobileContentWorkspaceViewModel
 
 <form method="post"
       hx-post="@Url.Action("SaveWorkspace", "AppleMobileContent", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"

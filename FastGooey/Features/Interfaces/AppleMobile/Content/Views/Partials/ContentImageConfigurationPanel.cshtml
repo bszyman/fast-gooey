@@ -1,14 +1,14 @@
-@model FastGooey.Features.Interfaces.AppleMobile.Shared.Models.ViewModels.AppleMobileInterface.AppleMobileLinkConfigurationPanelViewModel
+@model FastGooey.Features.Interfaces.AppleMobile.Content.Models.AppleMobileImageConfigurationPanelViewModel
 
 @{
     var url = Model.Content.Identifier.Equals(Guid.Empty)
-        ? Url.Action("SaveLink", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
-        : Url.Action("SaveLink", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier });
+        ? Url.Action("SaveImage", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
+        : Url.Action("SaveImage", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url(), itemId = Model.Content.Identifier });
 }
 
 <div class="bg-white flex w-full h-20 border-b border-b-zinc-300">
     <div class="flex-1 flex items-center">
-        <p class="mx-6 font-bold">Edit Link</p>
+        <p class="mx-6 font-bold">Edit Image</p>
     </div>
 </div>
 
@@ -16,40 +16,40 @@
       hx-post="@url"
       hx-target="#workspaceEditor">
     @Html.AntiForgeryToken()
-    <div class="py-4 px-4">
+    <div class="py-4 px-4 text-sm">
         <div class="formGroup formGroupAddBackground mb-8">
             <div class="w-full border-b border-b-zinc-300 py-2 px-4">
-                <p class="font-semibold text-sm">Content</p>
+                <p class="font-semibold text-sm">Edit Content</p>
             </div>
             <div class="py-4 px-4">
                 <div class="mb-4">
-                    <label for="title">Link Title</label>
-                    <div class="flex gap-2">
-                        <input 
-                            type="text" 
-                            id="title" 
-                            name="title" 
-                            value="@Model.Content.Title"
-                        />
-                    </div>
-                    @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
-                </div>
-                <div>
-                    <label for="urlLinkButton">Link Url</label>
+                    <label for="mediaUrlButton">Image Url</label>
                     <div class="flex gap-2 mb-2">
                         <input type="hidden" id="url" name="url" value="@Model.Content.Url" />
                         <button type="button"
-                                id="urlLinkButton"
+                                id="mediaUrlButton"
                                 class="linkEditorTriggerButton"
-                                onclick="openLinkEditor(this)"
-                                data-link-editor-trigger="true"
-                                data-link-editor-target="url"
-                                data-link-editor-display="urlLinkDisplay">
-                            Select link...
+                                onclick="openMediaPicker(this)"
+                                data-media-picker-trigger="true"
+                                data-media-picker-target="url"
+                                data-media-picker-display="mediaUrlDisplay">
+                            Select Media...
                         </button>
                     </div>
-                    <p id="urlLinkDisplay" class="truncate text-xs text-gray-500 ml-1">No link selected.</p>
+                    <p id="mediaUrlDisplay" class="truncate text-xs text-gray-500 ml-1">No media selected.</p>
                     @Html.ValidationMessage("Url", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                </div>
+                <div>
+                    <label for="caption">Caption</label>
+                    <div class="flex gap-2">
+                        <input 
+                            type="text" 
+                            id="caption" 
+                            name="caption" 
+                            value="@Model.Content.Caption"
+                        />
+                    </div>
+                    @Html.ValidationMessage("Caption", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
             </div>
         </div>

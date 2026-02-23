@@ -2,8 +2,7 @@ using System.Text.Json;
 using FastGooey.Attributes;
 using FastGooey.Database;
 using FastGooey.Extensions;
-using FastGooey.Features.Interfaces.AppleMobile.Shared.Models.FormModels;
-using FastGooey.Features.Interfaces.AppleMobile.Shared.Models.ViewModels.AppleMobileInterface;
+using FastGooey.Features.Interfaces.AppleMobile.Content.Models;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Models.FormModels;
@@ -20,7 +19,6 @@ namespace FastGooey.Features.Interfaces.AppleMobile.Content.Controllers;
 [AuthorizeWorkspaceAccess]
 [Route("Workspaces/{workspaceId:guid}/Interfaces/AppleMobile/Content")]
 public class AppleMobileContentController(
-    ILogger<AppleMobileContentController> logger,
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
     ContentInterfaceControllerBase<AppleMobileContentJsonDataModel, AppleMobileContentItemJsonDataModel, AppleMobileContentWorkspaceViewModel, AppleMobileContentWorkspaceFormModel>(keyValueService, dbContext)

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NodaTime;
 using System.ComponentModel.DataAnnotations;
 using FastGooey.Features.Interfaces.AppleMobile.Content.Controllers;
+using FastGooey.Features.Interfaces.AppleMobile.Content.Models;
 using FastGooey.Features.Interfaces.AppleMobile.Shared.Models.FormModels;
 
 namespace FastGooey.Tests.Controllers;
@@ -23,7 +24,6 @@ public class AppleMobileContentControllerTests
     {
         using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
         var controller = new AppleMobileContentController(
-            NullLogger<AppleMobileContentController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext
@@ -58,7 +58,6 @@ public class AppleMobileContentControllerTests
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
         using var dbContext = TestDbContextFactory.Create(clock);
         var controller = new AppleMobileContentController(
-            NullLogger<AppleMobileContentController>.Instance,
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext

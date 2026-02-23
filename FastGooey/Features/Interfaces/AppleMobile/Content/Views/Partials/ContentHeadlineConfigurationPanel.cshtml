@@ -1,4 +1,4 @@
-@model FastGooey.Features.Interfaces.AppleMobile.Shared.Models.ViewModels.AppleMobileInterface.AppleMobileContentHeadlineConfigurationPanelViewModel
+@model FastGooey.Features.Interfaces.AppleMobile.Content.Models.AppleMobileContentHeadlineConfigurationPanelViewModel
 @{
     var url = Model.Content.Identifier.Equals(Guid.Empty)
         ? Url.Action("SaveHeadline", "AppleMobileContent", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId?.ToBase64Url() })
