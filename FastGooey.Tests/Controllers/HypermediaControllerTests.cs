@@ -156,7 +156,7 @@ public class HypermediaControllerTests
         var response = Assert.IsType<AppleTvMediaHypermediaResponse>(ok.Value);
         Assert.Equal("AppleTv", response.Platform);
         Assert.Equal("Media", response.View);
-        Assert.Equal(string.Empty, response.MediaUrl);
+        Assert.Equal(string.Empty, response.Content.MediaUrl);
     }
   
       [Fact]
@@ -211,7 +211,7 @@ public class HypermediaControllerTests
         Assert.Equal("AppleTv", response.Platform);
         Assert.Equal("Product", response.View);
         Assert.Equal(gooeyInterface.DocId, response.InterfaceId);
-        Assert.NotNull(response.RelatedItems);
+        Assert.NotNull(response.Content.RelatedItems);
     }
 
     [Fact]
@@ -264,7 +264,7 @@ public class HypermediaControllerTests
         Assert.Equal("AppleTv", response.Platform);
         Assert.Equal("MediaGrid", response.View);
         Assert.Equal(gooeyInterface.DocId, response.InterfaceId);
-        Assert.NotNull(response.MediaItems);
+        Assert.NotNull(response.Content.MediaItems);
     }
 
     [Fact]

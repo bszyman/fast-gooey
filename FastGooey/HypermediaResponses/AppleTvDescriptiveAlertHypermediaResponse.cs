@@ -8,6 +8,12 @@ public class AppleTvDescriptiveAlertHypermediaResponse : IHypermediaResponse
     public string Platform { get; set; } = "AppleTv";
     public string View { get; set; } = "DescriptiveAlert";
     public string Title { get; set; } = string.Empty;
+    
+    public AppleTvDescriptiveAlertContent Content { get; set; } = new();
+}
+
+public class AppleTvDescriptiveAlertContent
+{
     public string CancelButtonText { get; set; } = string.Empty;
     public string ConfirmButtonText { get; set; } = string.Empty;
     public List<DescriptiveAlertContentNodeJsonDataModel> DescriptiveContent { get; set; } = [];

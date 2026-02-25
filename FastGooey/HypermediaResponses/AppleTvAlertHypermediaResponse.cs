@@ -6,6 +6,12 @@ public class AppleTvAlertHypermediaResponse : IHypermediaResponse
     public string Platform { get; set; } = "AppleTv";
     public string View { get; set; } = "Alert";
     public string Title { get; set; } = string.Empty;
+   
+    public AppleTvAlertContent Content { get; set; } = new();
+}
+
+public class AppleTvAlertContent
+{
     public string Description { get; set; } = string.Empty;
     public string UpperButtonText { get; set; } = string.Empty;
     public string UpperButtonLink { get; set; } = string.Empty;

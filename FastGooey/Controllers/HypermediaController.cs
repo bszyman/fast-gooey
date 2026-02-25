@@ -209,12 +209,16 @@ public class HypermediaController(
         return new AppleTvMainHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
-            BackgroundSplash = new BackgroundSplash
+            Title = gooeyInterface.Name,
+            Content = new AppleTvMainContent
             {
-                ImageResource = UnfurlFastGooeyLink(config.BackgroundSplash.ImageResource, gooeyInterface.Workspace.PublicId),
-                AudioResource = UnfurlFastGooeyLink(config.BackgroundSplash.AudioResource, gooeyInterface.Workspace.PublicId)
-            },
-            MenuBarButtons = menuBarButtons
+                BackgroundSplash = new BackgroundSplash
+                {
+                    ImageResource = UnfurlFastGooeyLink(config.BackgroundSplash.ImageResource, gooeyInterface.Workspace.PublicId),
+                    AudioResource = UnfurlFastGooeyLink(config.BackgroundSplash.AudioResource, gooeyInterface.Workspace.PublicId)
+                },
+                MenuBarButtons = menuBarButtons
+            }
         };
     }
 
@@ -233,9 +237,13 @@ public class HypermediaController(
         return new AppleTvListHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
-            Banner = unfurledConfig.Banner,
-            Header = unfurledConfig.Header,
-            ListItems = unfurledConfig.ListItems
+            Title = gooeyInterface.Name,
+            Content = new AppleTvListContent
+            {
+                Banner = unfurledConfig.Banner,
+                Header = unfurledConfig.Header,
+                ListItems = unfurledConfig.ListItems
+            }
         };
     }
 
@@ -255,11 +263,14 @@ public class HypermediaController(
         {
             InterfaceId = gooeyInterface.DocId,
             Title = unfurledConfig.Title,
-            Description = unfurledConfig.Description,
-            UpperButtonText = unfurledConfig.UpperButtonText,
-            UpperButtonLink = unfurledConfig.UpperButtonLink,
-            LowerButtonText = unfurledConfig.LowerButtonText,
-            LowerButtonLink = unfurledConfig.LowerButtonLink
+            Content = new AppleTvAlertContent
+            {
+                Description = unfurledConfig.Description,
+                UpperButtonText = unfurledConfig.UpperButtonText,
+                UpperButtonLink = unfurledConfig.UpperButtonLink,
+                LowerButtonText = unfurledConfig.LowerButtonText,
+                LowerButtonLink = unfurledConfig.LowerButtonLink
+            }
         };
     }
 
@@ -280,9 +291,12 @@ public class HypermediaController(
         {
             InterfaceId = gooeyInterface.DocId,
             Title = unfurledConfig.Title,
-            CancelButtonText = unfurledConfig.CancelButtonText,
-            ConfirmButtonText = unfurledConfig.ConfirmButtonText,
-            DescriptiveContent = unfurledConfig.DescriptiveContent
+            Content = new AppleTvDescriptiveAlertContent
+            {
+                CancelButtonText = unfurledConfig.CancelButtonText,
+                ConfirmButtonText = unfurledConfig.ConfirmButtonText,
+                DescriptiveContent = unfurledConfig.DescriptiveContent
+            }
         };
     }
     
@@ -327,16 +341,19 @@ public class HypermediaController(
         return new AppleTvProductHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
-            Title = UnfurlFastGooeyLink(ReadString(root, "Title", "title"), gooeyInterface.Workspace.PublicId),
-            Description = UnfurlFastGooeyLink(ReadString(root, "Description", "description"), gooeyInterface.Workspace.PublicId),
-            PreviewMediaUrl = UnfurlFastGooeyLink(ReadString(root, "PreviewMediaUrl", "previewMediaUrl"), gooeyInterface.Workspace.PublicId),
-            RelatedItems = relatedItems.Select(x => new AppleTvProductRelatedItemJsonModel
+            Title = gooeyInterface.Name,
+            Content = new AppleTvProductContent
             {
-                Id = x.Id,
-                Title = UnfurlFastGooeyLink(x.Title, gooeyInterface.Workspace.PublicId),
-                Link = UnfurlFastGooeyLink(x.Link, gooeyInterface.Workspace.PublicId),
-                MediaUrl = UnfurlFastGooeyLink(x.MediaUrl, gooeyInterface.Workspace.PublicId)
-            }).ToList()
+                Description = UnfurlFastGooeyLink(ReadString(root, "Description", "description"), gooeyInterface.Workspace.PublicId),
+                PreviewMediaUrl = UnfurlFastGooeyLink(ReadString(root, "PreviewMediaUrl", "previewMediaUrl"), gooeyInterface.Workspace.PublicId),
+                RelatedItems = relatedItems.Select(x => new AppleTvProductRelatedItemJsonModel
+                {
+                    Id = x.Id,
+                    Title = UnfurlFastGooeyLink(x.Title, gooeyInterface.Workspace.PublicId),
+                    Link = UnfurlFastGooeyLink(x.Link, gooeyInterface.Workspace.PublicId),
+                    MediaUrl = UnfurlFastGooeyLink(x.MediaUrl, gooeyInterface.Workspace.PublicId)
+                }).ToList()
+            }
         };
     }
 
@@ -353,13 +370,16 @@ public class HypermediaController(
         {
             InterfaceId = gooeyInterface.DocId,
             Title = config.Title,
-            MediaItems = config.MediaItems.Select(x => new AppleTvMediaGridItemJsonDataModel
+            Content = new AppleTvMediaGridContent
             {
-                Guid = x.Guid,
-                Title = x.Title,
-                LinkTo = UnfurlFastGooeyLink(x.LinkTo, gooeyInterface.Workspace.PublicId),
-                PreviewMedia = UnfurlFastGooeyLink(x.PreviewMedia, gooeyInterface.Workspace.PublicId)
-            }).ToList()
+                MediaItems = config.MediaItems.Select(x => new AppleTvMediaGridItemJsonDataModel
+                {
+                    Guid = x.Guid,
+                    Title = x.Title,
+                    LinkTo = UnfurlFastGooeyLink(x.LinkTo, gooeyInterface.Workspace.PublicId),
+                    PreviewMedia = UnfurlFastGooeyLink(x.PreviewMedia, gooeyInterface.Workspace.PublicId)
+                }).ToList()
+            }
         };
     }
 
@@ -371,7 +391,11 @@ public class HypermediaController(
         return new AppleTvMediaHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
-            MediaUrl = mediaUrl
+            Title = gooeyInterface.Name,
+            Content = new AppleTvMediaContent
+            {
+                MediaUrl = mediaUrl
+            }
         };
     }
 

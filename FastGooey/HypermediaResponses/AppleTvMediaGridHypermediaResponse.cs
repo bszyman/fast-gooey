@@ -8,5 +8,11 @@ public class AppleTvMediaGridHypermediaResponse : IHypermediaResponse
     public string Platform { get; set; } = "AppleTv";
     public string View { get; set; } = "MediaGrid";
     public string Title { get; set; } = string.Empty;
+    
+    public AppleTvMediaGridContent Content { get; set; } = new();
+}
+
+public class AppleTvMediaGridContent
+{
     public List<AppleTvMediaGridItemJsonDataModel> MediaItems { get; set; } = [];
 }

@@ -22,3 +22,6 @@ GET https://localhost:7110/hypermedia/oIZosNZjkkGwH0VU-EnsYA
 
 ### RssFeed Widget
 GET https://localhost:7110/hypermedia/xdosrEypDEiGvzbq5OJraw
+
+### TV Alert
+GET https://localhost:7110/hypermedia/qflclwc0Vkyhqz0q-0yKGQ
