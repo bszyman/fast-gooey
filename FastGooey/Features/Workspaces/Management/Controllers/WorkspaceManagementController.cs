@@ -4,14 +4,19 @@ using FastGooey.Features.Media.Shared.Models.ViewModels.Media;
 using FastGooey.Features.Workspaces.Management.Models.FormModels;
 using FastGooey.Features.Workspaces.Management.Models.ViewModels;
 using FastGooey.Models;
+using FastGooey.Models.Configuration;
 using FastGooey.Models.FormModels;
 using FastGooey.Models.Media;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
 using FastGooey.Services.Media;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace FastGooey.Controllers;
 
@@ -21,15 +26,26 @@ namespace FastGooey.Controllers;
 public class WorkspaceManagementController(
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
-    IMediaCredentialProtector mediaCredentialProtector) :
+    IMediaCredentialProtector mediaCredentialProtector,
+    UserManager<ApplicationUser> userManager,
+    EmailerService emailerService,
+    IConfiguration configuration,
+    IDataProtectionProvider dataProtectionProvider) :
     BaseStudioController(keyValueService, dbContext)
 {
+    private readonly IDataProtector _inviteProtector = dataProtectionProvider.CreateProtector("FastGooey.WorkspaceInvite");
+    private readonly StripeConfigurationModel? _stripeConfig = configuration.GetSection("Stripe").Get<StripeConfigurationModel>();
+
     [HttpGet]
     public IActionResult Index()
     {
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
 
         var viewModel = CreateViewModel(workspace);
         viewModel.NavBarViewModel = new MetalNavBarViewModel
@@ -48,6 +64,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
         
         return PartialView(
             "WorkspaceManagement", 
@@ -61,6 +81,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
         workspace.Name = model.WorkspaceName;
 
         dbContext.SaveChanges();
@@ -78,6 +102,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
         
         return PartialView(
             "MediaSourceConfiguration", 
@@ -92,6 +120,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
         
         var viewModel = BuildMediaSourceEditorViewModel(workspace, sourceId);
 
@@ -104,6 +136,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
 
         if (!ModelState.IsValid)
         {
@@ -131,6 +167,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
 
         var mediaSource = workspace.MediaSources.FirstOrDefault(source => source.PublicId == sourceId);
         if (mediaSource is null)
@@ -148,8 +188,135 @@ public class WorkspaceManagementController(
         );
     }
 
+    [HttpGet("users")]
+    public IActionResult ManageUsers()
+    {
+        var workspace = dbContext.Workspaces
+            .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
+
+        return PartialView("ManageUsers", CreateViewModel(workspace));
+    }
+
+    [HttpPost("users/invite")]
+    public async Task<IActionResult> InviteWorkspaceUser([Bind(Prefix = "InviteUserFormModel")] WorkspaceUserInviteFormModel model)
+    {
+        var workspace = dbContext.Workspaces
+            .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
+
+        if (!CanManageWorkspaceUsers(workspace))
+        {
+            return PartialView("ManageUsers", CreateViewModel(workspace));
+        }
+
+        model.FirstName = model.FirstName.Trim();
+        model.LastName = model.LastName.Trim();
+        model.Email = model.Email.Trim();
+
+        if (ModelState.IsValid)
+        {
+            var existingUser = await userManager.FindByEmailAsync(model.Email);
+            if (existingUser?.WorkspaceId == workspace.Id || string.Equals(existingUser?.Id, workspace.OwnerUserId, StringComparison.Ordinal))
+            {
+                ModelState.AddModelError("InviteUserFormModel.Email", "That user is already in this workspace.");
+            }
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var invalidViewModel = CreateViewModel(workspace);
+            invalidViewModel.InviteUserFormModel = model;
+            return PartialView("ManageUsers", invalidViewModel);
+        }
+
+        var tokenPayload = JsonSerializer.Serialize(new WorkspaceInvitePayload
+        {
+            WorkspaceId = workspace.PublicId,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Email = model.Email
+        });
+        var token = _inviteProtector.Protect(tokenPayload);
+        var inviteLink = Url.Action(
+            "Accept",
+            "WorkspaceInvite",
+            new { token },
+            Request.Scheme);
+
+        if (!string.IsNullOrWhiteSpace(inviteLink))
+        {
+            var html = $"<p>{model.FirstName} {model.LastName},</p><p>You were invited to join the workspace <strong>{workspace.Name}</strong>.</p><p><a href=\"{inviteLink}\">Accept workspace invite</a></p>";
+            await emailerService.SendEmailAsync(model.Email, "You're invited to a FastGooey workspace", html);
+        }
+
+        var viewModel = CreateViewModel(workspace);
+        viewModel.InviteUserFormModel = new WorkspaceUserInviteFormModel { IsSaved = true };
+        return PartialView("ManageUsers", viewModel);
+    }
+
+    [HttpDelete("users/{userId:guid}")]
+    public IActionResult RemoveWorkspaceUser(Guid userId)
+    {
+        var workspace = dbContext.Workspaces
+            .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
+
+        if (!CanManageWorkspaceUsers(workspace))
+        {
+            return PartialView("ManageUsers", CreateViewModel(workspace));
+        }
+
+        var user = dbContext.Users.FirstOrDefault(x => x.PublicId == userId && x.WorkspaceId == workspace.Id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        user.WorkspaceId = null;
+        dbContext.SaveChanges();
+
+        return PartialView("ManageUsers", CreateViewModel(workspace));
+    }
+
     private ManageWorkspaceViewModel CreateViewModel(Workspace workspace)
     {
+        var workspaceUsers = dbContext.Users
+            .Where(user => user.WorkspaceId == workspace.Id)
+            .OrderBy(user => user.FirstName)
+            .ThenBy(user => user.LastName)
+            .Select(user => new WorkspaceUserViewModel
+            {
+                UserId = user.PublicId,
+                Name = $"{user.FirstName} {user.LastName}".Trim(),
+                Email = user.Email ?? string.Empty
+            })
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(workspace.OwnerUserId))
+        {
+            var owner = dbContext.Users.FirstOrDefault(user => user.Id == workspace.OwnerUserId);
+            if (owner is not null && workspaceUsers.All(user => user.UserId != owner.PublicId))
+            {
+                workspaceUsers.Insert(0, new WorkspaceUserViewModel
+                {
+                    UserId = owner.PublicId,
+                    Name = $"{owner.FirstName} {owner.LastName}".Trim(),
+                    Email = owner.Email ?? string.Empty,
+                    IsOwner = true
+                });
+            }
+        }
+
         return new ManageWorkspaceViewModel
         {
             Workspace = workspace,
@@ -161,8 +328,35 @@ public class WorkspaceManagementController(
                 .OrderBy(source => source.Name)
                 .Select(BuildMediaSourceSummary)
                 .ToList(),
-            MediaSourceEditor = BuildMediaSourceEditorViewModel(workspace, null)
+            MediaSourceEditor = BuildMediaSourceEditorViewModel(workspace, null),
+            WorkspaceUsers = workspaceUsers,
+            CanManageWorkspaceUsers = CanManageWorkspaceUsers(workspace),
+            StandardCheckoutUrl = _stripeConfig?.CheckoutLinks?.GetValueOrDefault(nameof(SubscriptionLevel.Standard)) ?? string.Empty
         };
+    }
+
+    private bool IsWorkspaceOwner(Workspace workspace)
+    {
+        return workspace.OwnerUserId == User.FindFirstValue(ClaimTypes.NameIdentifier);
+    }
+
+    private bool CanManageWorkspaceUsers(Workspace workspace)
+    {
+        if (!workspace.IsExplorer)
+        {
+            return true;
+        }
+
+        var currentUser = dbContext.Users.FirstOrDefault(user => user.Id == workspace.OwnerUserId);
+        return currentUser?.SubscriptionLevel == SubscriptionLevel.Agency;
+    }
+
+    private sealed class WorkspaceInvitePayload
+    {
+        public Guid WorkspaceId { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
     }
 
     private MediaSourceSummaryViewModel BuildMediaSourceSummary(Models.Media.MediaSource source)

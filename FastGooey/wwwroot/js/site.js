@@ -117,6 +117,20 @@ function changeInterfaceListSelection(sender) {
     sender.classList.add('selectedInterfaceListItem');
 }
 
+function openManageUsersInvitePalette() {
+    const palette = document.getElementById('manageUsersPalette');
+    if (!palette) return;
+    palette.classList.remove('hidden');
+    palette.setAttribute('aria-hidden', 'false');
+}
+
+function closeManageUsersInvitePalette() {
+    const palette = document.getElementById('manageUsersPalette');
+    if (!palette) return;
+    palette.classList.add('hidden');
+    palette.setAttribute('aria-hidden', 'true');
+}
+
 function deleteSelectedInterface(deleteUrlBase) {
     const list = document.getElementById('interfaceList');
     const selected = list?.querySelector('.selectedInterfaceListItem');

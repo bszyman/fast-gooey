@@ -1,0 +1,127 @@
+@model FastGooey.Features.Workspaces.Management.Models.ViewModels.ManageWorkspaceViewModel
+
+<div class="h-full flex flex-col">
+    <div class="bg-white flex h-20 border-b border-b-zinc-300 rounded-tr-l flex-shrink-0">
+        <div class="flex-1 flex items-center justify-between">
+            <p class="p-2 mx-6 w-full font-bold">Manage Users</p>
+            @if (Model.CanManageWorkspaceUsers)
+            {
+                <button type="button"
+                        onclick="openManageUsersInvitePalette()"
+                        class="mr-6 bg-blueLight border border-blueMid text-blueDark font-semibold rounded px-3 py-2 cursor-pointer text-sm">
+                    Invite User
+                </button>
+            }
+        </div>
+    </div>
+
+    <div id="workspaceEditor" class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+        <div class="mx-auto max-w-3xl mt-8">
+            @if (!Model.CanManageWorkspaceUsers)
+            {
+                <div class="formGroup formGroupAddBackground mb-8">
+                    <div class="w-full border-b border-b-zinc-300 py-2 px-4">
+                        <p class="font-semibold">Upgrade required</p>
+                    </div>
+                    <div class="py-4 px-4">
+                        <p class="mb-4 text-sm">Explorer workspaces cannot add additional users. Purchase a Standard workspace plan to invite more editors.</p>
+                        @if (!string.IsNullOrWhiteSpace(Model.StandardCheckoutUrl))
+                        {
+                            <a href="@Model.StandardCheckoutUrl"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="inline-block text-white text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer border-3 border-nuclearGreenLighter shadow-md bg-blueDark">
+                                Purchase Standard workspace
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="formGroup formGroupAddBackground mb-8">
+                    <div class="w-full border-b border-b-zinc-300 py-2 px-4 flex justify-between">
+                        <p class="font-semibold">Workspace users</p>
+                        @if (Model.InviteUserFormModel.IsSaved)
+                        {
+                            <p class="text-sm text-green-700">Invitation sent.</p>
+                        }
+                    </div>
+                    <div class="py-4 px-4">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-zinc-200 text-left">
+                                    <th class="py-2">Name</th>
+                                    <th class="py-2">Email</th>
+                                    <th class="py-2 w-28"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.WorkspaceUsers)
+                                {
+                                    <tr class="border-b border-zinc-100">
+                                        <td class="py-2">@(!string.IsNullOrWhiteSpace(user.Name) ? user.Name : "Unnamed user")</td>
+                                        <td class="py-2">@user.Email</td>
+                                        <td class="py-2 text-right">
+                                            @if (!user.IsOwner)
+                                            {
+                                                <button type="button"
+                                                        hx-delete="@Url.Action("RemoveWorkspaceUser", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId, userId = user.UserId })"
+                                                        hx-target="#workspace"
+                                                        hx-confirm="Remove this user from the workspace?"
+                                                        class="bg-rose-600 text-white font-semibold rounded px-3 py-1 cursor-pointer text-xs">
+                                                    Delete
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (Model.CanManageWorkspaceUsers)
+{
+    <div id="manageUsersPalette" class="fixed top-0 bottom-0 right-0 left-0 h-full w-full bg-panelNegativeSpace transition z-60 flex justify-center items-center hidden" aria-hidden="true">
+        <div class="w-xl mx-auto rounded-lg bg-white">
+            <div class="flex justify-baseline items-center p-3 border-b border-zinc-200">
+                <h2 class="flex-1 font-semibold text-lg">Invite Workspace User</h2>
+                <button type="button" class="cursor-pointer" onclick="closeManageUsersInvitePalette()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+            <form method="post"
+                  hx-post="@Url.Action("InviteWorkspaceUser", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId })"
+                  hx-target="#workspace"
+                  class="p-4">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label asp-for="InviteUserFormModel.FirstName"></label>
+                    <input asp-for="InviteUserFormModel.FirstName" type="text" class="w-full" />
+                    <span asp-validation-for="InviteUserFormModel.FirstName" class="text-red-600 text-sm mt-1 block"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="InviteUserFormModel.LastName"></label>
+                    <input asp-for="InviteUserFormModel.LastName" type="text" class="w-full" />
+                    <span asp-validation-for="InviteUserFormModel.LastName" class="text-red-600 text-sm mt-1 block"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="InviteUserFormModel.Email"></label>
+                    <input asp-for="InviteUserFormModel.Email" type="email" class="w-full" />
+                    <span asp-validation-for="InviteUserFormModel.Email" class="text-red-600 text-sm mt-1 block"></span>
+                </div>
+                <div class="flex gap-2 justify-end">
+                    <button type="button" class="bg-zinc-300 text-zinc-700 font-semibold rounded px-2 py-1 cursor-pointer text-sm" onclick="closeManageUsersInvitePalette()">Cancel</button>
+                    <button type="submit" class="bg-green-600 text-white font-semibold rounded px-2 py-1 cursor-pointer text-sm">Send Invite</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
