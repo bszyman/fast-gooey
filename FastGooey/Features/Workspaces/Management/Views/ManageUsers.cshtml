@@ -4,14 +4,6 @@
     <div class="bg-white flex h-20 border-b border-b-zinc-300 rounded-tr-l flex-shrink-0">
         <div class="flex-1 flex items-center justify-between">
             <p class="p-2 mx-6 w-full font-bold">Manage Users</p>
-            @if (Model.CanManageWorkspaceUsers)
-            {
-                <button type="button"
-                        onclick="openManageUsersInvitePalette()"
-                        class="mr-6 bg-blueLight border border-blueMid text-blueDark font-semibold rounded px-3 py-2 cursor-pointer text-sm">
-                    Invite User
-                </button>
-            }
         </div>
     </div>
 
@@ -39,6 +31,14 @@
             }
             else
             {
+                <div class="w-full text-right mb-4">
+                    <button type="button"
+                            onclick="openManageUsersInvitePalette()"
+                            class="bg-blueLight border border-blueMid text-blueDark font-semibold rounded px-3 py-2 cursor-pointer text-sm">
+                        Invite User
+                    </button>
+                </div>
+                
                 <div class="formGroup formGroupAddBackground mb-8">
                     <div class="w-full border-b border-b-zinc-300 py-2 px-4 flex justify-between">
                         <p class="font-semibold">Workspace users</p>
@@ -50,32 +50,36 @@
                     <div class="py-4 px-4">
                         <table class="w-full text-sm">
                             <thead>
-                                <tr class="border-b border-zinc-200 text-left">
-                                    <th class="py-2">Name</th>
-                                    <th class="py-2">Email</th>
-                                    <th class="py-2 w-28"></th>
-                                </tr>
+                            <tr class="border-b border-zinc-300 text-left">
+                                <th class="py-2">Name</th>
+                                <th class="py-2">Email</th>
+                                <th class="py-2 w-28"></th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @foreach (var user in Model.WorkspaceUsers)
-                                {
-                                    <tr class="border-b border-zinc-100">
-                                        <td class="py-2">@(!string.IsNullOrWhiteSpace(user.Name) ? user.Name : "Unnamed user")</td>
-                                        <td class="py-2">@user.Email</td>
-                                        <td class="py-2 text-right">
-                                            @if (!user.IsOwner)
-                                            {
-                                                <button type="button"
-                                                        hx-delete="@Url.Action("RemoveWorkspaceUser", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId, userId = user.UserId })"
-                                                        hx-target="#workspace"
-                                                        hx-confirm="Remove this user from the workspace?"
-                                                        class="bg-rose-600 text-white font-semibold rounded px-3 py-1 cursor-pointer text-xs">
-                                                    Delete
-                                                </button>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
+                            @foreach (var user in Model.WorkspaceUsers)
+                            {
+                                <tr class="border-b border-zinc-300">
+                                    <td class="py-2">@(!string.IsNullOrWhiteSpace(user.Name) ? user.Name : "Unnamed user")</td>
+                                    <td class="py-2">@user.Email</td>
+                                    <td class="py-2 text-right">
+                                        @if (user.IsOwner)
+                                        {
+                                            <span class="text-green-500 mx-2">Owner</span>
+                                        }
+                                        else
+                                        {
+                                            <button type="button"
+                                                    hx-delete="@Url.Action("RemoveWorkspaceUser", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId, userId = user.UserId })"
+                                                    hx-target="#workspace"
+                                                    hx-confirm="Remove this user from the workspace?"
+                                                    class="bg-rose-600 text-white font-semibold rounded px-3 py-1 cursor-pointer text-xs">
+                                                Delete
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
                             </tbody>
                         </table>
                     </div>
@@ -103,18 +107,18 @@
                   class="p-4">
                 @Html.AntiForgeryToken()
                 <div class="mb-3">
-                    <label asp-for="InviteUserFormModel.FirstName"></label>
-                    <input asp-for="InviteUserFormModel.FirstName" type="text" class="w-full" />
+                    <label asp-for="InviteUserFormModel.FirstName" class="text-sm"></label>
+                    <input asp-for="InviteUserFormModel.FirstName" type="text" class="w-full rounded-md border border-gray-300 p-2 text-sm" />
                     <span asp-validation-for="InviteUserFormModel.FirstName" class="text-red-600 text-sm mt-1 block"></span>
                 </div>
                 <div class="mb-3">
-                    <label asp-for="InviteUserFormModel.LastName"></label>
-                    <input asp-for="InviteUserFormModel.LastName" type="text" class="w-full" />
+                    <label asp-for="InviteUserFormModel.LastName" class="text-sm"></label>
+                    <input asp-for="InviteUserFormModel.LastName" type="text" class="w-full rounded-md border border-gray-300 p-2 text-sm" />
                     <span asp-validation-for="InviteUserFormModel.LastName" class="text-red-600 text-sm mt-1 block"></span>
                 </div>
                 <div class="mb-3">
-                    <label asp-for="InviteUserFormModel.Email"></label>
-                    <input asp-for="InviteUserFormModel.Email" type="email" class="w-full" />
+                    <label asp-for="InviteUserFormModel.Email" class="text-sm"></label>
+                    <input asp-for="InviteUserFormModel.Email" type="email" class="w-full rounded-md border border-gray-300 p-2 text-sm" />
                     <span asp-validation-for="InviteUserFormModel.Email" class="text-red-600 text-sm mt-1 block"></span>
                 </div>
                 <div class="flex gap-2 justify-end">
