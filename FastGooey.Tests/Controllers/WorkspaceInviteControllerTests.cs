@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using FastGooey.Controllers;
+using FastGooey.Features.Workspaces.Management.Models.ViewModels;
 using FastGooey.Models;
 using FastGooey.Tests.Support;
 using Microsoft.AspNetCore.DataProtection;
@@ -75,7 +76,7 @@ public class WorkspaceInviteControllerTests
     }
 
     [Fact]
-    public async Task Accept_AssignsWorkspaceToAuthenticatedInvitedUser()
+    public async Task AcceptInvite_AssignsWorkspaceToAuthenticatedInvitedUser()
     {
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
         using var dbContext = TestDbContextFactory.Create(clock);
@@ -101,7 +102,7 @@ public class WorkspaceInviteControllerTests
             }
         };
 
-        var result = await controller.Accept(token);
+        var result = await controller.AcceptInvite(token);
 
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Index", redirect.ActionName);
@@ -110,7 +111,7 @@ public class WorkspaceInviteControllerTests
     }
 
     [Fact]
-    public async Task Accept_RedirectsUnknownUserToSignUp()
+    public async Task AcceptInvite_RedirectsUnknownUserToSignUp()
     {
         var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
         using var dbContext = TestDbContextFactory.Create(clock);
@@ -130,10 +131,40 @@ public class WorkspaceInviteControllerTests
             }
         };
 
-        var result = await controller.Accept(token);
+        var result = await controller.AcceptInvite(token);
 
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Index", redirect.ActionName);
         Assert.Equal("SignUp", redirect.ControllerName);
+    }
+
+    [Fact]
+    public async Task Accept_ReturnsInviteViewForValidToken()
+    {
+        var clock = new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0));
+        using var dbContext = TestDbContextFactory.Create(clock);
+        var workspace = new Workspace { Name = "Workspace", Slug = "workspace" };
+        dbContext.Workspaces.Add(workspace);
+        await dbContext.SaveChangesAsync();
+
+        var dataProtectionProvider = DataProtectionProvider.Create("workspace-invite-tests");
+        var protector = dataProtectionProvider.CreateProtector("FastGooey.WorkspaceInvite");
+        var token = protector.Protect($"{{\"WorkspaceId\":\"{workspace.PublicId}\",\"FirstName\":\"Invited\",\"LastName\":\"User\",\"Email\":\"invitee@example.com\"}}");
+
+        var controller = new WorkspaceInviteController(dbContext, new StubUserManager(null, null), dataProtectionProvider)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+
+        var result = await controller.Accept(token);
+
+        var view = Assert.IsType<ViewResult>(result);
+        var model = Assert.IsType<WorkspaceInviteViewModel>(view.Model);
+        Assert.Equal(token, model.Token);
+        Assert.Equal("Workspace", model.WorkspaceName);
+        Assert.Equal("invitee@example.com", model.Email);
     }
 }

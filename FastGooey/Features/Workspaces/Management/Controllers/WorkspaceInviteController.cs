@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FastGooey.Database;
+using FastGooey.Features.Workspaces.Management.Models.ViewModels;
 using FastGooey.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -21,36 +22,39 @@ public class WorkspaceInviteController(
     [HttpGet("accept")]
     public async Task<IActionResult> Accept(string token)
     {
-        if (string.IsNullOrWhiteSpace(token))
+        var inviteContext = await BuildInviteContextAsync(token);
+        if (inviteContext is null)
         {
             return RedirectToAction("Index", "WorkspaceSelector");
         }
 
-        WorkspaceInvitePayload? payload;
-        try
+        var viewModel = new WorkspaceInviteViewModel
         {
-            payload = JsonSerializer.Deserialize<WorkspaceInvitePayload>(_inviteProtector.Unprotect(token));
-        }
-        catch
+            Token = token,
+            WorkspaceName = inviteContext.Workspace.Name,
+            Email = inviteContext.Payload.Email,
+            FirstName = inviteContext.Payload.FirstName,
+            LastName = inviteContext.Payload.LastName
+        };
+
+        return View("~/Features/Workspaces/Management/Views/Invite.cshtml", viewModel);
+    }
+
+    [HttpPost("accept")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AcceptInvite(string token)
+    {
+        var inviteContext = await BuildInviteContextAsync(token);
+        if (inviteContext is null)
         {
             return RedirectToAction("Index", "WorkspaceSelector");
         }
 
-        if (payload is null || payload.WorkspaceId == Guid.Empty || string.IsNullOrWhiteSpace(payload.Email))
-        {
-            return RedirectToAction("Index", "WorkspaceSelector");
-        }
-
-        var workspace = await dbContext.Workspaces.FirstOrDefaultAsync(w => w.PublicId == payload.WorkspaceId);
-        if (workspace is null)
-        {
-            return RedirectToAction("Index", "WorkspaceSelector");
-        }
-
-        var returnUrl = Url.Action("Accept", "WorkspaceInvite", new { token });
+        var returnUrl = Url?.Action("Accept", "WorkspaceInvite", new { token }) ??
+                        $"/workspace-invites/accept?token={Uri.EscapeDataString(token)}";
         if (User.Identity?.IsAuthenticated != true)
         {
-            var existingUser = await userManager.FindByEmailAsync(payload.Email);
+            var existingUser = await userManager.FindByEmailAsync(inviteContext.Payload.Email);
             return existingUser is null
                 ? RedirectToAction("Index", "SignUp", new { returnUrl })
                 : RedirectToAction("Login", "Auth", new { returnUrl });
@@ -62,24 +66,55 @@ public class WorkspaceInviteController(
             return RedirectToAction("Login", "Auth", new { returnUrl });
         }
 
-        if (!string.Equals(currentUser.Email, payload.Email, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(currentUser.Email, inviteContext.Payload.Email, StringComparison.OrdinalIgnoreCase))
         {
             return Forbid();
         }
 
         if (string.IsNullOrWhiteSpace(currentUser.FirstName))
         {
-            currentUser.FirstName = payload.FirstName;
+            currentUser.FirstName = inviteContext.Payload.FirstName;
         }
         if (string.IsNullOrWhiteSpace(currentUser.LastName))
         {
-            currentUser.LastName = payload.LastName;
+            currentUser.LastName = inviteContext.Payload.LastName;
         }
 
-        currentUser.WorkspaceId = workspace.Id;
+        currentUser.WorkspaceId = inviteContext.Workspace.Id;
         await dbContext.SaveChangesAsync();
 
         return RedirectToAction("Index", "WorkspaceSelector");
+    }
+
+    private async Task<WorkspaceInviteContext?> BuildInviteContextAsync(string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return null;
+        }
+
+        WorkspaceInvitePayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<WorkspaceInvitePayload>(_inviteProtector.Unprotect(token));
+        }
+        catch
+        {
+            return null;
+        }
+
+        if (payload is null || payload.WorkspaceId == Guid.Empty || string.IsNullOrWhiteSpace(payload.Email))
+        {
+            return null;
+        }
+
+        var workspace = await dbContext.Workspaces.FirstOrDefaultAsync(w => w.PublicId == payload.WorkspaceId);
+        if (workspace is null)
+        {
+            return null;
+        }
+
+        return new WorkspaceInviteContext(payload, workspace);
     }
 
     private sealed class WorkspaceInvitePayload
@@ -89,4 +124,6 @@ public class WorkspaceInviteController(
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
     }
+
+    private sealed record WorkspaceInviteContext(WorkspaceInvitePayload Payload, Workspace Workspace);
 }
