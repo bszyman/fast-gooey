@@ -80,7 +80,19 @@ public class WorkspaceInviteController(
             currentUser.LastName = inviteContext.Payload.LastName;
         }
 
-        currentUser.WorkspaceId = inviteContext.Workspace.Id;
+        var alreadyMember = await dbContext.WorkspaceMemberships.AnyAsync(m =>
+            m.UserId == currentUser.Id &&
+            m.WorkspaceId == inviteContext.Workspace.Id);
+
+        if (!alreadyMember)
+        {
+            dbContext.WorkspaceMemberships.Add(new WorkspaceMembership
+            {
+                UserId = currentUser.Id,
+                WorkspaceId = inviteContext.Workspace.Id
+            });
+        }
+
         await dbContext.SaveChangesAsync();
 
         return RedirectToAction("Index", "WorkspaceSelector");

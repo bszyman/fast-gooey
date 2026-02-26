@@ -195,7 +195,13 @@ public class WorkspaceManagementController(
         if (ModelState.IsValid)
         {
             var existingUser = await userManager.FindByEmailAsync(model.Email);
-            if (existingUser?.WorkspaceId == workspace.Id || string.Equals(existingUser?.Id, workspace.OwnerUserId, StringComparison.Ordinal))
+            var existingMembership = existingUser is not null &&
+                                     await dbContext.WorkspaceMemberships.AnyAsync(m =>
+                                         m.WorkspaceId == workspace.Id &&
+                                         m.UserId == existingUser.Id);
+            if (existingMembership ||
+                existingUser?.WorkspaceId == workspace.Id ||
+                string.Equals(existingUser?.Id, workspace.OwnerUserId, StringComparison.Ordinal))
             {
                 ModelState.AddModelError("InviteUserFormModel.Email", "That user is already in this workspace.");
             }
@@ -248,13 +254,34 @@ public class WorkspaceManagementController(
             return PartialView("ManageUsers", CreateViewModel(workspace));
         }
 
-        var user = dbContext.Users.FirstOrDefault(x => x.PublicId == userId && x.WorkspaceId == workspace.Id);
+        var user = dbContext.Users.FirstOrDefault(x => x.PublicId == userId);
         if (user is null)
         {
             return NotFound();
         }
 
-        user.WorkspaceId = null;
+        var membershipRows = dbContext.WorkspaceMemberships
+            .Where(membership => membership.WorkspaceId == workspace.Id && membership.UserId == user.Id)
+            .ToList();
+
+        var removedMembership = membershipRows.Count > 0;
+        if (removedMembership)
+        {
+            dbContext.WorkspaceMemberships.RemoveRange(membershipRows);
+        }
+
+        var removedLegacyMembership = false;
+        if (user.WorkspaceId == workspace.Id)
+        {
+            user.WorkspaceId = null;
+            removedLegacyMembership = true;
+        }
+
+        if (!removedMembership && !removedLegacyMembership)
+        {
+            return NotFound();
+        }
+
         dbContext.SaveChanges();
 
         return PartialView("ManageUsers", CreateViewModel(workspace));
@@ -262,7 +289,20 @@ public class WorkspaceManagementController(
 
     private ManageWorkspaceViewModel CreateViewModel(Workspace workspace)
     {
-        var workspaceUsers = dbContext.Users
+        var workspaceUsers = dbContext.WorkspaceMemberships
+            .Where(membership => membership.WorkspaceId == workspace.Id)
+            .Select(membership => membership.User)
+            .OrderBy(user => user.FirstName)
+            .ThenBy(user => user.LastName)
+            .Select(user => new WorkspaceUserViewModel
+            {
+                UserId = user.PublicId,
+                Name = $"{user.FirstName} {user.LastName}".Trim(),
+                Email = user.Email ?? string.Empty
+            })
+            .ToList();
+
+        var legacyWorkspaceUsers = dbContext.Users
             .Where(user => user.WorkspaceId == workspace.Id)
             .OrderBy(user => user.FirstName)
             .ThenBy(user => user.LastName)
@@ -274,18 +314,34 @@ public class WorkspaceManagementController(
             })
             .ToList();
 
+        foreach (var legacyUser in legacyWorkspaceUsers)
+        {
+            if (workspaceUsers.All(user => user.UserId != legacyUser.UserId))
+            {
+                workspaceUsers.Add(legacyUser);
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(workspace.OwnerUserId))
         {
             var owner = dbContext.Users.FirstOrDefault(user => user.Id == workspace.OwnerUserId);
-            if (owner is not null && workspaceUsers.All(user => user.UserId != owner.PublicId))
+            if (owner is not null)
             {
-                workspaceUsers.Insert(0, new WorkspaceUserViewModel
+                var existingOwnerRow = workspaceUsers.FirstOrDefault(user => user.UserId == owner.PublicId);
+                if (existingOwnerRow is not null)
                 {
-                    UserId = owner.PublicId,
-                    Name = $"{owner.FirstName} {owner.LastName}".Trim(),
-                    Email = owner.Email ?? string.Empty,
-                    IsOwner = true
-                });
+                    existingOwnerRow.IsOwner = true;
+                }
+                else
+                {
+                    workspaceUsers.Insert(0, new WorkspaceUserViewModel
+                    {
+                        UserId = owner.PublicId,
+                        Name = $"{owner.FirstName} {owner.LastName}".Trim(),
+                        Email = owner.Email ?? string.Empty,
+                        IsOwner = true
+                    });
+                }
             }
         }
 

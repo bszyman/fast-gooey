@@ -35,6 +35,7 @@ public class ApplicationUser : IdentityUser
     public int StandardWorkspaceAllowance { get; set; }
 
     public ICollection<Workspace> OwnedWorkspaces { get; set; } = new List<Workspace>();
+    public ICollection<WorkspaceMembership> WorkspaceMemberships { get; set; } = new List<WorkspaceMembership>();
 
     public ICollection<PasskeyCredential> PasskeyCredentials { get; set; } = new List<PasskeyCredential>();
     public ICollection<MagicLinkToken> MagicLinkTokens { get; set; } = new List<MagicLinkToken>();

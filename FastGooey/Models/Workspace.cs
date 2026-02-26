@@ -33,6 +33,7 @@ public class Workspace
 
     // Collection navigation properties
     public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
+    public ICollection<WorkspaceMembership> WorkspaceMemberships { get; set; } = new List<WorkspaceMembership>();
     public ICollection<GooeyInterface> GooeyInterfaces { get; set; } = new List<GooeyInterface>();
     public ICollection<Media.MediaSource> MediaSources { get; set; } = new List<Media.MediaSource>();
 

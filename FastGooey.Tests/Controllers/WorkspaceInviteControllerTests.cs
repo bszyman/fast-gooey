@@ -107,7 +107,8 @@ public class WorkspaceInviteControllerTests
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Index", redirect.ActionName);
         Assert.Equal("WorkspaceSelector", redirect.ControllerName);
-        Assert.Equal(workspace.Id, user.WorkspaceId);
+        Assert.Null(user.WorkspaceId);
+        Assert.True(dbContext.WorkspaceMemberships.Any(m => m.UserId == user.Id && m.WorkspaceId == workspace.Id));
     }
 
     [Fact]
