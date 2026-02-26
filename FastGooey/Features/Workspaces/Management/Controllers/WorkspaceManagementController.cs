@@ -42,10 +42,6 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
-        if (!IsWorkspaceOwner(workspace))
-        {
-            return Forbid();
-        }
 
         var viewModel = CreateViewModel(workspace);
         viewModel.NavBarViewModel = new MetalNavBarViewModel
@@ -64,10 +60,6 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
-        if (!IsWorkspaceOwner(workspace))
-        {
-            return Forbid();
-        }
         
         return PartialView(
             "WorkspaceManagement", 
@@ -81,10 +73,6 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
-        if (!IsWorkspaceOwner(workspace))
-        {
-            return Forbid();
-        }
         workspace.Name = model.WorkspaceName;
 
         dbContext.SaveChanges();
@@ -102,10 +90,6 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
-        if (!IsWorkspaceOwner(workspace))
-        {
-            return Forbid();
-        }
         
         return PartialView(
             "MediaSourceConfiguration", 
@@ -120,10 +104,6 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
-        if (!IsWorkspaceOwner(workspace))
-        {
-            return Forbid();
-        }
         
         var viewModel = BuildMediaSourceEditorViewModel(workspace, sourceId);
 
@@ -136,10 +116,6 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
-        if (!IsWorkspaceOwner(workspace))
-        {
-            return Forbid();
-        }
 
         if (!ModelState.IsValid)
         {
@@ -167,10 +143,6 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
-        if (!IsWorkspaceOwner(workspace))
-        {
-            return Forbid();
-        }
 
         var mediaSource = workspace.MediaSources.FirstOrDefault(source => source.PublicId == sourceId);
         if (mediaSource is null)
@@ -193,10 +165,6 @@ public class WorkspaceManagementController(
     {
         var workspace = dbContext.Workspaces
             .First(x => x.PublicId == WorkspaceId);
-        if (!IsWorkspaceOwner(workspace))
-        {
-            return WorkspaceUsersAccessDenied();
-        }
 
         return PartialView("ManageUsers", CreateViewModel(workspace));
     }
