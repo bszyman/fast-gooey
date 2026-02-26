@@ -365,11 +365,41 @@ public class WorkspaceManagementController(
 
     private bool IsWorkspaceOwner(Workspace workspace)
     {
-        return workspace.OwnerUserId == User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(currentUserId))
+        {
+            return false;
+        }
+
+        if (workspace.OwnerUserId == currentUserId)
+        {
+            return true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(workspace.OwnerUserId))
+        {
+            return false;
+        }
+
+        // Legacy fallback: before owner_user_id existed, membership used AspNetUsers.workspace_id.
+        // If the current user is linked there, promote them to explicit owner to repair data in place.
+        var isLegacyOwner = dbContext.Users.Any(user =>
+            user.Id == currentUserId &&
+            user.WorkspaceId == workspace.Id);
+
+        if (!isLegacyOwner)
+        {
+            return false;
+        }
+
+        workspace.OwnerUserId = currentUserId;
+        dbContext.SaveChanges();
+        return true;
     }
 
     private bool CanManageWorkspaceUsers(Workspace workspace)
     {
+        // Explorer workspaces can only ever have a single user
         if (!workspace.IsExplorer)
         {
             return true;
