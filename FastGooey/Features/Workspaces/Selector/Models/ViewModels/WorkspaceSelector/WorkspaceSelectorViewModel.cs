@@ -11,6 +11,7 @@ public class WorkspaceSelectorViewModel
     public bool CanCreateExplorerWorkspace { get; set; }
     public int StandardWorkspaceAllowance { get; set; }
     public int RemainingStandardWorkspaceSlots { get; set; }
+    public int OwnedStandardWorkspaceCount { get; set; }
     public bool CanCreateUnlimitedWorkspaces { get; set; }
     public bool HasOnlyExplorerOrNoWorkspaces { get; set; }
     public bool HasAnyStandardPurchase { get; set; }

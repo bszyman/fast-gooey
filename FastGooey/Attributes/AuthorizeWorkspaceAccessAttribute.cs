@@ -36,7 +36,9 @@ public class AuthorizeWorkspaceAccessAttribute : Attribute, IAsyncActionFilter
         // The owner check is the current model; the legacy relation fallback keeps older data working.
         var hasAccess = await dbContext.Workspaces.AnyAsync(w =>
             w.PublicId == workspaceId &&
-            (w.OwnerUserId == userId || w.Users.Any(u => u.Id == userId)));
+            (w.OwnerUserId == userId ||
+             w.WorkspaceMemberships.Any(m => m.UserId == userId) ||
+             w.Users.Any(u => u.Id == userId)));
 
         if (!hasAccess)
         {

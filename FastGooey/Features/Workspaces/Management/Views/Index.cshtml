@@ -36,6 +36,16 @@
                             Media Source Configuration
                         </p>
                     </li>
+                    <li hx-get="@Url.Action("ManageUsers", "WorkspaceManagement", new { workspaceId = Model.Workspace.PublicId })" 
+                        hx-boost="true" 
+                        hx-target="#workspace" 
+                        hx-push-url="false" 
+                        class="py-2 text-blueDark font-medium overflow-ellipsis cursor-pointer" 
+                        onclick="changeInterfaceListSelection(this)">
+                        <p class="mx-4 inline-block">
+                            Manage Users
+                        </p>
+                    </li>
                 </ul>
             </div>
 

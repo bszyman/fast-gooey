@@ -12,6 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Workspace> Workspaces { get; set; } = null!;
     public DbSet<GooeyInterface> GooeyInterfaces { get; set; } = null!;
     public DbSet<MediaSource> MediaSources { get; set; } = null!;
+    public DbSet<WorkspaceMembership> WorkspaceMemberships { get; set; } = null!;
     public DbSet<KeyValueStore> KeyValueStores { get; set; } = null!;
     public DbSet<PasskeyCredential> PasskeyCredentials { get; set; } = null!;
     public DbSet<MagicLinkToken> MagicLinkTokens { get; set; } = null!;
@@ -38,6 +39,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasOne(w => w.OwnerUser)
             .WithMany(u => u.OwnedWorkspaces)
             .HasForeignKey(w => w.OwnerUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<WorkspaceMembership>()
+            .HasOne(m => m.User)
+            .WithMany(u => u.WorkspaceMemberships)
+            .HasForeignKey(m => m.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<WorkspaceMembership>()
+            .HasOne(m => m.Workspace)
+            .WithMany(w => w.WorkspaceMemberships)
+            .HasForeignKey(m => m.WorkspaceId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<PasskeyCredential>()

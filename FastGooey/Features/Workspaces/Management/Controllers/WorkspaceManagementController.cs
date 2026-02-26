@@ -4,14 +4,19 @@ using FastGooey.Features.Media.Shared.Models.ViewModels.Media;
 using FastGooey.Features.Workspaces.Management.Models.FormModels;
 using FastGooey.Features.Workspaces.Management.Models.ViewModels;
 using FastGooey.Models;
+using FastGooey.Models.Configuration;
 using FastGooey.Models.FormModels;
 using FastGooey.Models.Media;
 using FastGooey.Models.ViewModels;
 using FastGooey.Services;
 using FastGooey.Services.Media;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace FastGooey.Controllers;
 
@@ -21,15 +26,26 @@ namespace FastGooey.Controllers;
 public class WorkspaceManagementController(
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext,
-    IMediaCredentialProtector mediaCredentialProtector) :
+    IMediaCredentialProtector mediaCredentialProtector,
+    UserManager<ApplicationUser> userManager,
+    EmailerService emailerService,
+    IConfiguration configuration,
+    IDataProtectionProvider dataProtectionProvider) :
     BaseStudioController(keyValueService, dbContext)
 {
+    private readonly IDataProtector _inviteProtector = dataProtectionProvider.CreateProtector("FastGooey.WorkspaceInvite");
+    private readonly StripeConfigurationModel? _stripeConfig = configuration.GetSection("Stripe").Get<StripeConfigurationModel>();
+
     [HttpGet]
     public IActionResult Index()
     {
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
 
         var viewModel = CreateViewModel(workspace);
         viewModel.NavBarViewModel = new MetalNavBarViewModel
@@ -48,6 +64,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
         
         return PartialView(
             "WorkspaceManagement", 
@@ -61,6 +81,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
         workspace.Name = model.WorkspaceName;
 
         dbContext.SaveChanges();
@@ -78,6 +102,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
         
         return PartialView(
             "MediaSourceConfiguration", 
@@ -92,6 +120,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
         
         var viewModel = BuildMediaSourceEditorViewModel(workspace, sourceId);
 
@@ -104,6 +136,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
 
         if (!ModelState.IsValid)
         {
@@ -131,6 +167,10 @@ public class WorkspaceManagementController(
         var workspace = dbContext.Workspaces
             .Include(w => w.MediaSources)
             .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return Forbid();
+        }
 
         var mediaSource = workspace.MediaSources.FirstOrDefault(source => source.PublicId == sourceId);
         if (mediaSource is null)
@@ -148,8 +188,195 @@ public class WorkspaceManagementController(
         );
     }
 
+    [HttpGet("users")]
+    public IActionResult ManageUsers()
+    {
+        var workspace = dbContext.Workspaces
+            .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return WorkspaceUsersAccessDenied();
+        }
+
+        return PartialView("ManageUsers", CreateViewModel(workspace));
+    }
+
+    [HttpPost("users/invite")]
+    public async Task<IActionResult> InviteWorkspaceUser([Bind(Prefix = "InviteUserFormModel")] WorkspaceUserInviteFormModel model)
+    {
+        var workspace = dbContext.Workspaces
+            .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return WorkspaceUsersAccessDenied();
+        }
+
+        if (!CanManageWorkspaceUsers(workspace))
+        {
+            return PartialView("ManageUsers", CreateViewModel(workspace));
+        }
+
+        model.FirstName = model.FirstName.Trim();
+        model.LastName = model.LastName.Trim();
+        model.Email = model.Email.Trim();
+
+        if (ModelState.IsValid)
+        {
+            var existingUser = await userManager.FindByEmailAsync(model.Email);
+            var existingMembership = existingUser is not null &&
+                                     await dbContext.WorkspaceMemberships.AnyAsync(m =>
+                                         m.WorkspaceId == workspace.Id &&
+                                         m.UserId == existingUser.Id);
+            if (existingMembership ||
+                existingUser?.WorkspaceId == workspace.Id ||
+                string.Equals(existingUser?.Id, workspace.OwnerUserId, StringComparison.Ordinal))
+            {
+                ModelState.AddModelError("InviteUserFormModel.Email", "That user is already in this workspace.");
+            }
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var invalidViewModel = CreateViewModel(workspace);
+            invalidViewModel.InviteUserFormModel = model;
+            return PartialView("ManageUsers", invalidViewModel);
+        }
+
+        var tokenPayload = JsonSerializer.Serialize(new WorkspaceInvitePayload
+        {
+            WorkspaceId = workspace.PublicId,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Email = model.Email
+        });
+        var token = _inviteProtector.Protect(tokenPayload);
+        var inviteLink = Url.Action(
+            "Accept",
+            "WorkspaceInvite",
+            new { token },
+            Request.Scheme);
+
+        if (!string.IsNullOrWhiteSpace(inviteLink))
+        {
+            await emailerService.SendWorkspaceInviteEmail(
+                model.Email,
+                model.FirstName,
+                model.LastName,
+                workspace.Name,
+                inviteLink);
+        }
+
+        var viewModel = CreateViewModel(workspace);
+        viewModel.InviteUserFormModel = new WorkspaceUserInviteFormModel { IsSaved = true };
+        return PartialView("ManageUsers", viewModel);
+    }
+
+    [HttpDelete("users/{userId:guid}")]
+    public IActionResult RemoveWorkspaceUser(Guid userId)
+    {
+        var workspace = dbContext.Workspaces
+            .First(x => x.PublicId == WorkspaceId);
+        if (!IsWorkspaceOwner(workspace))
+        {
+            return WorkspaceUsersAccessDenied();
+        }
+
+        if (!CanManageWorkspaceUsers(workspace))
+        {
+            return PartialView("ManageUsers", CreateViewModel(workspace));
+        }
+
+        var user = dbContext.Users.FirstOrDefault(x => x.PublicId == userId);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var membershipRows = dbContext.WorkspaceMemberships
+            .Where(membership => membership.WorkspaceId == workspace.Id && membership.UserId == user.Id)
+            .ToList();
+
+        var removedMembership = membershipRows.Count > 0;
+        if (removedMembership)
+        {
+            dbContext.WorkspaceMemberships.RemoveRange(membershipRows);
+        }
+
+        var removedLegacyMembership = false;
+        if (user.WorkspaceId == workspace.Id)
+        {
+            user.WorkspaceId = null;
+            removedLegacyMembership = true;
+        }
+
+        if (!removedMembership && !removedLegacyMembership)
+        {
+            return NotFound();
+        }
+
+        dbContext.SaveChanges();
+
+        return PartialView("ManageUsers", CreateViewModel(workspace));
+    }
+
     private ManageWorkspaceViewModel CreateViewModel(Workspace workspace)
     {
+        var workspaceUsers = dbContext.WorkspaceMemberships
+            .Where(membership => membership.WorkspaceId == workspace.Id)
+            .Select(membership => membership.User)
+            .OrderBy(user => user.FirstName)
+            .ThenBy(user => user.LastName)
+            .Select(user => new WorkspaceUserViewModel
+            {
+                UserId = user.PublicId,
+                Name = $"{user.FirstName} {user.LastName}".Trim(),
+                Email = user.Email ?? string.Empty
+            })
+            .ToList();
+
+        var legacyWorkspaceUsers = dbContext.Users
+            .Where(user => user.WorkspaceId == workspace.Id)
+            .OrderBy(user => user.FirstName)
+            .ThenBy(user => user.LastName)
+            .Select(user => new WorkspaceUserViewModel
+            {
+                UserId = user.PublicId,
+                Name = $"{user.FirstName} {user.LastName}".Trim(),
+                Email = user.Email ?? string.Empty
+            })
+            .ToList();
+
+        foreach (var legacyUser in legacyWorkspaceUsers)
+        {
+            if (workspaceUsers.All(user => user.UserId != legacyUser.UserId))
+            {
+                workspaceUsers.Add(legacyUser);
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(workspace.OwnerUserId))
+        {
+            var owner = dbContext.Users.FirstOrDefault(user => user.Id == workspace.OwnerUserId);
+            if (owner is not null)
+            {
+                var existingOwnerRow = workspaceUsers.FirstOrDefault(user => user.UserId == owner.PublicId);
+                if (existingOwnerRow is not null)
+                {
+                    existingOwnerRow.IsOwner = true;
+                }
+                else
+                {
+                    workspaceUsers.Insert(0, new WorkspaceUserViewModel
+                    {
+                        UserId = owner.PublicId,
+                        Name = $"{owner.FirstName} {owner.LastName}".Trim(),
+                        Email = owner.Email ?? string.Empty,
+                        IsOwner = true
+                    });
+                }
+            }
+        }
+
         return new ManageWorkspaceViewModel
         {
             Workspace = workspace,
@@ -161,8 +388,71 @@ public class WorkspaceManagementController(
                 .OrderBy(source => source.Name)
                 .Select(BuildMediaSourceSummary)
                 .ToList(),
-            MediaSourceEditor = BuildMediaSourceEditorViewModel(workspace, null)
+            MediaSourceEditor = BuildMediaSourceEditorViewModel(workspace, null),
+            WorkspaceUsers = workspaceUsers,
+            CanManageWorkspaceUsers = CanManageWorkspaceUsers(workspace),
+            StandardCheckoutUrl = _stripeConfig?.CheckoutLinks?.GetValueOrDefault(nameof(SubscriptionLevel.Standard)) ?? string.Empty
         };
+    }
+
+    private bool IsWorkspaceOwner(Workspace workspace)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(currentUserId))
+        {
+            return false;
+        }
+
+        if (workspace.OwnerUserId == currentUserId)
+        {
+            return true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(workspace.OwnerUserId))
+        {
+            return false;
+        }
+
+        // Legacy fallback: before owner_user_id existed, membership used AspNetUsers.workspace_id.
+        // If the current user is linked there, promote them to explicit owner to repair data in place.
+        var isLegacyOwner = dbContext.Users.Any(user =>
+            user.Id == currentUserId &&
+            user.WorkspaceId == workspace.Id);
+
+        if (!isLegacyOwner)
+        {
+            return false;
+        }
+
+        workspace.OwnerUserId = currentUserId;
+        dbContext.SaveChanges();
+        return true;
+    }
+
+    private bool CanManageWorkspaceUsers(Workspace workspace)
+    {
+        // Explorer workspaces can only ever have a single user
+        if (!workspace.IsExplorer)
+        {
+            return true;
+        }
+
+        var currentUser = dbContext.Users.FirstOrDefault(user => user.Id == workspace.OwnerUserId);
+        return currentUser?.SubscriptionLevel == SubscriptionLevel.Agency;
+    }
+
+    private IActionResult WorkspaceUsersAccessDenied()
+    {
+        Response.Headers.Append("HX-Retarget", "#workspace");
+        return PartialView("Partials/WorkspaceUsersAccessDenied");
+    }
+
+    private sealed class WorkspaceInvitePayload
+    {
+        public Guid WorkspaceId { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
     }
 
     private MediaSourceSummaryViewModel BuildMediaSourceSummary(Models.Media.MediaSource source)

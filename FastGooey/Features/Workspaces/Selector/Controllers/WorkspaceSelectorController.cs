@@ -49,16 +49,21 @@ public class WorkspaceSelectorController(
         }
 
         var workspaces = await dbContext.Workspaces
-            .Where(x => x.OwnerUserId == currentUser.Id || x.Users.Any(u => u.Id == currentUser.Id))
+            .Where(x =>
+                x.OwnerUserId == currentUser.Id ||
+                x.WorkspaceMemberships.Any(m => m.UserId == currentUser.Id) ||
+                x.Users.Any(u => u.Id == currentUser.Id))
             .OrderBy(x => x.CreatedAt)
             .ToListAsync();
-        
+
         var explorerWorkspace = workspaces.FirstOrDefault(w => w.IsExplorer);
+        var ownedExplorerWorkspace = workspaces.FirstOrDefault(w => w.IsExplorer && w.OwnerUserId == currentUser.Id);
         var standardWorkspaces = workspaces.Where(w => !w.IsExplorer).ToList();
+        var ownedStandardWorkspaceCount = workspaces.Count(w => !w.IsExplorer && w.OwnerUserId == currentUser.Id);
         var standardWorkspaceAllowance = GetStandardWorkspaceAllowance(currentUser);
         var remainingStandardWorkspaceSlots = standardWorkspaceAllowance == int.MaxValue ?
             0 :
-            Math.Max(standardWorkspaceAllowance - standardWorkspaces.Count, 0);
+            Math.Max(standardWorkspaceAllowance - ownedStandardWorkspaceCount, 0);
         var hasOnlyExplorerOrNoWorkspaces = standardWorkspaces.Count == 0;
 
         var viewModel = new WorkspaceSelectorViewModel
@@ -67,9 +72,10 @@ public class WorkspaceSelectorController(
             ExplorerWorkspace = explorerWorkspace,
             StandardWorkspaces = standardWorkspaces,
             UserIsConfirmed = currentUser.EmailConfirmed,
-            CanCreateExplorerWorkspace = explorerWorkspace is null,
+            CanCreateExplorerWorkspace = ownedExplorerWorkspace is null,
             StandardWorkspaceAllowance = standardWorkspaceAllowance,
             RemainingStandardWorkspaceSlots = remainingStandardWorkspaceSlots,
+            OwnedStandardWorkspaceCount = ownedStandardWorkspaceCount,
             CanCreateUnlimitedWorkspaces = currentUser.SubscriptionLevel == SubscriptionLevel.Agency,
             HasOnlyExplorerOrNoWorkspaces = hasOnlyExplorerOrNoWorkspaces,
             HasAnyStandardPurchase = currentUser.StandardWorkspaceAllowance > 0 || currentUser.SubscriptionLevel == SubscriptionLevel.Standard,
@@ -172,7 +178,9 @@ public class WorkspaceSelectorController(
     private async Task<bool> HasExplorerWorkspaceAsync(string userId)
     {
         return await dbContext.Workspaces
-            .AnyAsync(workspace => workspace.IsExplorer && (workspace.OwnerUserId == userId || workspace.Users.Any(u => u.Id == userId)));
+            .AnyAsync(workspace =>
+                workspace.IsExplorer &&
+                workspace.OwnerUserId == userId);
     }
 
     private async Task<bool> CanCreateStandardWorkspaceAsync(ApplicationUser currentUser)
@@ -184,7 +192,9 @@ public class WorkspaceSelectorController(
         }
 
         var standardWorkspaceCount = await dbContext.Workspaces
-            .CountAsync(workspace => !workspace.IsExplorer && (workspace.OwnerUserId == currentUser.Id || workspace.Users.Any(u => u.Id == currentUser.Id)));
+            .CountAsync(workspace =>
+                !workspace.IsExplorer &&
+                workspace.OwnerUserId == currentUser.Id);
 
         return standardWorkspaceCount < standardWorkspaceAllowance;
     }

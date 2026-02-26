@@ -61,7 +61,7 @@
             
             for (var i = 0; i < Model.RemainingStandardWorkspaceSlots; i++)
             {
-                var slotNumber = Model.StandardWorkspaces.Count() + i + 1;
+                var slotNumber = Model.OwnedStandardWorkspaceCount + i + 1;
                 <div class="border border-white shadow-md rounded-xl text-white divide-y divide-white mb-6">
                     <a asp-action="CreateWorkspace" asp-controller="WorkspaceSelector" asp-route-workspacePlan="Standard">
                         <div class="cursor-pointer p-4 hover:underline">

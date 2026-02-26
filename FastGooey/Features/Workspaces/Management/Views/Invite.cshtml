@@ -1,0 +1,32 @@
+@model FastGooey.Features.Workspaces.Management.Models.ViewModels.WorkspaceInviteViewModel
+@{
+    ViewData["Title"] = "Workspace Invitation";
+    Layout = "PublicLayout";
+}
+
+<div class="w-screen h-screen bg-blueDark font-mont">
+    <div class="p-6 flex items-center">
+        <a href="@Url.Action("Index", "Home")">
+            <h1 class="text-nuclearGreen font-exo text-2xl font-bold italic tracking-tighter text-shadow-md flex-1">FastGooey</h1>
+        </a>
+    </div>
+    <div class="max-w-2xl mx-auto pt-24 px-6">
+        <h1 class="text-white font-exo text-5xl md:text-7xl font-bold italic tracking-tighter text-shadow-md mb-6">
+            Workspace Invite
+        </h1>
+
+        <div class="border border-white shadow-md rounded-xl text-white p-6 mb-6">
+            <p class="mb-4">
+                You've been invited to join <span class="font-semibold">@Model.WorkspaceName</span>.
+            </p>
+            <p class="mb-2 text-white/85">Invitee</p>
+            <p class="mb-6 font-semibold">@Model.FirstName @Model.LastName (@Model.Email)</p>
+
+            <form asp-action="AcceptInvite" asp-controller="WorkspaceInvite" asp-route-token="@Model.Token" method="post">
+                <button type="submit" class="text-sm font-semibold py-2 px-4 rounded-lg cursor-pointer bg-gradient-to-b from-nuclearGreenLighter to-nuclearGreenDarker border border-white/10 shadow-md">
+                    Accept Invitation
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
