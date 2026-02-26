@@ -147,4 +147,43 @@ public class EmailerService : IEmailSender
             messageContents
         );
     }
+
+    public async Task SendWorkspaceInviteEmail(
+        string recipientEmailAddress,
+        string firstName,
+        string lastName,
+        string workspaceName,
+        string inviteLink)
+    {
+        if (string.IsNullOrWhiteSpace(recipientEmailAddress) || string.IsNullOrWhiteSpace(inviteLink))
+        {
+            return;
+        }
+
+        var name = $"{firstName} {lastName}".Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = recipientEmailAddress;
+        }
+
+        const string filePath = "Views/EmailNotifications/workspaceInvite.handlebars";
+        var fileContents = await System.IO.File.ReadAllTextAsync(filePath);
+
+        var template = Handlebars.Compile(fileContents);
+
+        var data = new
+        {
+            name,
+            workspaceName,
+            inviteLink
+        };
+
+        var messageContents = template(data);
+
+        await SendEmailAsync(
+            recipientEmailAddress,
+            "You're invited to a FastGooey workspace",
+            messageContents
+        );
+    }
 }

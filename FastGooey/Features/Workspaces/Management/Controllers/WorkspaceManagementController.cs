@@ -230,8 +230,12 @@ public class WorkspaceManagementController(
 
         if (!string.IsNullOrWhiteSpace(inviteLink))
         {
-            var html = $"<p>{model.FirstName} {model.LastName},</p><p>You were invited to join the workspace <strong>{workspace.Name}</strong>.</p><p><a href=\"{inviteLink}\">Accept workspace invite</a></p>";
-            await emailerService.SendEmailAsync(model.Email, "You're invited to a FastGooey workspace", html);
+            await emailerService.SendWorkspaceInviteEmail(
+                model.Email,
+                model.FirstName,
+                model.LastName,
+                workspace.Name,
+                inviteLink);
         }
 
         var viewModel = CreateViewModel(workspace);
