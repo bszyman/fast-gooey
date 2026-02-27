@@ -25,3 +25,18 @@ GET https://localhost:7110/hypermedia/xdosrEypDEiGvzbq5OJraw
 
 ### TV Alert
 GET https://localhost:7110/hypermedia/qflclwc0Vkyhqz0q-0yKGQ
+
+### TV Descriptive Alert
+GET https://localhost:7110/hypermedia/mk7GUmg8ek-1zXpVSjvfSQ
+
+### TV Main
+GET https://localhost:7110/hypermedia/wDtrrWuMWUyHg4ebA8RPlw
+
+### TV Media Photo
+GET https://localhost:7110/hypermedia/xf3wancuKUSn-yxi1-DXrw
+
+### TV Media Grid
+GET https://localhost:7110/hypermedia/3lcl1aOmlkivqgsYEnxJ7g
+
+### TV List
+GET https://localhost:7110/hypermedia/6ejczT4sr0qmONmoIfv4aQ
