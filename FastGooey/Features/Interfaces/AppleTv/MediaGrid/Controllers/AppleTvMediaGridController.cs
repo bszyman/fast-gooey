@@ -13,7 +13,7 @@ namespace FastGooey.Features.Interfaces.AppleTv.MediaGrid.Controllers;
 
 [Authorize]
 [AuthorizeWorkspaceAccess]
-[Route("Workspaces/{workspaceId:guid}/Interfaces/tvOS/Media")]
+[Route("Workspaces/{workspaceId:guid}/Interfaces/tvOS/MediaGrid")]
 public class AppleTvMediaGridController(
     ILogger<AppleTvMediaGridController> logger,
     IKeyValueService keyValueService,
