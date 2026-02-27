@@ -182,8 +182,8 @@ public class HypermediaController(
                 return GenerateAppleTvDescriptiveAlert(gooeyInterface);
             case "Media":
                 return GenerateAppleTvMedia(gooeyInterface);
-            case "Product":
-                return GenerateAppleTvProduct(gooeyInterface);
+            case "Detail":
+                return GenerateAppleTvDetail(gooeyInterface);
             case "MediaGrid":
                 return GenerateAppleTvMediaGrid(gooeyInterface);
             default:
@@ -300,7 +300,7 @@ public class HypermediaController(
         };
     }
     
-    private AppleTvProductHypermediaResponse GenerateAppleTvProduct(GooeyInterface gooeyInterface)
+    private AppleTvProductHypermediaResponse GenerateAppleTvDetail(GooeyInterface gooeyInterface)
     {
         static string ReadString(JsonElement element, params string[] names)
         {
@@ -317,8 +317,8 @@ public class HypermediaController(
 
         static List<AppleTvDetailRelatedItemJsonModel> ReadRelatedItems(JsonElement element)
         {
-            if (!element.TryGetProperty("RelatedProducts", out var items) &&
-                !element.TryGetProperty("relatedProducts", out items) &&
+            if (!element.TryGetProperty("RelatedItems", out var items) &&
+                !element.TryGetProperty("relatedItems", out items) &&
                 !element.TryGetProperty("relatedItems", out items))
             {
                 return [];

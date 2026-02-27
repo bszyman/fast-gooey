@@ -40,3 +40,6 @@ GET https://localhost:7110/hypermedia/3lcl1aOmlkivqgsYEnxJ7g
 
 ### TV List
 GET https://localhost:7110/hypermedia/6ejczT4sr0qmONmoIfv4aQ
+
+### TV Detail
+GET https://localhost:7110/hypermedia/uUz3unij80O4QRr0ZcQeiA

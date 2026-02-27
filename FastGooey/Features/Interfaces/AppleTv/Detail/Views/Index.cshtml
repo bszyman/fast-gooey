@@ -15,7 +15,7 @@
             })
         </div>
         <button
-            hx-get="@Url.Action("Workspace", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+            hx-get="@Url.Action("Workspace", "AppleTvDetail", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
             hx-target="#workspaceEditor"
             type="button"
             class="sectionButton activeSectionButton"
@@ -33,7 +33,7 @@
 
     <div id="workspaceEditor"
          class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
-         hx-get="@Url.Action("Workspace", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+         hx-get="@Url.Action("Workspace", "AppleTvDetail", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
          hx-trigger="load, refreshWorkspace from:body">
         @await Html.PartialAsync("Workspace.cshtml", Model.Workspace)
     </div>

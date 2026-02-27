@@ -42,7 +42,7 @@
 }
 
 <form method="post"
-      hx-post="@Url.Action("SaveWorkspace", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+      hx-post="@Url.Action("SaveWorkspace", "AppleTvDetail", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
       hx-trigger="blur from:#title, keyup[key=='Enter'] changed delay:500ms from:#title, blur from:#description, keyup[key=='Enter'] changed delay:500ms from:#description, change from:#previewMediaUrl"
       hx-target="#workspaceEditor"
       onsubmit="return false;">
@@ -88,7 +88,7 @@
                 <div class="flex justify-between items-center mb-3">
                     <p class="text-xs uppercase tracking-wide text-zinc-300">Related Items</p>
                     <button type="button"
-                            hx-get="@Url.Action("RelatedItemPanel", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
+                            hx-get="@Url.Action("RelatedItemPanel", "AppleTvDetail", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId() })"
                             hx-target="#editorPanel"
                             onclick="toggleEditor()"
                             class="text-zinc-100 hover:text-white cursor-pointer">
@@ -111,7 +111,7 @@
                             @foreach (var relatedItem in Model.Data.RelatedItems)
                             {
                                 <button type="button"
-                                        hx-get="@Url.Action("RelatedItemPanel", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), relatedItemId = relatedItem.Id })"
+                                        hx-get="@Url.Action("RelatedItemPanel", "AppleTvDetail", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), relatedItemId = relatedItem.Id })"
                                         hx-target="#editorPanel"
                                         onclick="toggleEditor()"
                                         class="w-48 text-left rounded-md border border-zinc-700 bg-zinc-800 p-3 hover:bg-zinc-700 transition">

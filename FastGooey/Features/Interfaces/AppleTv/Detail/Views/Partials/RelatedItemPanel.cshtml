@@ -7,7 +7,7 @@
 </div>
 
 <form method="post"
-      hx-post="@Url.Action("SaveRelatedItemPanel", "AppleTvProduct", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), relatedItemId = Model.RelatedItemId == Guid.Empty ? (Guid?)null : Model.RelatedItemId })"
+      hx-post="@Url.Action("SaveRelatedItemPanel", "AppleTvDetail", new { workspaceId = Model.WorkspaceId, interfaceId = Model.InterfaceId.ToBase64Url(), relatedItemId = Model.RelatedItemId == Guid.Empty ? (Guid?)null : Model.RelatedItemId })"
       hx-target="#editorPanel">
     @Html.AntiForgeryToken()
 
