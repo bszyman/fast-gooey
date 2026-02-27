@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using FastGooey.Features.Interfaces.AppleTv.Product.Controllers;
-using FastGooey.Features.Interfaces.AppleTv.Product.Models;
+using FastGooey.Features.Interfaces.AppleTv.Detail.Controllers;
+using FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 using FastGooey.Models;
 using FastGooey.Services;
 using FastGooey.Tests.Support;
@@ -46,12 +46,12 @@ public class AppleTvProductControllerTests
             Workspace = workspace,
             Platform = "AppleTv",
             ViewType = "Product",
-            Config = JsonSerializer.SerializeToDocument(new AppleTvProductJsonDataModel())
+            Config = JsonSerializer.SerializeToDocument(new AppleTvDetailJsonDataModel())
         };
         dbContext.GooeyInterfaces.Add(contentNode);
         await dbContext.SaveChangesAsync();
 
-        var controller = new AppleTvProductController(
+        var controller = new AppleTvDetailController(
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext
@@ -80,12 +80,12 @@ public class AppleTvProductControllerTests
             Workspace = workspace,
             Platform = "AppleTv",
             ViewType = "Product",
-            Config = JsonSerializer.SerializeToDocument(new AppleTvProductJsonDataModel())
+            Config = JsonSerializer.SerializeToDocument(new AppleTvDetailJsonDataModel())
         };
         dbContext.GooeyInterfaces.Add(contentNode);
         await dbContext.SaveChangesAsync();
 
-        var controller = new AppleTvProductController(
+        var controller = new AppleTvDetailController(
             new StubKeyValueService(),
             dbContext);
         controller.ControllerContext = new ControllerContext
@@ -95,7 +95,7 @@ public class AppleTvProductControllerTests
 
         await controller.SaveWorkspace(
             contentNode.DocId.ToBase64Url(),
-            new ProductWorkspaceFormModel
+            new DetailWorkspaceFormModel
             {
                 Title = "  Product Title  ",
                 Description = "  Product Description  ",
@@ -103,7 +103,7 @@ public class AppleTvProductControllerTests
             });
 
         var saved = dbContext.GooeyInterfaces.Single(x => x.Id == contentNode.Id)
-            .Config.Deserialize<AppleTvProductJsonDataModel>();
+            .Config.Deserialize<AppleTvDetailJsonDataModel>();
 
         Assert.NotNull(saved);
         Assert.Equal("Product Title", saved!.Title);

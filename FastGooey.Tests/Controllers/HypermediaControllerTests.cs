@@ -3,7 +3,7 @@ using System.Text.Json;
 using FastGooey.Controllers;
 using FastGooey.Features.Interfaces.AppleTv.Main.Models;
 using FastGooey.Features.Interfaces.AppleTv.Media.Models;
-using FastGooey.Features.Interfaces.AppleTv.Product.Models;
+using FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 using FastGooey.Features.Interfaces.AppleTv.MediaGrid.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
@@ -172,14 +172,14 @@ public class HypermediaControllerTests
             Platform = "AppleTv",
             ViewType = "Product",
             Name = "AppleTv Product",
-            Config = JsonSerializer.SerializeToDocument(new AppleTvProductJsonDataModel
+            Config = JsonSerializer.SerializeToDocument(new AppleTvDetailJsonDataModel
             {
                 Title = "Featured",
                 Description = "A featured product",
                 PreviewMediaUrl = "https://example.com/preview.png",
-                RelatedProducts =
+                RelatedItems =
                 [
-                    new AppleTvProductRelatedItemJsonModel
+                    new AppleTvDetailRelatedItemJsonModel
                     {
                         Id = Guid.NewGuid(),
                         Title = "Related",

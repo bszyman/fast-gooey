@@ -11,7 +11,7 @@ using FastGooey.Features.Interfaces.AppleTv.DescriptiveAlert.Models;
 using FastGooey.Features.Interfaces.AppleTv.Main.Models;
 using FastGooey.Features.Interfaces.AppleTv.Media.Models;
 using FastGooey.Features.Interfaces.AppleTv.MediaGrid.Models;
-using FastGooey.Features.Interfaces.AppleTv.Product.Models;
+using FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv;
 using FastGooey.Features.Interfaces.AppleTv.Shared.Models.JsonDataModels.AppleTv.Accessories;
 using FastGooey.Features.Interfaces.Mac.Collection.Models;
@@ -315,7 +315,7 @@ public class HypermediaController(
             return string.Empty;
         }
 
-        static List<AppleTvProductRelatedItemJsonModel> ReadRelatedItems(JsonElement element)
+        static List<AppleTvDetailRelatedItemJsonModel> ReadRelatedItems(JsonElement element)
         {
             if (!element.TryGetProperty("RelatedProducts", out var items) &&
                 !element.TryGetProperty("relatedProducts", out items) &&
@@ -331,7 +331,7 @@ public class HypermediaController(
 
             return items.EnumerateArray()
                 .Where(item => item.ValueKind == JsonValueKind.Object)
-                .Select(item => new AppleTvProductRelatedItemJsonModel(item))
+                .Select(item => new AppleTvDetailRelatedItemJsonModel(item))
                 .ToList();
         }
 
@@ -346,7 +346,7 @@ public class HypermediaController(
             {
                 Description = UnfurlFastGooeyLink(ReadString(root, "Description", "description"), gooeyInterface.Workspace.PublicId),
                 PreviewMediaUrl = UnfurlFastGooeyLink(ReadString(root, "PreviewMediaUrl", "previewMediaUrl"), gooeyInterface.Workspace.PublicId),
-                RelatedItems = relatedItems.Select(x => new AppleTvProductRelatedItemJsonModel
+                RelatedItems = relatedItems.Select(x => new AppleTvDetailRelatedItemJsonModel
                 {
                     Id = x.Id,
                     Title = UnfurlFastGooeyLink(x.Title, gooeyInterface.Workspace.PublicId),

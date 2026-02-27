@@ -1,7 +1,7 @@
 using System.Text.Json;
 using FastGooey.Attributes;
 using FastGooey.Database;
-using FastGooey.Features.Interfaces.AppleTv.Product.Models;
+using FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 using FastGooey.Features.Interfaces.Shared.Controllers;
 using FastGooey.Models;
 using FastGooey.Services;
@@ -9,19 +9,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace FastGooey.Features.Interfaces.AppleTv.Product.Controllers;
+namespace FastGooey.Features.Interfaces.AppleTv.Detail.Controllers;
 
 [Authorize]
 [AuthorizeWorkspaceAccess]
-[Route("Workspaces/{workspaceId:guid}/Interfaces/tvOS/Product")]
-public class AppleTvProductController(
+[Route("Workspaces/{workspaceId:guid}/Interfaces/tvOS/Detail")]
+public class AppleTvDetailController(
     IKeyValueService keyValueService,
     ApplicationDbContext dbContext) :
     BaseInterfaceController(keyValueService, dbContext)
 {
-    private async Task<AppleTvProductWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
+    private async Task<AppleTvDetailWorkspaceViewModel> WorkspaceViewModelForInterfaceId(Guid interfaceId)
     {
-        return await GetInterfaceViewModelAsync<AppleTvProductWorkspaceViewModel, AppleTvProductJsonDataModel>(interfaceId);
+        return await GetInterfaceViewModelAsync<AppleTvDetailWorkspaceViewModel, AppleTvDetailJsonDataModel>(interfaceId);
     }
 
     [HttpGet("{interfaceId}")]
@@ -32,7 +32,7 @@ public class AppleTvProductController(
             return NotFound();
         }
 
-        var viewModel = new AppleTvInterfaceProductViewModel
+        var viewModel = new AppleTvInterfaceDetailViewModel
         {
             Workspace = await WorkspaceViewModelForInterfaceId(interfaceGuid)
         };
@@ -54,7 +54,7 @@ public class AppleTvProductController(
 
     [HttpPost("workspace/{interfaceId}")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SaveWorkspace(string interfaceId, [FromForm] ProductWorkspaceFormModel formModel)
+    public async Task<IActionResult> SaveWorkspace(string interfaceId, [FromForm] DetailWorkspaceFormModel formModel)
     {
         if (!TryParseInterfaceId(interfaceId, out var interfaceGuid))
         {
@@ -64,7 +64,7 @@ public class AppleTvProductController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceGuid));
-        var data = contentNode.Config.Deserialize<AppleTvProductJsonDataModel>() ?? new AppleTvProductJsonDataModel();
+        var data = contentNode.Config.Deserialize<AppleTvDetailJsonDataModel>() ?? new AppleTvDetailJsonDataModel();
 
         data.Title = formModel.Title.Trim();
         data.Description = formModel.Description.Trim();
@@ -73,7 +73,7 @@ public class AppleTvProductController(
         contentNode.Config = JsonSerializer.SerializeToDocument(data);
         await dbContext.SaveChangesAsync();
 
-        var viewModel = new AppleTvProductWorkspaceViewModel
+        var viewModel = new AppleTvDetailWorkspaceViewModel
         {
             ContentNode = contentNode,
             Data = data
@@ -93,11 +93,11 @@ public class AppleTvProductController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceGuid));
-        var data = contentNode.Config.Deserialize<AppleTvProductJsonDataModel>() ?? new AppleTvProductJsonDataModel();
+        var data = contentNode.Config.Deserialize<AppleTvDetailJsonDataModel>() ?? new AppleTvDetailJsonDataModel();
 
         var relatedItem = relatedItemId.HasValue
-            ? data.RelatedProducts.FirstOrDefault(x => x.Id.Equals(relatedItemId.Value)) ?? new AppleTvProductRelatedItemJsonModel()
-            : new AppleTvProductRelatedItemJsonModel();
+            ? data.RelatedItems.FirstOrDefault(x => x.Id.Equals(relatedItemId.Value)) ?? new AppleTvDetailRelatedItemJsonModel()
+            : new AppleTvDetailRelatedItemJsonModel();
 
         return PartialView("Partials/RelatedItemPanel", new RelatedItemPanelViewModel
         {
@@ -125,10 +125,10 @@ public class AppleTvProductController(
         var contentNode = await dbContext.GooeyInterfaces
             .Include(x => x.Workspace)
             .FirstAsync(x => x.DocId.Equals(interfaceGuid));
-        var data = contentNode.Config.Deserialize<AppleTvProductJsonDataModel>() ?? new AppleTvProductJsonDataModel();
+        var data = contentNode.Config.Deserialize<AppleTvDetailJsonDataModel>() ?? new AppleTvDetailJsonDataModel();
 
         var item = relatedItemId.HasValue
-            ? data.RelatedProducts.FirstOrDefault(x => x.Id.Equals(relatedItemId.Value))
+            ? data.RelatedItems.FirstOrDefault(x => x.Id.Equals(relatedItemId.Value))
             : null;
 
         if (!ModelState.IsValid)
@@ -147,11 +147,11 @@ public class AppleTvProductController(
 
         if (item is null)
         {
-            item = new AppleTvProductRelatedItemJsonModel
+            item = new AppleTvDetailRelatedItemJsonModel
             {
                 Id = Guid.NewGuid()
             };
-            data.RelatedProducts.Add(item);
+            data.RelatedItems.Add(item);
         }
 
         item.Title = formModel.Title.Trim();
@@ -188,15 +188,15 @@ public class AppleTvProductController(
             return NotFound();
         }
 
-        var data = new AppleTvProductJsonDataModel();
+        var data = new AppleTvDetailJsonDataModel();
 
         var contentNode = new GooeyInterface
         {
             WorkspaceId = workspace.Id,
             Workspace = workspace,
             Platform = "AppleTv",
-            ViewType = "Product",
-            Name = "New Product Interface",
+            ViewType = "Detail",
+            Name = "New Detail Interface",
             Config = JsonSerializer.SerializeToDocument(data)
         };
 
@@ -205,9 +205,9 @@ public class AppleTvProductController(
 
         Response.Headers.Append("HX-Trigger", "refreshInterfaces");
 
-        var viewModel = new AppleTvInterfaceProductViewModel
+        var viewModel = new AppleTvInterfaceDetailViewModel
         {
-            Workspace = new AppleTvProductWorkspaceViewModel
+            Workspace = new AppleTvDetailWorkspaceViewModel
             {
                 ContentNode = contentNode,
                 Data = data

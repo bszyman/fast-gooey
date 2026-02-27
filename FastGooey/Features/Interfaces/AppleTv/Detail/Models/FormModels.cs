@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastGooey.Features.Interfaces.AppleTv.Product.Models;
+namespace FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 
-public class ProductWorkspaceFormModel
+public class DetailWorkspaceFormModel
 {
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

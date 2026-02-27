@@ -1,5 +1,5 @@
 @using FastGooey.Extensions
-@model FastGooey.Features.Interfaces.AppleTv.Product.Models.AppleTvProductWorkspaceViewModel
+@model FastGooey.Features.Interfaces.AppleTv.Detail.Models.AppleTvDetailWorkspaceViewModel
 
 @{
     var previewMediaValue = Model.Data.PreviewMediaUrl?.Trim() ?? string.Empty;
@@ -100,7 +100,7 @@
 
                 <div class="w-full overflow-x-scroll">
                     <div class="flex gap-3 min-w-max">
-                        @if (Model.Data.RelatedProducts.Count == 0)
+                        @if (Model.Data.RelatedItems.Count == 0)
                         {
                             <div class="border border-dashed border-zinc-600 rounded-md px-3 py-2 text-zinc-300 text-xs">
                                 Click to edit related items...
@@ -108,7 +108,7 @@
                         }
                         else
                         {
-                            @foreach (var relatedItem in Model.Data.RelatedProducts)
+                            @foreach (var relatedItem in Model.Data.RelatedItems)
                             {
                                 <button type="button"
                                         hx-get="@Url.Action("RelatedItemPanel", "AppleTvProduct", new { workspaceId = Model.WorkspaceId(), interfaceId = Model.InterfaceId(), relatedItemId = relatedItem.Id })"

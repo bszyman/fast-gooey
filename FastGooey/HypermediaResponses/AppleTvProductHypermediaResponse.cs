@@ -1,4 +1,4 @@
-using FastGooey.Features.Interfaces.AppleTv.Product.Models;
+using FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 
 namespace FastGooey.HypermediaResponses;
 
@@ -16,5 +16,5 @@ public class AppleTvProductContent
 {
     public string Description { get; set; } = string.Empty;
     public string PreviewMediaUrl { get; set; } = string.Empty;
-    public List<AppleTvProductRelatedItemJsonModel> RelatedItems { get; set; } = [];
+    public List<AppleTvDetailRelatedItemJsonModel> RelatedItems { get; set; } = [];
 }

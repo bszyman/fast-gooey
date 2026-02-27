@@ -1,29 +1,29 @@
 using System.Text.Json;
 
-namespace FastGooey.Features.Interfaces.AppleTv.Product.Models;
+namespace FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 
-public class AppleTvProductJsonDataModel
+public class AppleTvDetailJsonDataModel
 {
     public string Title { get; set; } = string.Empty;
     
     public string Description { get; set; } = string.Empty;
     public string PreviewMediaUrl { get; set; } = string.Empty;
     
-    public List<AppleTvProductRelatedItemJsonModel> RelatedProducts { get; set; } = [];
+    public List<AppleTvDetailRelatedItemJsonModel> RelatedItems { get; set; } = [];
 }
 
-public class AppleTvProductRelatedItemJsonModel
+public class AppleTvDetailRelatedItemJsonModel
 {
     public Guid Id { get; set; } = Guid.Empty;
     public string Title { get; set; } = string.Empty;
     public string Link { get; set; } = string.Empty;
     public string MediaUrl { get; set; } = string.Empty;
 
-    public AppleTvProductRelatedItemJsonModel()
+    public AppleTvDetailRelatedItemJsonModel()
     {
     }
 
-    public AppleTvProductRelatedItemJsonModel(JsonElement element)
+    public AppleTvDetailRelatedItemJsonModel(JsonElement element)
     {
         Id = TryReadGuid(element, "Id", "id");
         Title = ReadString(element, "Title", "title");

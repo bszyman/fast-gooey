@@ -1,11 +1,11 @@
 using FastGooey.Models;
 using FastGooey.Utils;
 
-namespace FastGooey.Features.Interfaces.AppleTv.Product.Models;
+namespace FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 
-public class AppleTvInterfaceProductViewModel
+public class AppleTvInterfaceDetailViewModel
 {
-    public AppleTvProductWorkspaceViewModel? Workspace { get; set; }
+    public AppleTvDetailWorkspaceViewModel? Workspace { get; set; }
 
     public string WorkspaceId()
     {
@@ -18,10 +18,10 @@ public class AppleTvInterfaceProductViewModel
     }
 }
 
-public class AppleTvProductWorkspaceViewModel
+public class AppleTvDetailWorkspaceViewModel
 {
     public GooeyInterface? ContentNode { get; set; }
-    public AppleTvProductJsonDataModel Data { get; set; } = new();
+    public AppleTvDetailJsonDataModel Data { get; set; } = new();
 
     public string WorkspaceId()
     {
