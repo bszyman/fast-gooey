@@ -131,7 +131,8 @@ app.UseCsp(csp =>
         .AllowUnsafeEval()
         .From("https://unpkg.com")
         .From("https://cdn.apple-mapkit.com")
-        .From("https://challenges.cloudflare.com");
+        .From("https://challenges.cloudflare.com")
+        .From("https://analytics.ahrefs.com");
     
     csp.AllowStyles
         .FromSelf()
