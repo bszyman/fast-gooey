@@ -2,17 +2,17 @@ using FastGooey.Features.Interfaces.AppleTv.Detail.Models;
 
 namespace FastGooey.HypermediaResponses;
 
-public class AppleTvProductHypermediaResponse : IHypermediaResponse
+public class AppleTvDetailHypermediaResponse : IHypermediaResponse
 {
     public Guid InterfaceId { get; set; } = Guid.Empty;
     public string Platform { get; set; } = "AppleTv";
-    public string View { get; set; } = "Product";
+    public string View { get; set; } = "Detail";
     public string Title { get; set; } = string.Empty;
     
-    public AppleTvProductContent Content { get; set; } = new();
+    public AppleTvDetailContent Content { get; set; } = new();
 }
 
-public class AppleTvProductContent
+public class AppleTvDetailContent
 {
     public string Description { get; set; } = string.Empty;
     public string PreviewMediaUrl { get; set; } = string.Empty;

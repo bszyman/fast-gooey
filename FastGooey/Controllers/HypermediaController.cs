@@ -300,7 +300,7 @@ public class HypermediaController(
         };
     }
     
-    private AppleTvProductHypermediaResponse GenerateAppleTvDetail(GooeyInterface gooeyInterface)
+    private AppleTvDetailHypermediaResponse GenerateAppleTvDetail(GooeyInterface gooeyInterface)
     {
         static string ReadString(JsonElement element, params string[] names)
         {
@@ -338,11 +338,11 @@ public class HypermediaController(
         var root = gooeyInterface.Config.RootElement;
         var relatedItems = ReadRelatedItems(root);
 
-        return new AppleTvProductHypermediaResponse
+        return new AppleTvDetailHypermediaResponse
         {
             InterfaceId = gooeyInterface.DocId,
             Title = gooeyInterface.Name,
-            Content = new AppleTvProductContent
+            Content = new AppleTvDetailContent
             {
                 Description = UnfurlFastGooeyLink(ReadString(root, "Description", "description"), gooeyInterface.Workspace.PublicId),
                 PreviewMediaUrl = UnfurlFastGooeyLink(ReadString(root, "PreviewMediaUrl", "previewMediaUrl"), gooeyInterface.Workspace.PublicId),

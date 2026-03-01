@@ -21,22 +21,22 @@
                     </div>
                     <div class="py-2 px-4">
                         <div class="mb-4">
-                            <label asp-for="FormModel.FirstName"></label>
-                            <input asp-for="FormModel.FirstName"
+                            <label asp-for="FormModel!.FirstName"></label>
+                            <input asp-for="FormModel!.FirstName"
                                    type="text"
-                                   class="w-full @(Model.FormModel.IsSaved ? "saved" : "")"/>
-                            <span asp-validation-for="FormModel.FirstName" class="text-red-600 text-sm mt-1 block"></span>
+                                   class="w-full @(Model.FormModel!.IsSaved ? "saved" : "")"/>
+                            <span asp-validation-for="FormModel!.FirstName" class="text-red-600 text-sm mt-1 block"></span>
                         </div>
                         <div class="mb-4">
-                            <label asp-for="FormModel.LastName"></label>
-                            <input asp-for="FormModel.LastName"
+                            <label asp-for="FormModel!.LastName"></label>
+                            <input asp-for="FormModel!.LastName"
                                    type="text"
-                                   class="w-full @(Model.FormModel.IsSaved ? "saved" : "")"/>
-                            <span asp-validation-for="FormModel.LastName" class="text-red-600 text-sm mt-1 block"></span>
+                                   class="w-full @(Model.FormModel!.IsSaved ? "saved" : "")"/>
+                            <span asp-validation-for="FormModel!.LastName" class="text-red-600 text-sm mt-1 block"></span>
                         </div>
                         <div class="mb-4">
                             <p class="block text-sm font-medium text-gray-700">Email Address</p>
-                            <p>@Model.User.Email</p>
+                            <p>@Model.User!.Email</p>
                         </div>
                     </div>
                 </div>

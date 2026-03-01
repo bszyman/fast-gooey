@@ -160,7 +160,7 @@ public class HypermediaControllerTests
     }
   
       [Fact]
-    public async Task Get_ReturnsAppleTvProductResponse_WhenPlatformIsAppleTvProduct()
+    public async Task Get_ReturnsAppleTvDetailResponse_WhenPlatformIsAppleTvProduct()
     {
         using var dbContext = TestDbContextFactory.Create(new TestClock(Instant.FromUtc(2024, 1, 1, 12, 0)));
         using var memoryCache = new MemoryCache(new MemoryCacheOptions());
@@ -170,8 +170,8 @@ public class HypermediaControllerTests
         {
             Workspace = workspace,
             Platform = "AppleTv",
-            ViewType = "Product",
-            Name = "AppleTv Product",
+            ViewType = "Detail",
+            Name = "AppleTv Detail",
             Config = JsonSerializer.SerializeToDocument(new AppleTvDetailJsonDataModel
             {
                 Title = "Featured",
@@ -207,9 +207,9 @@ public class HypermediaControllerTests
         var result = await controller.Get(gooeyInterface.DocId.ToBase64Url());
 
         var ok = Assert.IsType<OkObjectResult>(result);
-        var response = Assert.IsType<AppleTvProductHypermediaResponse>(ok.Value);
+        var response = Assert.IsType<AppleTvDetailHypermediaResponse>(ok.Value);
         Assert.Equal("AppleTv", response.Platform);
-        Assert.Equal("Product", response.View);
+        Assert.Equal("Detail", response.View);
         Assert.Equal(gooeyInterface.DocId, response.InterfaceId);
         Assert.NotNull(response.Content.RelatedItems);
     }
