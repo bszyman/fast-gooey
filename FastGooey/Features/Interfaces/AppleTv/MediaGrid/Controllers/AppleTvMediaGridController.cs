@@ -159,7 +159,7 @@ public class AppleTvMediaGridController(
         }
 
         item.Title = formModel.Title.Trim();
-        item.LinkTo = formModel.LinkTo.Trim();
+        item.LinkTo = (formModel.LinkTo ?? string.Empty).Trim();
         item.PreviewMedia = formModel.PreviewMedia.Trim();
 
         contentNode.Config = JsonSerializer.SerializeToDocument(data);

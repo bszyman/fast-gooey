@@ -22,7 +22,7 @@ public class AppleTvMediaGridControllerTests
     }
 
     [Fact]
-    public void MediaGridItemPanelForm_RequiresTitleLinkAndPreviewMedia()
+    public void MediaGridItemPanelForm_RequiresTitleAndPreviewMedia()
     {
         var form = new MediaGridItemPanelFormModel();
         var context = new ValidationContext(form);
@@ -32,7 +32,6 @@ public class AppleTvMediaGridControllerTests
 
         Assert.False(isValid);
         Assert.Contains(results, x => x.MemberNames.Contains("Title"));
-        Assert.Contains(results, x => x.MemberNames.Contains("LinkTo"));
         Assert.Contains(results, x => x.MemberNames.Contains("PreviewMedia"));
     }
 

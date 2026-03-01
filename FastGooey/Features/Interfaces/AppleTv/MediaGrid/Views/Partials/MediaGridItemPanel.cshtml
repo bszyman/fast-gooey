@@ -24,7 +24,7 @@
                     @Html.ValidationMessage("Title", "", new { @class = "text-red-600 text-sm mt-1 block" })
                 </div>
                 <div class="mb-3">
-                    <label for="linkToButton">Link</label>
+                    <label for="linkToButton">Link (optional)</label>
                     <input type="hidden" id="LinkTo" name="LinkTo" value="@Model.LinkTo" />
                     <button type="button"
                             id="linkToButton"
@@ -35,8 +35,9 @@
                             data-link-editor-display="linkToDisplay">
                         Select link...
                     </button>
-                    <p id="linkToDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">No link selected.</p>
-                    @Html.ValidationMessage("LinkTo", "", new { @class = "text-red-600 text-sm mt-1 block" })
+                    <p id="linkToDisplay" class="truncate text-xs text-gray-500 ml-1 mt-1">
+                        @(string.IsNullOrWhiteSpace(Model.LinkTo) ? "No link selected." : Model.LinkTo)
+                    </p>
                 </div>
                 <div class="mb-3">
                     <label for="previewMediaButton">Preview Media</label>

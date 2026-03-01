@@ -12,8 +12,7 @@ public class MediaGridItemPanelFormModel
     [Required]
     public string Title { get; set; } = string.Empty;
 
-    [Required]
-    public string LinkTo { get; set; } = string.Empty;
+    public string? LinkTo { get; set; }
 
     [Required]
     public string PreviewMedia { get; set; } = string.Empty;

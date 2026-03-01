@@ -40,6 +40,6 @@ public class MediaGridItemPanelViewModel
     public Guid InterfaceId { get; set; } = Guid.Empty;
     public string ItemId { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
-    public string LinkTo { get; set; } = string.Empty;
+    public string? LinkTo { get; set; }
     public string PreviewMedia { get; set; } = string.Empty;
 }
