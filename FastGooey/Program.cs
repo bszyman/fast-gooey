@@ -82,6 +82,25 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+builder.WebHost.UseSentry(options =>
+{
+    // Enable Sentry performance monitoring
+    options.TracesSampleRate = 1.0;
+
+    #if DEBUG
+        // Log debug information about the Sentry SDK
+        options.Debug = true;
+    #endif
+
+    // Configure the minimum Log Level of Breadcrumbs and Events
+    options.MinimumBreadcrumbLevel = LogLevel.Information;
+    options.MinimumEventLevel = LogLevel.Error;
+
+    // This option enables Logs sent to Sentry
+    // Configure the minimum Log Level of Structured-Logs via e.g. "appsettings.json" and "appsettings.{HostEnvironment}.json"
+    options.EnableLogs = true;
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -173,6 +192,5 @@ app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

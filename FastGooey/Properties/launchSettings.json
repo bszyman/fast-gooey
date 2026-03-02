@@ -7,7 +7,8 @@
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5273",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SENTRY_DSN": "https://1720fda9d0490922765ff0aca9ee2a04@o4510971855110144.ingest.us.sentry.io/4510971866972160"
       }
     },
     "https": {
@@ -16,7 +17,8 @@
       "launchBrowser": false,
       "applicationUrl": "https://localhost:7110;http://localhost:5273",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SENTRY_DSN": "https://1720fda9d0490922765ff0aca9ee2a04@o4510971855110144.ingest.us.sentry.io/4510971866972160"
       }
     }
   }
